@@ -62,6 +62,14 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
     private int currentSongIndex = 0;
     private boolean isShuffle = false;
     private boolean isRepeat = false;
+    /**
+     * play pronunciation defaultly
+     */
+    private boolean isPron = true;
+    /**
+     * pronuncation played or sentence played
+     */
+    private String lastPlayedAudioType = "sentence";
     private List<Map<String, Object>> songsList = new ArrayList<>();
 
     private DBHelper mydb;
@@ -324,6 +332,87 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
      */
     public void playSong(int songIndex) {
         Map<String, Object> song = songsList.get(songIndex);
+
+        Log.i("isPron", isPron + "");
+        Log.i("lastPlayedAudioType", lastPlayedAudioType + "");
+        if (isPron) {
+            if ("sentence".equals(lastPlayedAudioType)) {
+                setPlayInfo(song);
+                playPron(song);
+                lastPlayedAudioType = "pron";
+            } else {
+                playSentence(song);
+                lastPlayedAudioType = "sentence";
+            }
+        } else {
+            setPlayInfo(song);
+            playSentence(song);
+        }
+    }
+
+    private void setPlayInfo(Map<String, Object> song) {
+        // Displaying Song title
+        String word = (String) song.get("word");
+        songTitleLabel.setText(word);
+        pronLabel.setText((String) song.get("pron"));
+        meaningLabel.setText((String) song.get("meaning"));
+        String sentence = (String) song.get("sentence");
+        int start = sentence.indexOf(word);
+        Spannable sentenceSpan = new SpannableString(sentence);
+        int wordColor = getResources().getColor(R.color.word_pink);
+        sentenceSpan.setSpan(new ForegroundColorSpan(wordColor), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sentenceSpan.setSpan(new RelativeSizeSpan(1.8f), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sentenceLabel.setText(sentenceSpan);
+        chineseLabel.setText((String) song.get("chinese"));
+    }
+
+    private void playPron(Map<String, Object> song) {
+        Integer wordid = (Integer) song.get("wordid");
+        byte[] audioData = mydb.queryPronAudio(wordid);
+        if (audioData == null) {
+            playSentence(song);
+            lastPlayedAudioType = "sentence";
+            return;
+        }
+        File audioFile = null;
+        try {
+            audioFile = File.createTempFile("langeasy", "pron_audio");
+
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
+            bos.write(audioData);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Play song
+        try {
+            mp.reset();
+            mp.setDataSource(audioFile.getAbsolutePath());
+            mp.prepare();
+            mp.start();
+
+            // Changing Button Image to pause image
+            btnPlay.setImageResource(R.drawable.btn_pause);
+
+            // set Progress bar values
+            songProgressBar.setProgress(0);
+            songProgressBar.setMax(100);
+
+            // Updating progress bar
+            updateProgressBar();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void playSentence(Map<String, Object> song) {
         Integer sentenceid = (Integer) song.get("sentenceid");
         File audioFile = null;
         try {
@@ -343,20 +432,6 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
             mp.setDataSource(audioFile.getAbsolutePath());
             mp.prepare();
             mp.start();
-
-            // Displaying Song title
-            String word = (String) song.get("word");
-            songTitleLabel.setText(word);
-            pronLabel.setText((String) song.get("pron"));
-            meaningLabel.setText((String) song.get("meaning"));
-            String sentence = (String) song.get("sentence");
-            int start = sentence.indexOf(word);
-            Spannable sentenceSpan = new SpannableString(sentence);
-            int wordColor = getResources().getColor(R.color.word_pink);
-            sentenceSpan.setSpan(new ForegroundColorSpan(wordColor), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            sentenceSpan.setSpan(new RelativeSizeSpan(1.8f), start,  start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            sentenceLabel.setText(sentenceSpan);
-            chineseLabel.setText((String) song.get("chinese"));
 
             // Changing Button Image to pause image
             btnPlay.setImageResource(R.drawable.btn_pause);
@@ -446,7 +521,10 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
      */
     @Override
     public void onCompletion(MediaPlayer arg0) {
-
+        if (isPron & "pron".equals(lastPlayedAudioType)) {
+            playSong(currentSongIndex);// keep playing sentence next
+            return;
+        }
         // check for repeat is ON or OFF
         if (isRepeat) {
             // repeat is on play same song again

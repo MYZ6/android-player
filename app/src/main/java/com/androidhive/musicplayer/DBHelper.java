@@ -120,6 +120,21 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
+    public byte[] queryPronAudio(int wordId) {
+        String sql = "select audiodata from pron_audio where wordid = ?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(sql, new String[]{wordId + ""});
+        res.moveToFirst();
+
+        byte[] audioData = null;
+        while (res.isAfterLast() == false) {
+            audioData = res.getBlob(res.getColumnIndex("audiodata"));
+            break;
+        }
+        return audioData;
+    }
+
     public byte[] querySentenceAudio(int sentenceId) {
         String sql = "select audiodata from sentence_audio where sentenceid = ?";
 
