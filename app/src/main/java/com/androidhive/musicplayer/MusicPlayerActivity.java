@@ -15,11 +15,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -338,11 +343,19 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
             mp.setDataSource(audioFile.getAbsolutePath());
             mp.prepare();
             mp.start();
+
             // Displaying Song title
-            songTitleLabel.setText((String) song.get("word"));
+            String word = (String) song.get("word");
+            songTitleLabel.setText(word);
             pronLabel.setText((String) song.get("pron"));
             meaningLabel.setText((String) song.get("meaning"));
-            sentenceLabel.setText((String) song.get("sentence"));
+            String sentence = (String) song.get("sentence");
+            int start = sentence.indexOf(word);
+            Spannable sentenceSpan = new SpannableString(sentence);
+            int wordColor = getResources().getColor(R.color.word_pink);
+            sentenceSpan.setSpan(new ForegroundColorSpan(wordColor), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sentenceSpan.setSpan(new RelativeSizeSpan(1.8f), start,  start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sentenceLabel.setText(sentenceSpan);
             chineseLabel.setText((String) song.get("chinese"));
 
             // Changing Button Image to pause image
