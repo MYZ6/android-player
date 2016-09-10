@@ -91,8 +91,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{Integer.toString(id)});
     }
 
-    public List<Map<String, Object>> listSentence() {
-        List<Map<String, Object>> array_list = new ArrayList<>();
+    public ArrayList<Map<String, Object>> listSentence() {
+        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();

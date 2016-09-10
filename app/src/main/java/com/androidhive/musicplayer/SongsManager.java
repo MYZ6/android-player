@@ -16,26 +16,17 @@ import java.util.Map;
 public class SongsManager {
     // SDCard Path
     final String MEDIA_PATH = new String("/sdcard/qqmusic/song/");
-    private List<Map<String,Object>> songsList = new ArrayList<>();
+    private ArrayList<Map<String,Object>> songsList = new ArrayList<>();
 
     // Constructor
     public SongsManager() {
-        try {
-            FileInputStream fis = new FileInputStream("");
-            fis.getFD();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**
      * Function to read all mp3 files from sdcard
      * and store the details in ArrayList
      */
-    public List<Map<String, Object>> getPlayList(DBHelper mydb) {
+    public ArrayList<Map<String, Object>> getPlayList(DBHelper mydb) {
 //        File home = new File(MEDIA_PATH);
         String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 

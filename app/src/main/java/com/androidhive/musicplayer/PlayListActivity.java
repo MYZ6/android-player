@@ -8,9 +8,14 @@ import java.util.Map;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -18,6 +23,10 @@ import android.widget.SimpleAdapter;
 public class PlayListActivity extends ListActivity {
 
     private DBHelper mydb;
+
+    private ArrayList<Map<String, Object>> songsListData;
+
+    private SentenceAdapter sentenceAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,18 +37,19 @@ public class PlayListActivity extends ListActivity {
         mydb = new DBHelper(this);
 
 
-
         SongsManager plm = new SongsManager();
         // get all songs from sdcard
-        List<Map<String, Object>> songsListData = plm.getPlayList(mydb);
+        songsListData = plm.getPlayList(mydb);
 
 
         // Adding menuItems to ListView
-        ListAdapter adapter = new SimpleAdapter(this, songsListData,
-                R.layout.playlist_item, new String[]{"wordunique"}, new int[]{
-                R.id.songTitle});
+        sentenceAdapter = new SentenceAdapter(this, songsListData);
+//        ListAdapter adapter = new SimpleAdapter(this, songsListData,
+//                R.layout.playlist_item, new String[]{"wordunique"}, new int[]{
+//                R.id.songTitle});
 
-        setListAdapter(adapter);
+        setListAdapter(sentenceAdapter);
+//        adapter.no
 
         // selecting single ListView item
         ListView lv = getListView();
@@ -60,6 +70,23 @@ public class PlayListActivity extends ListActivity {
                 setResult(100, in);
                 // Closing PlayListView
                 finish();
+            }
+        });
+
+        EditText search_text = (EditText) findViewById(R.id.search_text);
+
+        search_text.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                // you can call or do what you want with your EditText here
+//                s.toString();
+                sentenceAdapter.getFilter().filter(s.toString());
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
 
