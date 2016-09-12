@@ -59,14 +59,14 @@ public class PlayListActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // getting listitem index
-                int songIndex = position;
+                Map<String, Object> sentence = sentenceAdapter.getItem(position);
+                Integer index = (Integer)sentence.get("index");
 
                 // Starting new intent
                 Intent in = new Intent(getApplicationContext(),
                         MusicPlayerActivity.class);
                 // Sending songIndex to PlayerActivity
-                in.putExtra("songIndex", songIndex);
+                in.putExtra("songIndex", index);
                 setResult(100, in);
                 // Closing PlayListView
                 finish();

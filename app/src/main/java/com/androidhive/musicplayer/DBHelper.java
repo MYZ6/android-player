@@ -99,8 +99,10 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from sentence", null);
         res.moveToFirst();
 
+        int count = 0;
         while (res.isAfterLast() == false) {
             Map<String, Object> map = new HashMap<>();
+            map.put("index", count++);
             //sentenceid, wordid, word, pron, mtype, meaning, sentence, chinese
             Integer sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
             String word = res.getString(res.getColumnIndex("word"));
