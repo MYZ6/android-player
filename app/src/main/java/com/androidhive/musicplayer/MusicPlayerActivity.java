@@ -79,6 +79,7 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player);
 
+//        System.out.println(1 / 0);
 
         mydb = new DBHelper(this);
 
@@ -333,6 +334,7 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
     public void playSong(int songIndex) {
         Map<String, Object> song = songsList.get(songIndex);
 
+        Log.i("song", song.toString() + "");
         Log.i("isPron", isPron + "");
         Log.i("lastPlayedAudioType", lastPlayedAudioType + "");
         if (isPron) {
@@ -357,7 +359,7 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
         pronLabel.setText((String) song.get("pron"));
         meaningLabel.setText((String) song.get("meaning"));
         String sentence = (String) song.get("sentence");
-        int start = sentence.indexOf(word);
+        int start = sentence.toLowerCase().indexOf(word);
         Spannable sentenceSpan = new SpannableString(sentence);
         int wordColor = getResources().getColor(R.color.word_pink);
         sentenceSpan.setSpan(new ForegroundColorSpan(wordColor), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
