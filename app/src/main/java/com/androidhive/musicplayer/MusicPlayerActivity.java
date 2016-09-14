@@ -60,7 +60,7 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
     private int seekForwardTime = 5000; // 5000 milliseconds
     private int seekBackwardTime = 5000; // 5000 milliseconds
     private int currentSongIndex = 0;
-    private boolean isShuffle = false;
+    private boolean isShuffle = true;
     private boolean isRepeat = false;
     /**
      * play pronunciation defaultly
@@ -73,15 +73,17 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
     private List<Map<String, Object>> songsList = new ArrayList<>();
 
     private DBHelper mydb;
+    private SentenceAudio sentenceAudio;
+    private PronAudio pronAudio;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player);
 
-//        System.out.println(1 / 0);
-
         mydb = new DBHelper(this);
+        sentenceAudio = new SentenceAudio(this);
+        pronAudio = new PronAudio(this);
 
         // All player buttons
         btnPlay = (ImageButton) findViewById(R.id.btnPlay);
@@ -114,6 +116,7 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
         // Listeners
         songProgressBar.setOnSeekBarChangeListener(this); // Important
         mp.setOnCompletionListener(this); // Important
+        audioManage(this);
 
         // Getting all songs list
         songsList = songManager.getPlayList(mydb);
@@ -296,6 +299,60 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
 
     }
 
+    private void audioManage(Context mContext) {
+        AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+            @Override
+            public void onAudioFocusChange(int focusChange) {
+                String TAG = "AudioManager focusChange type";
+                switch (focusChange) {
+                    case AudioManager.AUDIOFOCUS_GAIN:
+                        Log.i(TAG, "AUDIOFOCUS_GAIN");
+                        // Set volume level to desired levels
+                        mp.start();
+                        break;
+                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
+                        Log.i(TAG, "AUDIOFOCUS_GAIN_TRANSIENT");
+                        // You have audio focus for a short time
+
+                        mp.start();
+                        break;
+                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
+                        Log.i(TAG, "AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK");
+                        // Play over existing audio
+                        mp.start();
+                        break;
+                    case AudioManager.AUDIOFOCUS_LOSS:
+                        Log.e(TAG, "AUDIOFOCUS_LOSS");
+                        mp.pause();
+                        break;
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                        Log.e(TAG, "AUDIOFOCUS_LOSS_TRANSIENT");
+                        // Temporary loss of audio focus - expect to get it back - you can keep your resources around
+                        mp.pause();
+                        break;
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                        Log.e(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+                        // Lower the volume
+                        break;
+                }
+            }
+        };
+
+        AudioManager am = (AudioManager) mContext
+                .getSystemService(Context.AUDIO_SERVICE);
+        // Request audio focus for play back
+        int result = am.requestAudioFocus(mOnAudioFocusChangeListener,
+                // Use the music stream.
+                AudioManager.STREAM_MUSIC,
+                // Request permanent focus.
+                AudioManager.AUDIOFOCUS_GAIN);
+
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+//            mAudioFocusGranted = true;
+        } else if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+            // take appropriate action
+        }
+    }
 
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
@@ -370,7 +427,7 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
 
     private void playPron(Map<String, Object> song) {
         Integer wordid = (Integer) song.get("wordid");
-        byte[] audioData = mydb.queryPronAudio(wordid);
+        byte[] audioData = pronAudio.query(wordid);
         if (audioData == null) {
             playSentence(song);
             lastPlayedAudioType = "sentence";
@@ -413,7 +470,6 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
         }
     }
 
-
     private void playSentence(Map<String, Object> song) {
         Integer sentenceid = (Integer) song.get("sentenceid");
         File audioFile = null;
@@ -421,7 +477,7 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
             audioFile = File.createTempFile("langeasy", "sentence_audio");
 
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
-            bos.write(mydb.querySentenceAudio(sentenceid));
+            bos.write(sentenceAudio.query(sentenceid));
             bos.flush();
             bos.close();
         } catch (IOException e) {
@@ -523,6 +579,8 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
      */
     @Override
     public void onCompletion(MediaPlayer arg0) {
+//        System.out.println(1 / 0);
+
         if (isPron & "pron".equals(lastPlayedAudioType)) {
             playSong(currentSongIndex);// keep playing sentence next
             return;

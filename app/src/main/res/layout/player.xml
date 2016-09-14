@@ -253,6 +253,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:background="@null"
-            android:src="@drawable/btn_shuffle" />
+            android:src="@drawable/btn_shuffle_focused" />
     </LinearLayout>
 </RelativeLayout>

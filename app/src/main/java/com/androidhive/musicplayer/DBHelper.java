@@ -23,15 +23,7 @@ import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "langeasy.db";
-    public static final String CONTACTS_TABLE_NAME = "contacts";
-    public static final String CONTACTS_COLUMN_ID = "id";
-    public static final String CONTACTS_COLUMN_NAME = "name";
-    public static final String CONTACTS_COLUMN_EMAIL = "email";
-    public static final String CONTACTS_COLUMN_STREET = "street";
-    public static final String CONTACTS_COLUMN_CITY = "place";
-    public static final String CONTACTS_COLUMN_PHONE = "phone";
-    private HashMap hp;
+    public static final String DATABASE_NAME = "data.db";
 
     public DBHelper(Context context) {
         super(context, Environment.getExternalStorageDirectory().getAbsolutePath() + "/langeasy/sqlite/" + DATABASE_NAME, null, 1);
@@ -39,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.rawQuery("select count(*) from pron_audio", null);
+        db.rawQuery("select count(*) from sentence", null);
     }
 
     @Override
@@ -68,7 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int numberOfRows() {
         SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, CONTACTS_TABLE_NAME);
+        int numRows = (int) DatabaseUtils.queryNumEntries(db, "test");
         return numRows;
     }
 
@@ -121,34 +113,34 @@ public class DBHelper extends SQLiteOpenHelper {
         return array_list;
     }
 
-
-    public byte[] queryPronAudio(int wordId) {
-        String sql = "select audiodata from pron_audio where wordid = ?";
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(sql, new String[]{wordId + ""});
-        res.moveToFirst();
-
-        byte[] audioData = null;
-        while (res.isAfterLast() == false) {
-            audioData = res.getBlob(res.getColumnIndex("audiodata"));
-            break;
-        }
-        return audioData;
-    }
-
-    public byte[] querySentenceAudio(int sentenceId) {
-        String sql = "select audiodata from sentence_audio where sentenceid = ?";
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(sql, new String[]{sentenceId + ""});
-        res.moveToFirst();
-
-        byte[] audioData = null;
-        while (res.isAfterLast() == false) {
-            audioData = res.getBlob(res.getColumnIndex("audiodata"));
-            break;
-        }
-        return audioData;
-    }
+//
+//    public byte[] queryPronAudio(int wordId) {
+//        String sql = "select audiodata from pron_audio where wordid = ?";
+//
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res = db.rawQuery(sql, new String[]{wordId + ""});
+//        res.moveToFirst();
+//
+//        byte[] audioData = null;
+//        while (res.isAfterLast() == false) {
+//            audioData = res.getBlob(res.getColumnIndex("audiodata"));
+//            break;
+//        }
+//        return audioData;
+//    }
+//
+//    public byte[] querySentenceAudio(int sentenceId) {
+//        String sql = "select audiodata from sentence_audio where sentenceid = ?";
+//
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res = db.rawQuery(sql, new String[]{sentenceId + ""});
+//        res.moveToFirst();
+//
+//        byte[] audioData = null;
+//        while (res.isAfterLast() == false) {
+//            audioData = res.getBlob(res.getColumnIndex("audiodata"));
+//            break;
+//        }
+//        return audioData;
+//    }
 }
