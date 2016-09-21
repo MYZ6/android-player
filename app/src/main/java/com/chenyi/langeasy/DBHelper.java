@@ -22,20 +22,20 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "data.db";
 
     public DBHelper(Context context) {
-        super(context, Environment.getExternalStorageDirectory().getAbsolutePath() + "/langeasy/sqlite/" + DATABASE_NAME, null, 1);
+        super(context, Environment.getExternalStorageDirectory().getAbsolutePath() + "/langeasy/sqlite/" + DATABASE_NAME, null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.rawQuery("select count(*) from sentence", null);
-
-//        db.execSQL("CREATE TABLE play_record ( id INTEGER, wordid INT, word TEXT, sentenceid INT, playtime TEXT, PRIMARY KEY (id) )");
+//        db.rawQuery("select count(*) from sentence", null);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS contacts");
-        onCreate(db);
+//        db.execSQL("DROP TABLE IF EXISTS contacts");
+//        onCreate(db);
+
+        db.execSQL("CREATE TABLE play_record ( id INTEGER, wordid INT, word TEXT, sentenceid INT, playtime TEXT, PRIMARY KEY (id) )");
     }
 
     public boolean insertContact(String name, String phone, String email, String street, String place) {
@@ -94,13 +94,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Integer queryLastPlayRecord() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from sentence", null);
+        Cursor res = db.rawQuery("select sentenceid from play_record order by playtime desc limit 1", null);
         res.moveToFirst();
 
-        int count = 0;
         Integer sentenceid = null;
         while (res.isAfterLast() == false) {
             sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
+            break;
         }
         return sentenceid;
     }

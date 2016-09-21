@@ -123,19 +123,17 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         // Getting all songs list
         songsList = songManager.getPlayList(mydb);
 
-
-//        Integer sentenceid = mydb.queryLastPlayRecord();
-//        if (sentenceid != null) {
-//            int index = findIndex(sentenceid);
-//            playSong(index);
-//        } else {
-//            // By default play first song
-//            playSong(0);
-//        }
-        playSong(0);
+        Integer sentenceid = mydb.queryLastPlayRecord();
+        if (sentenceid != null) {
+            int index = findIndex(sentenceid);
+            playSong(index);
+        } else {
+            // By default play first song
+            playSong(0);
+        }
+//        playSong(0);
         initButtonEvent();
 
-        Log.i("ptest","3l2k4lklk");
         return playerLayout;
     }
 
@@ -437,8 +435,12 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     }
 
     private void setPlayInfo(Map<String, Object> song) {
-        // Displaying Song title
+        Integer wordid = (Integer) song.get("wordid");
+        Integer sentenceid = (Integer) song.get("sentenceid");
         String word = (String) song.get("word");
+        mydb.addPlayRecord(wordid, word, sentenceid);
+
+        // Displaying Song title
         songTitleLabel.setText(word);
         pronLabel.setText((String) song.get("pron"));
         meaningLabel.setText((String) song.get("meaning"));
