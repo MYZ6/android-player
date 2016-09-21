@@ -1,4 +1,4 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 /**
  * Created by liyzh on 2016/9/12.
@@ -79,6 +79,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        Log.e("langeasy", "exception", ex);
         if (!handleException(ex) && mDefaultHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
@@ -171,7 +172,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         Throwable cause = ex.getCause();
         while (cause != null) {
             cause.printStackTrace(printWriter);
-            ex.printStackTrace();
+//            ex.printStackTrace();
             cause = cause.getCause();
         }
         printWriter.close();
@@ -181,6 +182,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
             long timestamp = System.currentTimeMillis();
             String time = formatter.format(new Date());
             String fileName = "crash-" + time + "-" + timestamp + ".log";
+            Log.i("getExternalStorageState",Environment.getExternalStorageState());
+            Log.i("Env MEDIA_MOUNTED",Environment.MEDIA_MOUNTED);
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 String path = "/sdcard/langeasy/crash/";
                 File dir = new File(path);

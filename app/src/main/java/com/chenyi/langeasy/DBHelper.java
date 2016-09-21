@@ -1,4 +1,4 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 /**
  * Created by liyzh on 2016/9/1.
@@ -12,13 +12,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -32,6 +28,8 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.rawQuery("select count(*) from sentence", null);
+
+//        db.execSQL("CREATE TABLE play_record ( id INTEGER, wordid INT, word TEXT, sentenceid INT, playtime TEXT, PRIMARY KEY (id) )");
     }
 
     @Override
@@ -81,6 +79,30 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete("contacts",
                 "id = ? ",
                 new String[]{Integer.toString(id)});
+    }
+
+    public boolean addPlayRecord(int wordid, String word, int sentenceid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("wordid", wordid);
+        contentValues.put("word", word);
+        contentValues.put("sentenceid", sentenceid);
+        contentValues.put("playtime", new Date().getTime());
+        db.insert("play_record", null, contentValues);
+        return true;
+    }
+
+    public Integer queryLastPlayRecord() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from sentence", null);
+        res.moveToFirst();
+
+        int count = 0;
+        Integer sentenceid = null;
+        while (res.isAfterLast() == false) {
+            sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
+        }
+        return sentenceid;
     }
 
     public ArrayList<Map<String, Object>> listSentence() {

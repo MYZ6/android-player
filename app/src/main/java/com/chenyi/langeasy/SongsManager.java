@@ -1,16 +1,11 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SongsManager {

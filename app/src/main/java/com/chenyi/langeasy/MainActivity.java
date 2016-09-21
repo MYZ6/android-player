@@ -1,6 +1,7 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -73,11 +74,16 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
+
+
+        Log.i("test","3l2k4lklk");
         // 初始化布局元素
         initViews();
         fragmentManager = getFragmentManager();
+        Log.i("test","123456");
         // 第一次启动时选中第0个tab
         setTabSelection(0);
+        Log.i("test","4567yui");
     }
 
     /**

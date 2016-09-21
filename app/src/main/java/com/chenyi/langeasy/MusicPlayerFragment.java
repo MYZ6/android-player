@@ -1,4 +1,4 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -123,8 +123,33 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         // Getting all songs list
         songsList = songManager.getPlayList(mydb);
 
-        // By default play first song
+
+//        Integer sentenceid = mydb.queryLastPlayRecord();
+//        if (sentenceid != null) {
+//            int index = findIndex(sentenceid);
+//            playSong(index);
+//        } else {
+//            // By default play first song
+//            playSong(0);
+//        }
         playSong(0);
+        initButtonEvent();
+
+        Log.i("ptest","3l2k4lklk");
+        return playerLayout;
+    }
+
+    private int findIndex(Integer sentenceid) {
+        for (Map<String, Object> sentence : songsList) {
+            int sid = (int) sentence.get("sentenceid");
+            if (sid == sentenceid) {
+                return (int) sentence.get("index");
+            }
+        }
+        return 0;
+    }
+
+    private void initButtonEvent() {
 
         /**
          * Play button click event
@@ -237,7 +262,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
 
             }
         });
-       final Context applicationContext = activity.getApplicationContext();
+        final Context applicationContext = getActivity().getApplicationContext();
         /**
          * Button Click event for Repeat button
          * Enables repeat flag to true
@@ -298,8 +323,6 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                 startActivityForResult(i, 100);
             }
         });
-
-        return playerLayout;
     }
 
     private void audioManage(Context mContext) {
@@ -376,7 +399,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
      */
     @Override
     public void onActivityResult(int requestCode,
-                                    int resultCode, Intent data) {
+                                 int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == 100) {
             currentSongIndex = data.getExtras().getInt("songIndex");

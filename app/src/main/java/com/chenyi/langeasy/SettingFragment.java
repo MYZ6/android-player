@@ -1,4 +1,4 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 import android.app.Fragment;
 import android.os.Bundle;

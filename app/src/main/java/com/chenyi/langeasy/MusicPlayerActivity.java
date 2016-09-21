@@ -1,11 +1,10 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -15,7 +14,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -121,8 +119,20 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
         // Getting all songs list
         songsList = songManager.getPlayList(mydb);
 
-        // By default play first song
-        playSong(0);
+        Integer sentenceid = mydb.queryLastPlayRecord();
+        if (sentenceid != null) {
+            int index = findIndex(sentenceid);
+            playSong(index);
+        } else {
+            // By default play first song
+            playSong(0);
+        }
+
+
+        initButtonEvent();
+    }
+
+    private void initButtonEvent() {
 
         /**
          * Play button click event
@@ -296,7 +306,16 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
                 startActivityForResult(i, 100);
             }
         });
+    }
 
+    private int findIndex(Integer sentenceid) {
+        for (Map<String, Object> sentence : songsList) {
+            int sid = (int) sentence.get("sentenceid");
+            if (sid == sentenceid) {
+                return (int) sentence.get("index");
+            }
+        }
+        return 0;
     }
 
     private void audioManage(Context mContext) {
@@ -410,8 +429,12 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
     }
 
     private void setPlayInfo(Map<String, Object> song) {
-        // Displaying Song title
+        Integer wordid = (Integer) song.get("wordid");
+        Integer sentenceid = (Integer) song.get("sentenceid");
         String word = (String) song.get("word");
+        mydb.addPlayRecord(wordid, word, sentenceid);
+
+        // Displaying Song title
         songTitleLabel.setText(word);
         pronLabel.setText((String) song.get("pron"));
         meaningLabel.setText((String) song.get("meaning"));

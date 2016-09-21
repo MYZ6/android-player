@@ -1,11 +1,8 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.ListActivity;
 import android.app.ListFragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;

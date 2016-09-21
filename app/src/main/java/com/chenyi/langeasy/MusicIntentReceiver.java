@@ -1,8 +1,7 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 
 /**
  * Created by liyzh on 2016/9/8.

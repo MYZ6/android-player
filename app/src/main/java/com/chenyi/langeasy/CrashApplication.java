@@ -1,4 +1,4 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 /**
  * Created by liyzh on 2016/9/12.

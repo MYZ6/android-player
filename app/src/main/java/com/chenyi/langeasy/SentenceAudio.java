@@ -1,4 +1,4 @@
-package com.androidhive.musicplayer;
+package com.chenyi.langeasy;
 
 /**
  * Created by liyzh on 2016/9/1.
@@ -10,18 +10,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 
-public class PronAudio extends SQLiteOpenHelper {
+public class SentenceAudio extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "pron-audio.db";
+    public static final String DATABASE_NAME = "sentence-audio.db";
 //    public static final String DATABASE_NAME = "langeasy.db";
 
-    public PronAudio(Context context) {
+    public SentenceAudio(Context context) {
         super(context, Environment.getExternalStorageDirectory().getAbsolutePath() + "/langeasy/sqlite/" + DATABASE_NAME, null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.rawQuery("select count(*) from pron_audio", null);
+        db.rawQuery("select count(*) from sentence_audio", null);
     }
 
     @Override
@@ -30,11 +30,11 @@ public class PronAudio extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public byte[] query(int wordId) {
-        String sql = "select audiodata from pron_audio where wordid = ?";
+    public byte[] query(int sentenceId) {
+        String sql = "select audiodata from sentence_audio where sentenceid = ?";
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(sql, new String[]{wordId + ""});
+        Cursor res = db.rawQuery(sql, new String[]{sentenceId + ""});
         res.moveToFirst();
 
         byte[] audioData = null;
