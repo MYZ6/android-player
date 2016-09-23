@@ -4,24 +4,24 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/news_selected" />
-
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp"
-            android:text="这是动态界面"
-            android:textSize="20sp" />
+            android:id="@+id/sync_saudio"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/pron"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:text="Sync Sentence Audio"
+            android:textColor="#7CFC00"
+            android:textSize="26dp"
+            android:textStyle="bold" />"
+
+
     </LinearLayout>
 
 </RelativeLayout>

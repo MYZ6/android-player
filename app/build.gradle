@@ -5,8 +5,8 @@ android {
 
     defaultConfig {
         applicationId "com.chenyi.langeasy"
-        minSdkVersion 11
-        targetSdkVersion 11
+        minSdkVersion 16
+        targetSdkVersion 16
     }
 
     buildTypes {
@@ -20,4 +20,13 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.1.1'
+    compile project(':volley')
+    // Required -- JUnit 4 framework
+    testCompile 'junit:junit:4.12'
+    // Optional -- Mockito framework
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile "org.robolectric:robolectric:3.1.1"
+    testCompile "com.github.stefanbirkner:system-rules:1.16.1"
+    compile 'commons-io:commons-io:2.4'
+//    compile 'org.apache.commons:commons-io:2.2'
 }

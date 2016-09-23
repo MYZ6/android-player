@@ -82,7 +82,7 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
         fragmentManager = getFragmentManager();
         Log.i("test","123456");
         // 第一次启动时选中第0个tab
-        setTabSelection(0);
+        setTabSelection(2);
         Log.i("test","4567yui");
     }
 

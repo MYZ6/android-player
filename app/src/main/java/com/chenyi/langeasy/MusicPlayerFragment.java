@@ -63,6 +63,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     private int currentSongIndex = 0;
     private boolean isShuffle = true;
     private boolean isRepeat = false;
+    private boolean isPaused = false;
     /**
      * play pronunciation defaultly
      */
@@ -123,6 +124,14 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         // Getting all songs list
         songsList = songManager.getPlayList(mydb);
 
+//        playDefault();
+//        playSong(0);
+        initButtonEvent();
+
+        return playerLayout;
+    }
+
+    private void playDefault() {
         Integer sentenceid = mydb.queryLastPlayRecord();
         if (sentenceid != null) {
             int index = findIndex(sentenceid);
@@ -131,10 +140,6 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
             // By default play first song
             playSong(0);
         }
-//        playSong(0);
-        initButtonEvent();
-
-        return playerLayout;
     }
 
     private int findIndex(Integer sentenceid) {
@@ -162,15 +167,24 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                 if (mp.isPlaying()) {
                     if (mp != null) {
                         mp.pause();
+                        isPaused = true;
                         // Changing button image to play button
                         btnPlay.setImageResource(R.drawable.btn_play);
                     }
                 } else {
                     // Resume song
                     if (mp != null) {
+                        Log.i("test isPaused",isPaused+"");
+                        if (!isPaused) {
+                            playDefault();
+                            return;
+                        }
                         mp.start();
+                        isPaused = false;
                         // Changing button image to pause button
                         btnPlay.setImageResource(R.drawable.btn_pause);
+                    } else {
+                        playDefault();
                     }
                 }
 
@@ -413,6 +427,9 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
      * @param songIndex - index of song
      */
     public void playSong(int songIndex) {
+        if (songIndex > -1) {
+//            return;
+        }
         Map<String, Object> song = songsList.get(songIndex);
         currentSongIndex = songIndex;
 
