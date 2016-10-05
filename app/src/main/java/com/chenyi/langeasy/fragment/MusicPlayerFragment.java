@@ -24,6 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chenyi.langeasy.activity.MainActivity;
 import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.SongsManager;
@@ -93,7 +94,9 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                              Bundle savedInstanceState) {
         View playerLayout = inflater.inflate(R.layout.player,
                 container, false);
-        Activity activity = getActivity();
+        MainActivity activity = (MainActivity) getActivity();
+        songsList = activity.songsList;//songManager.getPlayList(mydb);
+
         mydb = new DBHelper(activity);
         sentenceAudio = new SentenceAudio(activity);
         pronAudio = new PronAudio(activity);
@@ -133,7 +136,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         audioManage(activity);
 
         // Getting all songs list
-        songsList = songManager.getPlayList(mydb);
+        songsList = activity.songsList;//songManager.getPlayList(mydb);
 
 //        playDefault();
 //        playSong(0);

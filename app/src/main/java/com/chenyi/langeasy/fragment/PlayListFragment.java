@@ -17,14 +17,13 @@ import android.widget.ListView;
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.SentenceAdapter;
 import com.chenyi.langeasy.SongsManager;
+import com.chenyi.langeasy.activity.MainActivity;
 import com.chenyi.langeasy.db.DBHelper;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public class PlayListFragment extends ListFragment {
-
-    private DBHelper mydb;
 
     private ArrayList<Map<String, Object>> songsListData;
 
@@ -86,14 +85,9 @@ public class PlayListFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View listLayout = inflater.inflate(R.layout.playlist,
                 container, false);
-        final Activity activity = getActivity();
 
-        mydb = new DBHelper(activity);
-
-
-        SongsManager plm = new SongsManager();
-        // get all songs from sdcard
-        songsListData = plm.getPlayList(mydb);
+        final  MainActivity activity = (MainActivity) getActivity();
+        songsListData = new ArrayList<Map<String, Object>>(activity.songsList);;//songManager.getPlayList(mydb);
 
 
         // Adding menuItems to ListView

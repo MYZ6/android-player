@@ -110,7 +110,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from sentence", null);
+        Cursor res = db.rawQuery("select s.* from sentence s inner join vocabulary v on v.wordid = s.wordid and ifnull(v.pass, 0) !=1", null);
         res.moveToFirst();
 
         int count = 0;
@@ -133,6 +133,54 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToNext();
         }
         return array_list;
+    }
+
+
+    public Map<String, Integer> queryPlayRecord(Integer wordid, Integer sentenceid) {
+        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select count(*) from play_record", null);
+        res.moveToFirst();
+
+        Integer total = null;
+        while (res.isAfterLast() == false) {
+            total = res.getInt(0);
+            break;
+        }
+        res = db.rawQuery("select count(*) from play_record where sentenceid = ?", new String[]{sentenceid + ""});
+        res.moveToFirst();
+
+        Integer stotal = null;
+        while (res.isAfterLast() == false) {
+            stotal = res.getInt(0);
+            break;
+        }
+        res = db.rawQuery("select count(*) from play_record where wordid = ?", new String[]{wordid + ""});
+        res.moveToFirst();
+
+        Integer wtotal = null;
+        while (res.isAfterLast() == false) {
+            wtotal = res.getInt(0);
+            break;
+        }
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("total", total);
+        map.put("stotal", stotal);
+        map.put("wtotal", wtotal);
+        return map;
+    }
+
+
+
+    public boolean passWord(Integer wordid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("pass", 1);
+        db.update("vocabulary", contentValues, "wordid = ? ", new String[]{Integer.toString(wordid)});
+        return true;
     }
 
 //

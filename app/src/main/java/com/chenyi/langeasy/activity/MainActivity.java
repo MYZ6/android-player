@@ -11,21 +11,28 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.fragment.MusicPlayerFragment;
 import com.chenyi.langeasy.fragment.PlayListFragment;
 import com.chenyi.langeasy.fragment.SettingFragment;
+import com.chenyi.langeasy.fragment.WordLearningFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 项目的主Activity，所有的Fragment都嵌入在这里。
  *
  * @author guolin
  */
-public class MainActivity extends Activity implements OnClickListener ,PlayListFragment.OnSentenceSelectedListener {
+public class MainActivity extends Activity implements OnClickListener, PlayListFragment.OnSentenceSelectedListener,WordLearningFragment.OnPlayListener {
 
     /**
      * 用于展示消息的Fragment
      */
     private MusicPlayerFragment playerFragment;
+    private WordLearningFragment wlearningFragment;
 
     /**
      * 用于展示联系人的Fragment
@@ -42,6 +49,7 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
      * 消息界面布局
      */
     private View playerLayout;
+    private View wlearningLayout;
 
     /**
      * 联系人界面布局
@@ -57,6 +65,7 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
      * 在Tab布局上显示消息图标的控件
      */
     private ImageView messageImage;
+    private ImageView wlearningImage;
 
     /**
      * 在Tab布局上显示联系人图标的控件
@@ -74,21 +83,27 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
      */
     private FragmentManager fragmentManager;
 
+    public ArrayList<Map<String, Object>> songsList = new ArrayList<>();
+    private DBHelper mydb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
-
-        Log.i("test","3l2k4lklk");
         // 初始化布局元素
         initViews();
         fragmentManager = getFragmentManager();
-        Log.i("test","123456");
+
+
+        mydb = new DBHelper(this);
+        songsList = mydb.listSentence();
+
+//        playerFragment = new MusicPlayerFragment();
         // 第一次启动时选中第0个tab
-        setTabSelection(2);
-        Log.i("test","4567yui");
+        setTabSelection(0);
+        setTabSelection(3);
     }
 
     /**
@@ -96,12 +111,15 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
      */
     private void initViews() {
         playerLayout = findViewById(R.id.player_layout);
+        wlearningLayout = findViewById(R.id.wlearning_layout);
         slistLayout = findViewById(R.id.slist_layout);
         settingLayout = findViewById(R.id.setting_layout);
         messageImage = (ImageView) findViewById(R.id.message_image);
+        wlearningImage = (ImageView) findViewById(R.id.wlearning_image);
         contactsImage = (ImageView) findViewById(R.id.contacts_image);
         settingImage = (ImageView) findViewById(R.id.setting_image);
         playerLayout.setOnClickListener(this);
+        wlearningLayout.setOnClickListener(this);
         slistLayout.setOnClickListener(this);
         settingLayout.setOnClickListener(this);
     }
@@ -120,6 +138,10 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
             case R.id.setting_layout:
                 // 当点击了动态tab时，选中第3个tab
                 setTabSelection(2);
+                break;
+            case R.id.wlearning_layout:
+                // 当点击了联系人tab时，选中第2个tab
+                setTabSelection(3);
                 break;
             default:
                 break;
@@ -176,6 +198,17 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
                 }
                 break;
             case 3:
+                // 当点击了消息tab时，改变控件的图片和文字颜色
+                wlearningImage.setImageResource(R.drawable.news_selected);
+                if (wlearningFragment == null) {
+                    // 如果MessageFragment为空，则创建一个并添加到界面上
+                    wlearningFragment = new WordLearningFragment();
+                    transaction.add(R.id.content, wlearningFragment);
+                } else {
+                    // 如果MessageFragment不为空，则直接将它显示出来
+                    transaction.show(wlearningFragment);
+                }
+                break;
             default:
                 // 当点击了设置tab时，改变控件的图片和文字颜色
                 break;
@@ -188,6 +221,7 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
      */
     private void clearSelection() {
         messageImage.setImageResource(R.drawable.message_unselected);
+        wlearningImage.setImageResource(R.drawable.news_unselected);
         contactsImage.setImageResource(R.drawable.contacts_unselected);
         settingImage.setImageResource(R.drawable.setting_unselected);
     }
@@ -201,6 +235,9 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
         if (playerFragment != null) {
             transaction.hide(playerFragment);
         }
+        if (wlearningFragment != null) {
+            transaction.hide(wlearningFragment);
+        }
         if (playListFragment != null) {
             transaction.hide(playListFragment);
         }
@@ -211,6 +248,12 @@ public class MainActivity extends Activity implements OnClickListener ,PlayListF
 
     @Override
     public void onSentenceSelected(int songIndex) {
+        setTabSelection(3);
+        wlearningFragment.playSong(songIndex);
+    }
+
+    @Override
+    public void onPlay(int songIndex) {
         setTabSelection(0);
         playerFragment.playSong(songIndex);
     }
