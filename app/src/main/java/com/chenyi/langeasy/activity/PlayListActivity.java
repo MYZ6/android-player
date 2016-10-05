@@ -1,4 +1,4 @@
-package com.chenyi.langeasy;
+package com.chenyi.langeasy.activity;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -13,6 +13,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.SentenceAdapter;
+import com.chenyi.langeasy.SongsManager;
+import com.chenyi.langeasy.db.DBHelper;
 
 public class PlayListActivity extends ListActivity {
 

@@ -1,4 +1,4 @@
-package com.chenyi.langeasy;
+package com.chenyi.langeasy.activity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +9,11 @@ import android.widget.ImageView;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+
+import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.fragment.MusicPlayerFragment;
+import com.chenyi.langeasy.fragment.PlayListFragment;
+import com.chenyi.langeasy.fragment.SettingFragment;
 
 /**
  * 项目的主Activity，所有的Fragment都嵌入在这里。

@@ -1,4 +1,4 @@
-package com.chenyi.langeasy;
+package com.chenyi.langeasy.db;
 
 /**
  * Created by liyzh on 2016/9/1.

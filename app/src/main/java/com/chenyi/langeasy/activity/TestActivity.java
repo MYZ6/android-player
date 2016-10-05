@@ -1,4 +1,4 @@
-package com.chenyi.langeasy;
+package com.chenyi.langeasy.activity;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.chenyi.langeasy.R;
 
 import java.util.ArrayList;
 import java.util.Map;

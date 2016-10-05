@@ -1,4 +1,4 @@
-package com.chenyi.langeasy;
+package com.chenyi.langeasy.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -23,6 +23,15 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.chenyi.langeasy.activity.PlayListActivity;
+import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.SongsManager;
+import com.chenyi.langeasy.Utilities;
+import com.chenyi.langeasy.db.DBHelper;
+import com.chenyi.langeasy.db.NumberAudio;
+import com.chenyi.langeasy.db.PronAudio;
+import com.chenyi.langeasy.db.SentenceAudio;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -77,6 +86,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     private DBHelper mydb;
     private SentenceAudio sentenceAudio;
     private PronAudio pronAudio;
+    private NumberAudio numberAudio;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +97,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         mydb = new DBHelper(activity);
         sentenceAudio = new SentenceAudio(activity);
         pronAudio = new PronAudio(activity);
+        numberAudio = new NumberAudio(activity);
 
         // All player buttons
         btnPlay = (ImageButton) playerLayout.findViewById(R.id.btnPlay);
@@ -174,7 +185,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                 } else {
                     // Resume song
                     if (mp != null) {
-                        Log.i("test isPaused",isPaused+"");
+                        Log.i("test isPaused", isPaused + "");
                         if (!isPaused) {
                             playDefault();
                             return;
@@ -439,6 +450,10 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         if (isPron) {
             if ("sentence".equals(lastPlayedAudioType)) {
                 setPlayInfo(song);
+                playNumber(song);
+                lastPlayedAudioType = "number";
+            } else if ("number".equals(lastPlayedAudioType)) {
+//                setPlayInfo(song);
                 playPron(song);
                 lastPlayedAudioType = "pron";
             } else {
@@ -469,6 +484,51 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         sentenceSpan.setSpan(new RelativeSizeSpan(1.8f), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         sentenceLabel.setText(sentenceSpan);
         chineseLabel.setText((String) song.get("chinese"));
+    }
+
+    private void playNumber(Map<String, Object> song) {
+        Integer wordid = (Integer) song.get("wordid");
+        byte[] audioData = numberAudio.query(wordid);
+        if (audioData == null) {
+            playSentence(song);
+            lastPlayedAudioType = "sentence";
+            return;
+        }
+        File audioFile = null;
+        try {
+            audioFile = File.createTempFile("langeasy", "number_audio");
+
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
+            bos.write(audioData);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Play song
+        try {
+            mp.reset();
+            mp.setDataSource(audioFile.getAbsolutePath());
+            mp.prepare();
+            mp.start();
+
+            // Changing Button Image to pause image
+            btnPlay.setImageResource(R.drawable.btn_pause);
+
+            // set Progress bar values
+            songProgressBar.setProgress(0);
+            songProgressBar.setMax(100);
+
+            // Updating progress bar
+            updateProgressBar();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void playPron(Map<String, Object> song) {
@@ -627,7 +687,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     public void onCompletion(MediaPlayer arg0) {
 //        System.out.println(1 / 0);
 
-        if (isPron & "pron".equals(lastPlayedAudioType)) {
+        if ((isPron & "pron".equals(lastPlayedAudioType)) || "number".equals(lastPlayedAudioType)) {
             playSong(currentSongIndex);// keep playing sentence next
             return;
         }

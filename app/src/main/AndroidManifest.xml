@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
-            android:name="com.chenyi.langeasy.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:configChanges="keyboardHidden|orientation">
             <intent-filter>
@@ -31,7 +31,7 @@
         <!--</receiver>-->
         
         <activity
-            android:name="com.chenyi.langeasy.PlayListActivity" />
+            android:name=".activity.PlayListActivity" />
     </application>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

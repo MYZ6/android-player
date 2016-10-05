@@ -1,4 +1,4 @@
-package com.chenyi.langeasy;
+package com.chenyi.langeasy.activity;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -29,6 +29,13 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.SongsManager;
+import com.chenyi.langeasy.Utilities;
+import com.chenyi.langeasy.db.DBHelper;
+import com.chenyi.langeasy.db.PronAudio;
+import com.chenyi.langeasy.db.SentenceAudio;
 
 public class MusicPlayerActivity extends Activity implements OnCompletionListener, SeekBar.OnSeekBarChangeListener {
 

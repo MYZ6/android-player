@@ -1,7 +1,7 @@
-package com.chenyi.langeasy;
+package com.chenyi.langeasy.db;
 
 /**
- * Created by liyzh on 2016/9/1.
+ * Created by liyzh on 2016/10/5.
  */
 
 import android.content.Context;
@@ -10,18 +10,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 
-public class PronAudio extends SQLiteOpenHelper {
+public class NumberAudio extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "pron-audio.db";
+    public static final String DATABASE_NAME = "number-audio.db";
 //    public static final String DATABASE_NAME = "langeasy.db";
 
-    public PronAudio(Context context) {
+    public NumberAudio(Context context) {
         super(context, Environment.getExternalStorageDirectory().getAbsolutePath() + "/langeasy/sqlite/" + DATABASE_NAME, null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.rawQuery("select count(*) from pron_audio", null);
+        db.rawQuery("select count(*) from number_audio", null);
     }
 
     @Override
@@ -30,11 +30,11 @@ public class PronAudio extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public byte[] query(int wordId) {
-        String sql = "select audiodata from pron_audio where wordid = ?";
+    public byte[] query(int number) {
+        String sql = "select audiodata from number_audio where num = ?";
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(sql, new String[]{wordId + ""});
+        Cursor res = db.rawQuery(sql, new String[]{number + ""});
         res.moveToFirst();
 
         byte[] audioData = null;
