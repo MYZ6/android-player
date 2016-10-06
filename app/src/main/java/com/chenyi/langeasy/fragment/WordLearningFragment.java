@@ -320,7 +320,7 @@ public class WordLearningFragment extends Fragment {
         playrecordStotalLabel.setText("s" + precord.get("stotal"));
 
         // Displaying Song title
-        songTitleLabel.setText(word);
+        songTitleLabel.setText(wordid + word);
         pronLabel.setText((String) song.get("pron"));
         meaningLabel.setText((String) song.get("meaning"));
         String sentence = (String) song.get("sentence");

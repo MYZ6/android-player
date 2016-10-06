@@ -255,6 +255,7 @@ public class MainActivity extends Activity implements OnClickListener, PlayListF
     @Override
     public void onPlay(int songIndex) {
         setTabSelection(0);
+        playerFragment.lastPlayedAudioType = "sentence";
         playerFragment.playSong(songIndex);
     }
 }

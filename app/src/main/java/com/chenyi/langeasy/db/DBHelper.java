@@ -118,12 +118,13 @@ public class DBHelper extends SQLiteOpenHelper {
             Map<String, Object> map = new HashMap<>();
             map.put("index", count++);
             //sentenceid, wordid, word, pron, mtype, meaning, sentence, chinese
+            Integer wordid = res.getInt(res.getColumnIndex("wordid"));
             Integer sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
             String word = res.getString(res.getColumnIndex("word"));
             map.put("sentenceid", sentenceid);
             map.put("wordid", res.getInt(res.getColumnIndex("wordid")));
             map.put("word", word);
-            map.put("wordunique", word + sentenceid);
+            map.put("wordunique", wordid + word + sentenceid);
             map.put("pron", res.getString(res.getColumnIndex("pron")));
             map.put("mtype", res.getString(res.getColumnIndex("mtype")));
             map.put("meaning", res.getString(res.getColumnIndex("meaning")));
@@ -172,7 +173,6 @@ public class DBHelper extends SQLiteOpenHelper {
         map.put("wtotal", wtotal);
         return map;
     }
-
 
 
     public boolean passWord(Integer wordid) {

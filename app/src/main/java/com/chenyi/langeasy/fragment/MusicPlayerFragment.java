@@ -81,7 +81,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     /**
      * pronuncation played or sentence played
      */
-    private String lastPlayedAudioType = "sentence";
+    public String lastPlayedAudioType = "sentence";
     private List<Map<String, Object>> songsList = new ArrayList<>();
 
     private DBHelper mydb;
@@ -258,14 +258,13 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
             public void onClick(View arg0) {
                 // check if next song is there or not
                 if (currentSongIndex < (songsList.size() - 1)) {
-                    playSong(currentSongIndex + 1);
                     currentSongIndex = currentSongIndex + 1;
                 } else {
                     // play first song
-                    playSong(0);
                     currentSongIndex = 0;
                 }
-
+                lastPlayedAudioType = "sentence";
+                playSong(currentSongIndex);
             }
         });
 
@@ -278,13 +277,13 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
             @Override
             public void onClick(View arg0) {
                 if (currentSongIndex > 0) {
-                    playSong(currentSongIndex - 1);
                     currentSongIndex = currentSongIndex - 1;
                 } else {
                     // play last song
-                    playSong(songsList.size() - 1);
                     currentSongIndex = songsList.size() - 1;
                 }
+                lastPlayedAudioType = "sentence";
+                playSong(currentSongIndex);
 
             }
         });
@@ -476,7 +475,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         mydb.addPlayRecord(wordid, word, sentenceid);
 
         // Displaying Song title
-        songTitleLabel.setText(word);
+        songTitleLabel.setText(wordid + word);
         pronLabel.setText((String) song.get("pron"));
         meaningLabel.setText((String) song.get("meaning"));
         String sentence = (String) song.get("sentence");
