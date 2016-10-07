@@ -141,6 +141,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
 //        playDefault();
 //        playSong(0);
         initButtonEvent();
+        initConfig();
 
         return playerLayout;
     }
@@ -164,6 +165,14 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
             }
         }
         return 0;
+    }
+
+    private void initConfig() {
+        int svalue = Utilities.getConfig(getActivity(), "isShuffle");
+        if (svalue == 0) {
+            isShuffle = false;
+            btnShuffle.setImageResource(R.drawable.btn_shuffle);
+        }
     }
 
     private void initButtonEvent() {
@@ -324,6 +333,8 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                     isShuffle = false;
                     Toast.makeText(applicationContext, "Shuffle is OFF", Toast.LENGTH_SHORT).show();
                     btnShuffle.setImageResource(R.drawable.btn_shuffle);
+                    Utilities.setConfig(getActivity(), "isShuffle", 0);
+
                 } else {
                     // make repeat to true
                     isShuffle = true;
@@ -332,7 +343,11 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                     isRepeat = false;
                     btnShuffle.setImageResource(R.drawable.btn_shuffle_focused);
                     btnRepeat.setImageResource(R.drawable.btn_repeat);
+                    Utilities.setConfig(getActivity(), "isShuffle", 1);
                 }
+
+                int svalue = Utilities.getConfig(getActivity(), "isShuffle");
+                Log.i("isShuffle", svalue + " " + isShuffle);
             }
         });
 
@@ -705,13 +720,12 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         } else {
             // no repeat or shuffle ON - play next song
             if (currentSongIndex < (songsList.size() - 1)) {
-                playSong(currentSongIndex + 1);
                 currentSongIndex = currentSongIndex + 1;
             } else {
                 // play first song
-                playSong(0);
                 currentSongIndex = 0;
             }
+            playSong(currentSongIndex);
         }
     }
 
