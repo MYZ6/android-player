@@ -161,7 +161,7 @@ public class WordLearningFragment extends Fragment {
                 mydb.passWord(wordid);
 
                 String word = (String) song.get("word");
-                Toast.makeText(applicationContext, "Pass "+ word, Toast.LENGTH_SHORT).show();
+                Toast.makeText(applicationContext, "Pass " + word, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -319,8 +319,10 @@ public class WordLearningFragment extends Fragment {
         playrecordWtotalLabel.setText("w" + precord.get("wtotal"));
         playrecordStotalLabel.setText("s" + precord.get("stotal"));
 
+        int wordCount = mydb.queryWordCount(wordid);
+
         // Displaying Song title
-        songTitleLabel.setText(wordid + word);
+        songTitleLabel.setText(wordid + word + " " + wordCount);
         pronLabel.setText((String) song.get("pron"));
         meaningLabel.setText((String) song.get("meaning"));
         String sentence = (String) song.get("sentence");

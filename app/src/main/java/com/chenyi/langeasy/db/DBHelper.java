@@ -105,6 +105,19 @@ public class DBHelper extends SQLiteOpenHelper {
         return sentenceid;
     }
 
+    public Integer queryWordCount(int wordid) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select count(*) from sentence where wordid = " + wordid, null);
+        res.moveToFirst();
+
+        Integer count = null;
+        while (res.isAfterLast() == false) {
+            count = res.getInt(0);
+            break;
+        }
+        return count;
+    }
+
     public ArrayList<Map<String, Object>> listSentence() {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 

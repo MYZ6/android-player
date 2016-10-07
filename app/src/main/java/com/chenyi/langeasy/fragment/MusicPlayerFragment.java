@@ -489,8 +489,10 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         String word = (String) song.get("word");
         mydb.addPlayRecord(wordid, word, sentenceid);
 
+        int wordCount = mydb.queryWordCount(wordid);
+
         // Displaying Song title
-        songTitleLabel.setText(wordid + word);
+        songTitleLabel.setText(wordid + word + " " + wordCount);
         pronLabel.setText((String) song.get("pron"));
         meaningLabel.setText((String) song.get("meaning"));
         String sentence = (String) song.get("sentence");
