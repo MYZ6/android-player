@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.Utilities;
 import com.chenyi.langeasy.activity.MainActivity;
 import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.db.DBHelper;
@@ -104,6 +105,8 @@ public class WordLearningFragment extends Fragment {
 
 
         playDefault();
+
+        initConfig();
         initButtonEvent();
 
         return playerLayout;
@@ -128,6 +131,14 @@ public class WordLearningFragment extends Fragment {
             }
         }
         return 0;
+    }
+
+    private void initConfig() {
+        int svalue = Utilities.getConfig(getActivity(), "isShuffle2");
+        if (svalue == 0) {
+            isShuffle = false;
+            btnShuffle.setImageResource(R.drawable.btn_shuffle);
+        }
     }
 
     private void initButtonEvent() {
@@ -186,8 +197,19 @@ public class WordLearningFragment extends Fragment {
 
             @Override
             public void onClick(View arg0) {
-                Random rand = new Random();
-                currentSongIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
+                if (isShuffle) {
+                    // shuffle is on - play a random song
+                    Random rand = new Random();
+                    currentSongIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
+                } else {
+                    // no repeat or shuffle ON - play next song
+                    if (currentSongIndex < (songsList.size() - 1)) {
+                        currentSongIndex = currentSongIndex + 1;
+                    } else {
+                        // play first song
+                        currentSongIndex = 0;
+                    }
+                }
                 playSong(currentSongIndex);
             }
         });
@@ -247,6 +269,7 @@ public class WordLearningFragment extends Fragment {
                     isShuffle = false;
                     Toast.makeText(applicationContext, "Shuffle is OFF", Toast.LENGTH_SHORT).show();
                     btnShuffle.setImageResource(R.drawable.btn_shuffle);
+                    Utilities.setConfig(getActivity(), "isShuffle2", 0);
                 } else {
                     // make repeat to true
                     isShuffle = true;
@@ -255,6 +278,7 @@ public class WordLearningFragment extends Fragment {
                     isRepeat = false;
                     btnShuffle.setImageResource(R.drawable.btn_shuffle_focused);
                     btnRepeat.setImageResource(R.drawable.btn_repeat);
+                    Utilities.setConfig(getActivity(), "isShuffle2", 1);
                 }
             }
         });
