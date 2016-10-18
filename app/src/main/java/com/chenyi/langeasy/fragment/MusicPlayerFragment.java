@@ -33,6 +33,7 @@ import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.db.NumberAudio;
 import com.chenyi.langeasy.db.PronAudio;
 import com.chenyi.langeasy.db.SentenceAudio;
+import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -51,6 +52,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     private ImageButton btnNext;
     private ImageButton btnPrevious;
     private ImageButton btnPlaylist;
+    private ImageButton btnLearning;
     private ImageButton btnRepeat;
     private ImageButton btnShuffle;
     private SeekBar songProgressBar;
@@ -89,6 +91,8 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     private PronAudio pronAudio;
     private NumberAudio numberAudio;
 
+    private ButtonPlayListListener btnPlayListListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,6 +100,10 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                 container, false);
         MainActivity activity = (MainActivity) getActivity();
         songsList = activity.songsList;//songManager.getPlayList(mydb);
+
+
+        btnPlayListListener = (ButtonPlayListListener) activity;
+        btnLearningListener = (BtnLearningListener) activity;
 
         mydb = new DBHelper(activity);
         sentenceAudio = new SentenceAudio(activity);
@@ -109,6 +117,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         btnNext = (ImageButton) playerLayout.findViewById(R.id.btnNext);
         btnPrevious = (ImageButton) playerLayout.findViewById(R.id.btnPrevious);
         btnPlaylist = (ImageButton) playerLayout.findViewById(R.id.btnPlaylist);
+        btnLearning = (ImageButton) playerLayout.findViewById(R.id.btnLearning);
         btnRepeat = (ImageButton) playerLayout.findViewById(R.id.btnRepeat);
         btnShuffle = (ImageButton) playerLayout.findViewById(R.id.btnShuffle);
         songProgressBar = (SeekBar) playerLayout.findViewById(R.id.songProgressBar);
@@ -359,10 +368,24 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
 
             @Override
             public void onClick(View arg0) {
-                Intent i = new Intent(applicationContext, PlayListActivity.class);
-                startActivityForResult(i, 100);
+                btnPlayListListener.toList(currentSongIndex);
             }
         });
+
+        btnLearning.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                btnLearningListener.toLearning(currentSongIndex);
+            }
+        });
+    }
+
+    BtnLearningListener btnLearningListener;
+
+    // Container Activity must implement this interface
+    public interface BtnLearningListener {
+        public void toLearning(int songIndex);
     }
 
     private void audioManage(Context mContext) {

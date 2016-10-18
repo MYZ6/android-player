@@ -25,6 +25,7 @@ import com.chenyi.langeasy.Utilities;
 import com.chenyi.langeasy.activity.MainActivity;
 import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.db.DBHelper;
+import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,8 @@ public class WordLearningFragment extends Fragment {
 
     private DBHelper mydb;
 
+    private ButtonPlayListListener btnPlayListListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,6 +79,8 @@ public class WordLearningFragment extends Fragment {
                 container, false);
         MainActivity activity = (MainActivity) getActivity();
         songsList = activity.songsList;//songManager.getPlayList(mydb);
+
+        btnPlayListListener = (ButtonPlayListListener) activity;
 
         Log.i("init songsList size", songsList.size() + "");
 
@@ -291,11 +296,12 @@ public class WordLearningFragment extends Fragment {
 
             @Override
             public void onClick(View arg0) {
-                Intent i = new Intent(applicationContext, PlayListActivity.class);
-                startActivityForResult(i, 100);
+                btnPlayListListener.toList(currentSongIndex);
             }
         });
     }
+
+
 
     /**
      * Receiving song index from playlist view

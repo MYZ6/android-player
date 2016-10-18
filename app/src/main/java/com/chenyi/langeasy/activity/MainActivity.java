@@ -16,6 +16,7 @@ import com.chenyi.langeasy.fragment.MusicPlayerFragment;
 import com.chenyi.langeasy.fragment.PlayListFragment;
 import com.chenyi.langeasy.fragment.SettingFragment;
 import com.chenyi.langeasy.fragment.WordLearningFragment;
+import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ import java.util.Map;
  *
  * @author guolin
  */
-public class MainActivity extends Activity implements OnClickListener, PlayListFragment.OnSentenceSelectedListener,WordLearningFragment.OnPlayListener {
+public class MainActivity extends Activity implements OnClickListener, ButtonPlayListListener,
+        MusicPlayerFragment.BtnLearningListener, PlayListFragment.OnSentenceSelectedListener, WordLearningFragment.OnPlayListener {
 
     /**
      * 用于展示消息的Fragment
@@ -103,6 +105,7 @@ public class MainActivity extends Activity implements OnClickListener, PlayListF
 //        playerFragment = new MusicPlayerFragment();
         // 第一次启动时选中第0个tab
         setTabSelection(0);
+        setTabSelection(1);
         setTabSelection(3);
     }
 
@@ -257,5 +260,18 @@ public class MainActivity extends Activity implements OnClickListener, PlayListF
         setTabSelection(0);
         playerFragment.lastPlayedAudioType = "sentence";
         playerFragment.playSong(songIndex);
+    }
+
+    @Override
+    public void toLearning(int songIndex) {
+        setTabSelection(3);
+        wlearningFragment.playSong(songIndex);
+
+    }
+
+    @Override
+    public void toList(int songIndex) {
+        setTabSelection(1);
+        playListFragment.jump(songIndex);
     }
 }

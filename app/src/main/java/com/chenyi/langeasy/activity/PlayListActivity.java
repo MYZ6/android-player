@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.SentenceAdapter;
@@ -26,6 +27,8 @@ public class PlayListActivity extends ListActivity {
     private ArrayList<Map<String, Object>> songsListData;
 
     private SentenceAdapter sentenceAdapter;
+
+    private EditText search_text;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class PlayListActivity extends ListActivity {
             }
         });
 
-        EditText search_text = (EditText) findViewById(R.id.search_text);
+         search_text = (EditText) findViewById(R.id.search_text);
 
         search_text.addTextChangedListener(new TextWatcher() {
 
@@ -89,5 +92,10 @@ public class PlayListActivity extends ListActivity {
             }
         });
 
+    }
+
+    public void jump(int index) {
+        search_text.setText("");
+        getListView().smoothScrollToPosition(index);
     }
 }

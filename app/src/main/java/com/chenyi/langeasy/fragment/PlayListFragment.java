@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +23,16 @@ import com.chenyi.langeasy.db.DBHelper;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 public class PlayListFragment extends ListFragment {
 
     private ArrayList<Map<String, Object>> songsListData;
+    private ArrayList<Map<String, Object>> originalData;
 
     private SentenceAdapter sentenceAdapter;
+    private EditText search_text;
+    private ListView mListView;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -47,9 +52,9 @@ public class PlayListFragment extends ListFragment {
 
         final Context applicationContext = activity.getApplicationContext();
         // selecting single ListView item
-        ListView lv = getListView();
+        mListView = getListView();
         // listening to single listitem click
-        lv.setOnItemClickListener(new OnItemClickListener() {
+        mListView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -62,7 +67,7 @@ public class PlayListFragment extends ListFragment {
         });
 
 
-        EditText search_text = (EditText) activity.findViewById(R.id.search_text);
+        search_text = (EditText) activity.findViewById(R.id.search_text);
 
         search_text.addTextChangedListener(new TextWatcher() {
 
@@ -86,8 +91,10 @@ public class PlayListFragment extends ListFragment {
         View listLayout = inflater.inflate(R.layout.playlist,
                 container, false);
 
-        final  MainActivity activity = (MainActivity) getActivity();
-        songsListData = new ArrayList<Map<String, Object>>(activity.songsList);;//songManager.getPlayList(mydb);
+        final MainActivity activity = (MainActivity) getActivity();
+        songsListData = new ArrayList<Map<String, Object>>(activity.songsList);
+        originalData = activity.songsList;
+        ;//songManager.getPlayList(mydb);
 
 
         // Adding menuItems to ListView
@@ -99,10 +106,8 @@ public class PlayListFragment extends ListFragment {
         setListAdapter(sentenceAdapter);
 //        adapter.no
 
-
         return listLayout;
     }
-
 
 
     OnSentenceSelectedListener mCallback;
@@ -110,5 +115,41 @@ public class PlayListFragment extends ListFragment {
     // Container Activity must implement this interface
     public interface OnSentenceSelectedListener {
         public void onSentenceSelected(int songIndex);
+    }
+
+    public void jump(int index) {
+        Map<String, Object> map = originalData.get(index);
+        int sid = (int) map.get("sentenceid");
+
+//        search_text.setText(sid + "");
+//        search_text.setText("");
+        if (!search_text.getText().toString().isEmpty()) {
+            search_text.setText("");
+            final int findex = index;
+            mListView.post(new Runnable() {
+                public void run() {
+                    mListView.setSelection(findex);
+                }
+            });
+        } else {
+            mListView.setSelection(index);
+        }
+//        sentenceAdapter.getFilter().filter(sid+"");
+//        mListView.clearFocus();
+//        sentenceAdapter.notifyDataSetChanged();
+//        mListView.requestFocus();
+//        mListView.setItemChecked(index, true);
+
+        Random generator = new Random();
+        int d = generator.nextInt(6) + 6;
+//        if(d<8){
+//            mListView.setSelection(698);
+//        }else{
+//            mListView.setSelection(1698);
+//        }
+        Log.i("index d", d + "");
+//        mListView.scrollTo(30, index * 30);
+        Log.i("index", index + "");
+//        getListView().smoothScrollToPosition(index);
     }
 }
