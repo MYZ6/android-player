@@ -13,10 +13,14 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,12 +113,110 @@ public class WordLearningFragment extends Fragment {
         actionFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
 
 
+        ScrollView contentPanel = (ScrollView) playerLayout.findViewById(R.id.contentPanel);
+        contentPanel.setOnTouchListener(new SwipeListener());
+
+        class mListener extends GestureDetector.SimpleOnGestureListener {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+        }
+//        final GestureDetector gestureDetector = new GestureDetector(info_panel.getContext(), new mListener());
+
+
+        Toast.makeText(getActivity().getApplicationContext(), "Usdfsdfp", Toast.LENGTH_SHORT).show();
+
         playDefault();
 
         initConfig();
         initButtonEvent();
 
         return playerLayout;
+    }
+
+    public class SwipeListener implements View.OnTouchListener {
+        private int min_distance = 100;
+        private float downX, downY, upX, upY;
+        View v;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            this.v = v;
+            switch (event.getAction()) { // Check vertical and horizontal touches
+                case MotionEvent.ACTION_DOWN: {
+                    downX = event.getX();
+                    downY = event.getY();
+                    return true;
+                }
+                case MotionEvent.ACTION_UP: {
+                    upX = event.getX();
+                    upY = event.getY();
+
+                    float deltaX = downX - upX;
+                    float deltaY = downY - upY;
+
+                    //HORIZONTAL SCROLL
+                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                        if (Math.abs(deltaX) > min_distance) {
+                            // left or right
+                            if (deltaX < 0) {
+                                this.onLeftToRightSwipe();
+                                return true;
+                            }
+                            if (deltaX > 0) {
+                                this.onRightToLeftSwipe();
+                                return true;
+                            }
+                        } else {
+                            //not long enough swipe...
+                            return false;
+                        }
+                    }
+                    //VERTICAL SCROLL
+                    else {
+                        if (Math.abs(deltaY) > min_distance) {
+                            // top or down
+                            if (deltaY < 0) {
+                                this.onTopToBottomSwipe();
+                                return true;
+                            }
+                            if (deltaY > 0) {
+                                this.onBottomToTopSwipe();
+                                return true;
+                            }
+                        } else {
+                            //not long enough swipe...
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        public void onLeftToRightSwipe() {
+            Toast.makeText(v.getContext(), "left to right",
+                    Toast.LENGTH_SHORT).show();
+            btnNext.performClick();
+        }
+
+        public void onRightToLeftSwipe() {
+            Toast.makeText(v.getContext(), "right to left",
+                    Toast.LENGTH_SHORT).show();
+            btnPrevious.performClick();
+        }
+
+        public void onTopToBottomSwipe() {
+            Toast.makeText(v.getContext(), "top to bottom",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        public void onBottomToTopSwipe() {
+            Toast.makeText(v.getContext(), "bottom to top",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void playDefault() {
@@ -228,14 +330,12 @@ public class WordLearningFragment extends Fragment {
             @Override
             public void onClick(View arg0) {
                 if (currentSongIndex > 0) {
-                    playSong(currentSongIndex - 1);
                     currentSongIndex = currentSongIndex - 1;
                 } else {
                     // play last song
-                    playSong(songsList.size() - 1);
                     currentSongIndex = songsList.size() - 1;
                 }
-
+                playSong(currentSongIndex);
             }
         });
         /**
@@ -300,7 +400,6 @@ public class WordLearningFragment extends Fragment {
             }
         });
     }
-
 
 
     /**
