@@ -51,6 +51,9 @@ public class WordLearningFragment extends Fragment {
     private TextView meaningLabel;
     private TextView sentenceLabel;
     private TextView chineseLabel;
+    private TextView booknameLabel;
+    private TextView booktypeLabel;
+    private TextView coursenameLabel;
     private TextView playrecordTotalLabel;
     private TextView playrecordStotalLabel;
     private TextView playrecordWtotalLabel;
@@ -104,6 +107,9 @@ public class WordLearningFragment extends Fragment {
         meaningLabel = (TextView) playerLayout.findViewById(R.id.meaning);
         sentenceLabel = (TextView) playerLayout.findViewById(R.id.sentence);
         chineseLabel = (TextView) playerLayout.findViewById(R.id.chinese);
+        booknameLabel = (TextView) playerLayout.findViewById(R.id.bookname);
+        booktypeLabel = (TextView) playerLayout.findViewById(R.id.booktype);
+        coursenameLabel = (TextView) playerLayout.findViewById(R.id.coursename);
         playrecordTotalLabel = (TextView) playerLayout.findViewById(R.id.playrecord_total);
         playrecordWtotalLabel = (TextView) playerLayout.findViewById(R.id.playrecord_wtotal);
         playrecordStotalLabel = (TextView) playerLayout.findViewById(R.id.playrecord_stotal);
@@ -124,8 +130,6 @@ public class WordLearningFragment extends Fragment {
         }
 //        final GestureDetector gestureDetector = new GestureDetector(info_panel.getContext(), new mListener());
 
-
-        Toast.makeText(getActivity().getApplicationContext(), "Usdfsdfp", Toast.LENGTH_SHORT).show();
 
         playDefault();
 
@@ -197,25 +201,25 @@ public class WordLearningFragment extends Fragment {
         }
 
         public void onLeftToRightSwipe() {
-            Toast.makeText(v.getContext(), "left to right",
+            Toast.makeText(v.getContext(), "next",
                     Toast.LENGTH_SHORT).show();
             btnNext.performClick();
         }
 
         public void onRightToLeftSwipe() {
-            Toast.makeText(v.getContext(), "right to left",
+            Toast.makeText(v.getContext(), "previous",
                     Toast.LENGTH_SHORT).show();
             btnPrevious.performClick();
         }
 
         public void onTopToBottomSwipe() {
-            Toast.makeText(v.getContext(), "top to bottom",
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(v.getContext(), "top to bottom",
+//                    Toast.LENGTH_SHORT).show();
         }
 
         public void onBottomToTopSwipe() {
-            Toast.makeText(v.getContext(), "bottom to top",
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(v.getContext(), "bottom to top",
+//                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -462,6 +466,9 @@ public class WordLearningFragment extends Fragment {
         sentenceSpan.setSpan(new RelativeSizeSpan(1.8f), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         sentenceLabel.setText(sentenceSpan);
         chineseLabel.setText((String) song.get("chinese"));
+        booknameLabel.setText((String) song.get("bookname"));
+        booktypeLabel.setText((String) song.get("booktype"));
+        coursenameLabel.setText((String) song.get("coursename"));
     }
 
 

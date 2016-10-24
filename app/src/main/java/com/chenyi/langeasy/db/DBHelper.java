@@ -143,6 +143,9 @@ public class DBHelper extends SQLiteOpenHelper {
             map.put("meaning", res.getString(res.getColumnIndex("meaning")));
             map.put("sentence", res.getString(res.getColumnIndex("sentence")));
             map.put("chinese", res.getString(res.getColumnIndex("chinese")));
+            map.put("bookname", res.getString(res.getColumnIndex("bookname")));
+            map.put("booktype", res.getString(res.getColumnIndex("booktype")));
+            map.put("coursename", res.getString(res.getColumnIndex("coursename")));
             array_list.add(map);
             res.moveToNext();
         }

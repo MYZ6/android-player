@@ -128,6 +128,43 @@
                     android:textColor="#04b3d2"
                     android:textSize="16dp"
                     android:textStyle="bold" />"
+
+                <TextView
+                    android:id="@+id/bookname"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/chinese"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="10dp"
+                    android:text="Bookname"
+                    android:textColor="#e67300"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />"
+                <TextView
+                    android:id="@+id/coursename"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/bookname"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="10dp"
+                    android:text="Course Name"
+                    android:textColor="#1aff1a"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />"
+                <TextView
+                    android:id="@+id/booktype"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/coursename"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="10dp"
+                    android:text="Book Type"
+                    android:textColor="#04b3d2"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />"
             </LinearLayout>
             <!--</RelativeLayout>-->
         </ScrollView>
