@@ -142,6 +142,15 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         // Listeners
         songProgressBar.setOnSeekBarChangeListener(this); // Important
         mp.setOnCompletionListener(this); // Important
+        mp.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                Log.e("MediaPlayer error", mp.toString());
+                Log.e("MediaPlayer error", what + "");
+                Log.e("MediaPlayer error", extra + "");
+                return false;
+            }
+        });
         audioManage(activity);
 
         // Getting all songs list
@@ -189,6 +198,8 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         isPaused = true;
         // Changing button image to play button
         btnPlay.setImageResource(R.drawable.btn_play);
+
+        mHandler.removeCallbacks(mUpdateTimeTask);
     }
 
     private void resumePlayer() {
@@ -196,6 +207,9 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         isPaused = false;
         // Changing button image to pause button
         btnPlay.setImageResource(R.drawable.btn_pause);
+
+        // update timer progress again
+        updateProgressBar();
     }
 
     private void startPlay(byte[] audioData, String type) {
@@ -436,6 +450,17 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     private boolean transientPause = false;
     private boolean volumeDuck = false;
 
+    private boolean isPlaying() {
+        try {
+            if (mp.isPlaying()) {
+                return true;
+            }
+        } catch (IllegalStateException ex) {
+            Log.e("MediaPlayer ", "IllegalState", ex);
+        }
+        return false;
+    }
+
     private void audioManage(Context mContext) {
 
         final AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -460,7 +485,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                     }
                 } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
                     // Stop playback
-                    if (mp != null && mp.isPlaying()) {
+                    if (mp != null && isPlaying()) {
                         pausePlayer();
                     }
                 } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
@@ -615,7 +640,13 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
      */
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
-            long totalDuration = mp.getDuration();
+            long totalDuration = 0;
+            try {
+                totalDuration = mp.getDuration();
+            } catch (IllegalStateException ex) {
+                Log.e("MediaPlayer ", "IllegalState", ex);
+                return;
+            }
             long currentDuration = mp.getCurrentPosition();
 
             // Displaying Total Duration time
