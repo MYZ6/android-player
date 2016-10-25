@@ -5,4 +5,6 @@ package com.chenyi.langeasy.listener;
  */
 public interface ButtonPlayListListener {
     void toList(int songIndex);
+
+    void query(String condition);
 }

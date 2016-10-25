@@ -92,8 +92,9 @@ public class PlayListFragment extends ListFragment {
                 container, false);
 
         final MainActivity activity = (MainActivity) getActivity();
-        songsListData = new ArrayList<Map<String, Object>>(activity.songsList);
-        originalData = activity.songsList;
+//        songsListData = new ArrayList<Map<String, Object>>(activity.songsList);
+//        originalData = activity.songsList;
+        songsListData = activity.songsList;
         ;//songManager.getPlayList(mydb);
 
 
@@ -112,28 +113,32 @@ public class PlayListFragment extends ListFragment {
 
     OnSentenceSelectedListener mCallback;
 
+    public void query(String condition) {
+        search_text.setText(condition);
+    }
+
     // Container Activity must implement this interface
     public interface OnSentenceSelectedListener {
         public void onSentenceSelected(int songIndex);
     }
 
     public void jump(int index) {
-        Map<String, Object> map = originalData.get(index);
-        int sid = (int) map.get("sentenceid");
+        Map<String, Object> map = songsListData.get(index);
+//        int sid = (int) map.get("sentenceid");
 
 //        search_text.setText(sid + "");
 //        search_text.setText("");
-        if (!search_text.getText().toString().isEmpty()) {
-            search_text.setText("");
-            final int findex = index;
-            mListView.post(new Runnable() {
-                public void run() {
-                    mListView.setSelection(findex);
-                }
-            });
-        } else {
-            mListView.setSelection(index);
-        }
+//        if (!search_text.getText().toString().isEmpty()) {
+//            search_text.setText("");
+//            final int findex = index;
+//            mListView.post(new Runnable() {
+//                public void run() {
+//                    mListView.setSelection(findex);
+//                }
+//            });
+//        } else {
+        mListView.setSelection(index);
+//        }
 //        sentenceAdapter.getFilter().filter(sid+"");
 //        mListView.clearFocus();
 //        sentenceAdapter.notifyDataSetChanged();

@@ -117,6 +117,41 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return count;
     }
+    public ArrayList<Map<String, Object>> listBook() {
+        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select s.* from sentence s inner join vocabulary v on v.wordid = s.wordid and ifnull(v.pass, 0) !=1 group by ", null);
+        res.moveToFirst();
+
+        int count = 0;
+        while (res.isAfterLast() == false) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("index", count++);
+            //sentenceid, wordid, word, pron, mtype, meaning, sentence, chinese
+            Integer wordid = res.getInt(res.getColumnIndex("wordid"));
+            Integer sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
+            String word = res.getString(res.getColumnIndex("word"));
+            map.put("sentenceid", sentenceid);
+            map.put("wordid", res.getInt(res.getColumnIndex("wordid")));
+            map.put("word", word);
+            map.put("wordunique", wordid + word + sentenceid);
+            map.put("pron", res.getString(res.getColumnIndex("pron")));
+            map.put("mtype", res.getString(res.getColumnIndex("mtype")));
+            map.put("meaning", res.getString(res.getColumnIndex("meaning")));
+            map.put("sentence", res.getString(res.getColumnIndex("sentence")));
+            map.put("chinese", res.getString(res.getColumnIndex("chinese")));
+            map.put("bookid", res.getString(res.getColumnIndex("bookid")));
+            map.put("bookname", res.getString(res.getColumnIndex("bookname")));
+            map.put("booktype", res.getString(res.getColumnIndex("booktype")));
+            map.put("courseid", res.getString(res.getColumnIndex("courseid")));
+            map.put("coursename", res.getString(res.getColumnIndex("coursename")));
+            array_list.add(map);
+            res.moveToNext();
+        }
+        return array_list;
+    }
 
     public ArrayList<Map<String, Object>> listSentence() {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
@@ -143,8 +178,10 @@ public class DBHelper extends SQLiteOpenHelper {
             map.put("meaning", res.getString(res.getColumnIndex("meaning")));
             map.put("sentence", res.getString(res.getColumnIndex("sentence")));
             map.put("chinese", res.getString(res.getColumnIndex("chinese")));
+            map.put("bookid", res.getString(res.getColumnIndex("bookid")));
             map.put("bookname", res.getString(res.getColumnIndex("bookname")));
             map.put("booktype", res.getString(res.getColumnIndex("booktype")));
+            map.put("courseid", res.getString(res.getColumnIndex("courseid")));
             map.put("coursename", res.getString(res.getColumnIndex("coursename")));
             array_list.add(map);
             res.moveToNext();

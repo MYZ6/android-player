@@ -274,4 +274,10 @@ public class MainActivity extends Activity implements OnClickListener, ButtonPla
         setTabSelection(1);
         playListFragment.jump(songIndex);
     }
+
+    @Override
+    public void query(String condition) {
+        setTabSelection(1);
+        playListFragment.query(condition);
+    }
 }

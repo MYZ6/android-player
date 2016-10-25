@@ -201,15 +201,15 @@ public class WordLearningFragment extends Fragment {
         }
 
         public void onLeftToRightSwipe() {
-            Toast.makeText(v.getContext(), "next",
-                    Toast.LENGTH_SHORT).show();
-            btnNext.performClick();
-        }
-
-        public void onRightToLeftSwipe() {
             Toast.makeText(v.getContext(), "previous",
                     Toast.LENGTH_SHORT).show();
             btnPrevious.performClick();
+        }
+
+        public void onRightToLeftSwipe() {
+            Toast.makeText(v.getContext(), "next",
+                    Toast.LENGTH_SHORT).show();
+            btnNext.performClick();
         }
 
         public void onTopToBottomSwipe() {
@@ -254,6 +254,18 @@ public class WordLearningFragment extends Fragment {
 
     private void initButtonEvent() {
         final Context applicationContext = getActivity().getApplicationContext();
+
+        booknameLabel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                // check for already playing
+
+                Map<String, Object> map = songsList.get(currentSongIndex);
+                String bookid = (String) map.get("bookid");
+                btnPlayListListener.query("b:" + bookid);
+            }
+        });
 
         /**
          * Play button click event
