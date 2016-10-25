@@ -115,10 +115,6 @@ public class WordLearningFragment extends Fragment {
         playrecordStotalLabel = (TextView) playerLayout.findViewById(R.id.playrecord_stotal);
 
 
-        IntentFilter actionFilter = new IntentFilter();
-        actionFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-
-
         ScrollView contentPanel = (ScrollView) playerLayout.findViewById(R.id.contentPanel);
         contentPanel.setOnTouchListener(new SwipeListener());
 

@@ -184,6 +184,58 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         }
     }
 
+    private void pausePlayer() {
+        mp.pause();
+        isPaused = true;
+        // Changing button image to play button
+        btnPlay.setImageResource(R.drawable.btn_play);
+    }
+
+    private void resumePlayer() {
+        mp.start();
+        isPaused = false;
+        // Changing button image to pause button
+        btnPlay.setImageResource(R.drawable.btn_pause);
+    }
+
+    private void startPlay(byte[] audioData, String type) {
+        File audioFile = null;
+        try {
+            audioFile = File.createTempFile("langeasy", type + "_audio");
+
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
+            bos.write(audioData);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Play song
+        try {
+            mp.reset();
+            mp.setDataSource(audioFile.getAbsolutePath());
+            mp.prepare();
+            mp.start();
+
+            // Changing Button Image to pause image
+            btnPlay.setImageResource(R.drawable.btn_pause);
+
+            // set Progress bar values
+            songProgressBar.setProgress(0);
+            songProgressBar.setMax(100);
+
+            // Updating progress bar
+            updateProgressBar();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initButtonEvent() {
 
         /**
@@ -196,27 +248,19 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
             @Override
             public void onClick(View arg0) {
                 // check for already playing
-                if (mp.isPlaying()) {
-                    if (mp != null) {
-                        mp.pause();
-                        isPaused = true;
-                        // Changing button image to play button
-                        btnPlay.setImageResource(R.drawable.btn_play);
-                    }
+                if (mp == null) {
+                    playDefault();
                 } else {
-                    // Resume song
-                    if (mp != null) {
+                    if (mp.isPlaying()) {
+                        pausePlayer();
+                    } else {
+                        // Resume song
                         Log.i("test isPaused", isPaused + "");
                         if (!isPaused) {
                             playDefault();
-                            return;
+                        } else {
+                            resumePlayer();
                         }
-                        mp.start();
-                        isPaused = false;
-                        // Changing button image to pause button
-                        btnPlay.setImageResource(R.drawable.btn_pause);
-                    } else {
-                        playDefault();
                     }
                 }
 
@@ -388,47 +432,46 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         public void toLearning(int songIndex);
     }
 
+    private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener;
+    private boolean transientPause = false;
+    private boolean volumeDuck = false;
+
     private void audioManage(Context mContext) {
-        AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+
+        final AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+
+        mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
             @Override
             public void onAudioFocusChange(int focusChange) {
-                String TAG = "AudioManager focusChange type";
-                switch (focusChange) {
-                    case AudioManager.AUDIOFOCUS_GAIN:
-                        Log.i(TAG, "AUDIOFOCUS_GAIN");
-                        // Set volume level to desired levels
-                        mp.start();
-                        break;
-                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
-                        Log.i(TAG, "AUDIOFOCUS_GAIN_TRANSIENT");
-                        // You have audio focus for a short time
-
-                        mp.start();
-                        break;
-                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
-                        Log.i(TAG, "AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK");
-                        // Play over existing audio
-                        mp.start();
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS:
-                        Log.e(TAG, "AUDIOFOCUS_LOSS");
-                        mp.pause();
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                        Log.e(TAG, "AUDIOFOCUS_LOSS_TRANSIENT");
-                        // Temporary loss of audio focus - expect to get it back - you can keep your resources around
-                        mp.pause();
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                        Log.e(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
-                        // Lower the volume
-                        break;
+                if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+                    // Pause playback
+                    if (mp != null && mp.isPlaying()) {
+                        pausePlayer();
+                        transientPause = true;
+                    }
+                } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                    // Resume playback
+                    if (transientPause) {
+                        transientPause = false;
+                        resumePlayer();
+                    } else if (volumeDuck) { // Raise it back to normal
+                        volumeDuck = false;
+                        mp.setVolume(1f, 1f);
+                    }
+                } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                    // Stop playback
+                    if (mp != null && mp.isPlaying()) {
+                        pausePlayer();
+                    }
+                } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                    // Lower the volume
+                    if (mp != null && mp.isPlaying()) {
+                        volumeDuck = true;
+                        mp.setVolume(0.1f, 0.1f);
+                    }
                 }
             }
         };
-
-        AudioManager am = (AudioManager) mContext
-                .getSystemService(Context.AUDIO_SERVICE);
         // Request audio focus for play back
         int result = am.requestAudioFocus(mOnAudioFocusChangeListener,
                 // Use the music stream.
@@ -441,17 +484,19 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         } else if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
             // take appropriate action
         }
+
     }
 
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(
-                    AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
+            if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
                 // signal your service to stop playback
                 // (via an Intent, for instance)
                 Log.i("action", "ACTION_AUDIO_BECOMING_NOISY--lyz");
-                mp.pause();
+                if (mp != null && mp.isPlaying()) {
+                    pausePlayer();
+                }
             }
         }
     };
@@ -471,6 +516,9 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         }
 
     }
+
+    private boolean songPaused = false;
+    private boolean songStarted;
 
     /**
      * Function to play a song
@@ -536,41 +584,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
             lastPlayedAudioType = "sentence";
             return;
         }
-        File audioFile = null;
-        try {
-            audioFile = File.createTempFile("langeasy", "number_audio");
-
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
-            bos.write(audioData);
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Play song
-        try {
-            mp.reset();
-            mp.setDataSource(audioFile.getAbsolutePath());
-            mp.prepare();
-            mp.start();
-
-            // Changing Button Image to pause image
-            btnPlay.setImageResource(R.drawable.btn_pause);
-
-            // set Progress bar values
-            songProgressBar.setProgress(0);
-            songProgressBar.setMax(100);
-
-            // Updating progress bar
-            updateProgressBar();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        startPlay(audioData, "number");
     }
 
     private void playPron(Map<String, Object> song) {
@@ -581,80 +595,12 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
             lastPlayedAudioType = "sentence";
             return;
         }
-        File audioFile = null;
-        try {
-            audioFile = File.createTempFile("langeasy", "pron_audio");
-
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
-            bos.write(audioData);
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Play song
-        try {
-            mp.reset();
-            mp.setDataSource(audioFile.getAbsolutePath());
-            mp.prepare();
-            mp.start();
-
-            // Changing Button Image to pause image
-            btnPlay.setImageResource(R.drawable.btn_pause);
-
-            // set Progress bar values
-            songProgressBar.setProgress(0);
-            songProgressBar.setMax(100);
-
-            // Updating progress bar
-            updateProgressBar();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        startPlay(audioData, "pron");
     }
 
     private void playSentence(Map<String, Object> song) {
         Integer sentenceid = (Integer) song.get("sentenceid");
-        File audioFile = null;
-        try {
-            audioFile = File.createTempFile("langeasy", "sentence_audio");
-
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
-            bos.write(sentenceAudio.query(sentenceid));
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Play song
-        try {
-            mp.reset();
-            mp.setDataSource(audioFile.getAbsolutePath());
-            mp.prepare();
-            mp.start();
-
-            // Changing Button Image to pause image
-            btnPlay.setImageResource(R.drawable.btn_pause);
-
-            // set Progress bar values
-            songProgressBar.setProgress(0);
-            songProgressBar.setMax(100);
-
-            // Updating progress bar
-            updateProgressBar();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        startPlay(sentenceAudio.query(sentenceid), "sentence");
     }
 
     /**
