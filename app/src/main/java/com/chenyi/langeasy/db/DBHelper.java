@@ -118,14 +118,37 @@ public class DBHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public ArrayList<Map<String, Object>> listBook() {
+    public ArrayList<Map<String, Object>> listBooktype() {
+        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "select s.booktype, count(*) as scount " +
+                "from sentence s inner join vocabulary v on v.wordid = s.wordid and ifnull(v.pass, 0) !=1 " +
+                "group by s.booktype order by s.booktype";
+        Cursor res = db.rawQuery(sql, null);
+        res.moveToFirst();
+
+        int count = 0;
+        while (res.isAfterLast() == false) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("index", count++);
+            Integer scount = res.getInt(res.getColumnIndex("scount"));
+            map.put("booktype", res.getString(res.getColumnIndex("booktype")));
+            map.put("scount", scount);
+            array_list.add(map);
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+    public ArrayList<Map<String, Object>> listBook(String booktype) {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         String sql = "select s.booktype, s.bookid, s.bookname, count(*) as scount " +
                 "from sentence s inner join vocabulary v on v.wordid = s.wordid and ifnull(v.pass, 0) !=1 " +
-                "group by s.bookid order by s.booktype, s.bookname";
-        Cursor res = db.rawQuery(sql, null);
+                "where booktype = ? group by s.bookid order by s.booktype, s.bookname";
+        Cursor res = db.rawQuery(sql, new String[]{booktype + ""});
         res.moveToFirst();
 
         int count = 0;
@@ -135,7 +158,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Integer scount = res.getInt(res.getColumnIndex("scount"));
             map.put("bookid", res.getString(res.getColumnIndex("bookid")));
             map.put("bookname", res.getString(res.getColumnIndex("bookname")));
-            map.put("booktype", res.getString(res.getColumnIndex("booktype")));
+//            map.put("booktype", res.getString(res.getColumnIndex("booktype")));
             map.put("scount", scount);
             array_list.add(map);
             res.moveToNext();

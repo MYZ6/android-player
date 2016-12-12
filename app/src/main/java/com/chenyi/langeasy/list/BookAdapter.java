@@ -76,7 +76,7 @@ public class BookAdapter extends ArrayAdapter<Map<String, Object>> {
             bookname = (position + 1) + "/" + bookname;
         }
         booknameView.setText(bookname);
-        booktypeView.setText((String) book.get("booktype"));
+//        booktypeView.setText((String) book.get("booktype"));
         vSentenceCount.setText((Integer) book.get("scount") + "");
         // Return the completed view to render on screen
         return convertView;

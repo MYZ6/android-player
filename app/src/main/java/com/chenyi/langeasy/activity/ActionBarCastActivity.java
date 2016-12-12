@@ -82,6 +82,9 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     case R.id.navigation_listen:
                         type = "listen";
                         break;
+                    case R.id.navigation_booktype_list:
+                        type = "booktype_list";
+                        break;
                     case R.id.navigation_booklist:
                         type = "booklist";
                         break;
@@ -288,6 +291,8 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             itemId = R.id.navigation_listen;
         } else if ("learn".equals(type)) {
             itemId = R.id.navigation_learn;
+        } else if ("booklist".equals(type)) {
+            itemId = R.id.navigation_booklist;
         } else if ("courselist".equals(type)) {
             itemId = R.id.navigation_courselist;
         } else if ("playlist".equals(type)) {

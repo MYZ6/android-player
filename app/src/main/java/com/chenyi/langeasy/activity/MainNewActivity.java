@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.fragment.BookListFragment;
+import com.chenyi.langeasy.fragment.BookTypeListFragment;
 import com.chenyi.langeasy.fragment.CourseListFragment;
 import com.chenyi.langeasy.fragment.MusicPlayerFragment;
 import com.chenyi.langeasy.fragment.PlayListFragment;
@@ -32,7 +33,7 @@ import java.util.Map;
  * @author guolin
  */
 public class MainNewActivity extends BaseActivity implements OnClickListener, ButtonPlayListListener,
-        MusicPlayerFragment.BtnLearningListener, PlayListFragment.OnSentenceSelectedListener, BookListFragment.OnItemSelectedListener, WordLearningFragment.OnPlayListener {
+        MusicPlayerFragment.BtnLearningListener, PlayListFragment.OnSentenceSelectedListener,BookTypeListFragment.OnItemSelectedListener, BookListFragment.OnItemSelectedListener, WordLearningFragment.OnPlayListener {
 
     private static final String TAG = LogHelper.makeLogTag(MainNewActivity.class);
     /**
@@ -41,6 +42,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
     private MusicPlayerFragment playerFragment;
     private WordLearningFragment wlearningFragment;
     private BookListFragment bookListFragment;
+    private BookTypeListFragment bookTypeListFragment;
     private CourseListFragment courseListFragment;
 
     /**
@@ -86,6 +88,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         // 第一次启动时选中第0个tab
         setTabSelection(0);
         setTabSelection(1);
+        setTabSelection(4);
         setTabSelection(5);
         setTabSelection(3);
 
@@ -99,6 +102,8 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
             setTabSelection(0);
         } else if ("learn".equals(type)) {
             setTabSelection(3);
+        } else if ("booktype_list".equals(type)) {
+            setTabSelection(6);
         } else if ("booklist".equals(type)) {
             setTabSelection(4);
         } else if ("courselist".equals(type)) {
@@ -179,6 +184,16 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
                     transaction.show(wlearningFragment);
                 }
                 break;
+            case 6:
+                if (bookTypeListFragment == null) {
+                    // 如果MessageFragment为空，则创建一个并添加到界面上
+                    bookTypeListFragment = new BookTypeListFragment();
+                    transaction.add(R.id.content, bookTypeListFragment);
+                } else {
+                    // 如果MessageFragment不为空，则直接将它显示出来
+                    transaction.show(bookTypeListFragment);
+                }
+                break;
             case 4:
                 if (bookListFragment == null) {
                     // 如果MessageFragment为空，则创建一个并添加到界面上
@@ -232,6 +247,9 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         if (settingFragment != null) {
             transaction.hide(settingFragment);
         }
+        if (bookTypeListFragment != null) {
+            transaction.hide(bookTypeListFragment);
+        }
         if (bookListFragment != null) {
             transaction.hide(bookListFragment);
         }
@@ -244,6 +262,13 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
     public void onSentenceSelected(int songIndex) {
         setTabSelection(3);
         wlearningFragment.playSong(songIndex);
+    }
+
+    @Override
+    public void onBooktypeSelected(String booktype) {
+        setNavigationStatus("booklist");
+        setTabSelection(4);
+        bookListFragment.load(booktype);
     }
 
     @Override

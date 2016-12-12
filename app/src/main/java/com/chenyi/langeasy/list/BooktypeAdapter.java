@@ -6,10 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.fragment.BookListFragment;
+import com.chenyi.langeasy.fragment.BookTypeListFragment;
+import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,37 +21,57 @@ import java.util.Map;
 /**
  * Created by liyzh on 2016/9/10.
  */
-public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
-    private ArrayList<Map<String, Object>> sentenceLst;
+public class BooktypeAdapter extends ArrayAdapter<Map<String, Object>> {
+    private ArrayList<Map<String, Object>> booktypeLst;
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
+    private Context mContext;
 
-    public SentenceAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
-        super(context, 0, sentenceLst);
+    public BooktypeAdapter(Context context, ArrayList<Map<String, Object>> booktypeLst) {
+        super(context, 0, booktypeLst);
 
-        this.sentenceLst = sentenceLst;
+        this.mContext = context;
+        this.booktypeLst = booktypeLst;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        Map<String, Object> sentence = getItem(position);
+        Map<String, Object> book = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.playlist_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.booktype_list_item, parent, false);
         }
+
+        final String booktype = (String) book.get("booktype");
         // Lookup view for data population
-        TextView songTitle = (TextView) convertView.findViewById(R.id.songTitle);
-//        TextView tvHome = (TextView) convertView.findViewById(R.id.tvHome);
+        TextView booktypeView = (TextView) convertView.findViewById(R.id.booktype);
+        booktypeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mContext instanceof ButtonPlayListListener) {
+                    ((ButtonPlayListListener) mContext).query("bt:" + booktype);
+                }
+            }
+        });
+        TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
 
-        // Populate the data into the template view using the data object
-        String text = (String) sentence.get("wordunique");
-
-        if (sentence.get("index") != null) {
-            text = ((int) sentence.get("index") + 1) + "/" + text;
+        Button bCourses = (Button) convertView.findViewById(R.id.btn_books);
+        bCourses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mContext instanceof BookTypeListFragment.OnItemSelectedListener) {
+                    ((BookTypeListFragment.OnItemSelectedListener) mContext).onBooktypeSelected(booktype);
+                }
+            }
+        });
+        String booktypeText = "";
+        if (book.get("index") != null) {
+            booktypeText = ((int) book.get("index") + 1) + "/" + booktype;
         } else {
-            text = (position + 1) + "/" + text;
+            booktypeText = (position + 1) + "/" + booktype;
         }
-        songTitle.setText(text);
+        booktypeView.setText(booktypeText);
+        vSentenceCount.setText((Integer) book.get("scount") + "");
         // Return the completed view to render on screen
         return convertView;
     }
@@ -59,10 +83,10 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
             @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-//                sentenceLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
+//                booktypeLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
 
-                sentenceLst.clear();
-                sentenceLst.addAll((ArrayList<Map<String, Object>>) results.values);
+                booktypeLst.clear();
+                booktypeLst.addAll((ArrayList<Map<String, Object>>) results.values);
                 notifyDataSetChanged();  // notifies the data with new filtered values
             }
 
@@ -72,7 +96,7 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
                 ArrayList<Map<String, Object>> FilteredArrList = new ArrayList<>();
 
                 if (mOriginalValues == null) {
-                    mOriginalValues = new ArrayList<Map<String, Object>>(sentenceLst); // saves the original data in mOriginalValues
+                    mOriginalValues = new ArrayList<Map<String, Object>>(booktypeLst); // saves the original data in mOriginalValues
                 }
 
                 /********
@@ -91,34 +115,13 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
                     for (int i = 0; i < mOriginalValues.size(); i++) {
                         Map<String, Object> data = mOriginalValues.get(i);
 
-                        if (condition.startsWith("bt:")) {// query by book
-                            String bt = condition.substring(3);
-                            Log.i("condition", condition);
-                            Log.i("bt", bt);
-                            String booktype = (String) data.get("booktype");
-                            booktype= booktype.toLowerCase().trim();
-                            Log.i("booktype", booktype);
-                            if (booktype.equals(bt)) {
-                                data.put("index", count++);
-                                FilteredArrList.add(data);
-                            }
-                        } else if (condition.startsWith("b:")) {// query by book
+                        if (condition.startsWith("b:")) {// query by book
                             String bid = condition.substring(2);
-//                            Log.i("condition", condition);
-//                            Log.i("bid", bid);
+                            Log.i("condition", condition);
+                            Log.i("bid", bid);
                             String bookid = (String) data.get("bookid");
-//                            Log.i("bookid", bookid);
+                            Log.i("bookid", bookid);
                             if (bookid.equals(bid)) {
-                                data.put("index", count++);
-                                FilteredArrList.add(data);
-                            }
-                        } else if (condition.startsWith("c:")) {// query by book
-                            String cid = condition.substring(2);
-//                            Log.i("condition", condition);
-//                            Log.i("cid", cid);
-                            String courseid = (String) data.get("courseid");
-//                            Log.i("courseid", courseid);
-                            if (courseid.equals(cid)) {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }

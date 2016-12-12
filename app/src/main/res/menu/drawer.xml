@@ -26,6 +26,10 @@
             android:icon="@drawable/ic_playlist_music_black_24dp"
             android:title="Listen"/>
         <item
+            android:id="@+id/navigation_booktype_list"
+            android:icon="@drawable/ic_playlist_music_black_24dp"
+            android:title="Book Type"/>
+        <item
             android:id="@+id/navigation_booklist"
             android:icon="@drawable/ic_playlist_music_black_24dp"
             android:title="Book"/>

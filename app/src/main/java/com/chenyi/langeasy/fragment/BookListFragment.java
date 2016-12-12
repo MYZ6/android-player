@@ -1,8 +1,6 @@
 package com.chenyi.langeasy.fragment;
 
-import android.app.Activity;
 import android.app.ListFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,24 +8,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.list.BookAdapter;
-import com.chenyi.langeasy.list.SentenceAdapter;
 import com.chenyi.langeasy.activity.MainNewActivity;
-import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 
 public class BookListFragment extends ListFragment {
-
-    private ArrayList<Map<String, Object>> booklistData;
 
     private BookAdapter bookAdapter;
     private EditText search_text;
@@ -99,10 +90,10 @@ public class BookListFragment extends ListFragment {
         });
 
         final MainNewActivity activity = (MainNewActivity) getActivity();
-        booklistData = activity.getDBHelper().listBook();
+//        booklistData = activity.getDBHelper().listBook(booktype);
 
         // Adding menuItems to ListView
-        bookAdapter = new BookAdapter(activity, booklistData);
+        bookAdapter = new BookAdapter(activity, new ArrayList<Map<String, Object>>());
 
         setListAdapter(bookAdapter);
 
@@ -116,14 +107,16 @@ public class BookListFragment extends ListFragment {
         search_text.setText(condition);
     }
 
+    public void load(String booktype) {
+        final MainNewActivity activity = (MainNewActivity) getActivity();
+        ArrayList<Map<String, Object>> booklistData = activity.getDBHelper().listBook(booktype);
+        bookAdapter.clear();
+        bookAdapter.addAll(booklistData);
+        bookAdapter.notifyDataSetChanged();
+    }
+
     // Container Activity must implement this interface
     public interface OnItemSelectedListener {
         public void onBookSelected(String bookid);
-    }
-
-    public void jump(int index) {
-        Map<String, Object> map = booklistData.get(index);
-        mListView.setSelection(index);
-        Log.i("index", index + "");
     }
 }
