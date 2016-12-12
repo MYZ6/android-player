@@ -19,6 +19,7 @@ import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.SentenceAdapter;
 import com.chenyi.langeasy.SongsManager;
 import com.chenyi.langeasy.activity.MainActivity;
+import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.db.DBHelper;
 
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class PlayListFragment extends ListFragment {
         View listLayout = inflater.inflate(R.layout.playlist,
                 container, false);
 
-        final MainActivity activity = (MainActivity) getActivity();
+        final MainNewActivity activity = (MainNewActivity) getActivity();
 //        songsListData = new ArrayList<Map<String, Object>>(activity.songsList);
 //        originalData = activity.songsList;
         songsListData = activity.songsList;

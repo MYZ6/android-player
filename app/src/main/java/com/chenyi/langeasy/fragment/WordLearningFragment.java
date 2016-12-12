@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.Utilities;
 import com.chenyi.langeasy.activity.MainActivity;
+import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.listener.ButtonPlayListListener;
@@ -43,7 +44,6 @@ public class WordLearningFragment extends Fragment {
     private ImageButton btnBackward;
     private ImageButton btnNext;
     private ImageButton btnPrevious;
-    private ImageButton btnPlaylist;
     private ImageButton btnRepeat;
     private ImageButton btnShuffle;
     private TextView songTitleLabel;
@@ -84,7 +84,7 @@ public class WordLearningFragment extends Fragment {
                              Bundle savedInstanceState) {
         View playerLayout = inflater.inflate(R.layout.wlearning,
                 container, false);
-        MainActivity activity = (MainActivity) getActivity();
+        MainNewActivity activity = (MainNewActivity) getActivity();
         songsList = activity.songsList;//songManager.getPlayList(mydb);
 
         btnPlayListListener = (ButtonPlayListListener) activity;
@@ -99,7 +99,6 @@ public class WordLearningFragment extends Fragment {
         btnBackward = (ImageButton) playerLayout.findViewById(R.id.btnBackward);
         btnNext = (ImageButton) playerLayout.findViewById(R.id.btnNext);
         btnPrevious = (ImageButton) playerLayout.findViewById(R.id.btnPrevious);
-        btnPlaylist = (ImageButton) playerLayout.findViewById(R.id.btnPlaylist);
         btnRepeat = (ImageButton) playerLayout.findViewById(R.id.btnRepeat);
         btnShuffle = (ImageButton) playerLayout.findViewById(R.id.btnShuffle);
         songTitleLabel = (TextView) playerLayout.findViewById(R.id.songTitle);
@@ -397,18 +396,6 @@ public class WordLearningFragment extends Fragment {
                     btnRepeat.setImageResource(R.drawable.btn_repeat);
                     Utilities.setConfig(getActivity(), "isShuffle2", 1);
                 }
-            }
-        });
-
-        /**
-         * Button Click event for Play list click event
-         * Launches list activity which displays list of songs
-         * */
-        btnPlaylist.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                btnPlayListListener.toList(currentSongIndex);
             }
         });
     }

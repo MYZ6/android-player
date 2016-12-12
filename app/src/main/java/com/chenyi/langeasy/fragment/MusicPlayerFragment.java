@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenyi.langeasy.activity.MainActivity;
+import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.SongsManager;
@@ -51,7 +52,6 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     private ImageButton btnBackward;
     private ImageButton btnNext;
     private ImageButton btnPrevious;
-    private ImageButton btnPlaylist;
     private ImageButton btnLearning;
     private ImageButton btnRepeat;
     private ImageButton btnShuffle;
@@ -98,7 +98,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                              Bundle savedInstanceState) {
         View playerLayout = inflater.inflate(R.layout.player,
                 container, false);
-        MainActivity activity = (MainActivity) getActivity();
+        MainNewActivity activity = (MainNewActivity) getActivity();
         songsList = activity.songsList;//songManager.getPlayList(mydb);
 
 
@@ -116,7 +116,6 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         btnBackward = (ImageButton) playerLayout.findViewById(R.id.btnBackward);
         btnNext = (ImageButton) playerLayout.findViewById(R.id.btnNext);
         btnPrevious = (ImageButton) playerLayout.findViewById(R.id.btnPrevious);
-        btnPlaylist = (ImageButton) playerLayout.findViewById(R.id.btnPlaylist);
         btnLearning = (ImageButton) playerLayout.findViewById(R.id.btnLearning);
         btnRepeat = (ImageButton) playerLayout.findViewById(R.id.btnRepeat);
         btnShuffle = (ImageButton) playerLayout.findViewById(R.id.btnShuffle);
@@ -422,13 +421,13 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
          * Button Click event for Play list click event
          * Launches list activity which displays list of songs
          * */
-        btnPlaylist.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                btnPlayListListener.toList(currentSongIndex);
-            }
-        });
+//        btnPlaylist.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View arg0) {
+//                btnPlayListListener.toList(currentSongIndex);
+//            }
+//        });
 
         btnLearning.setOnClickListener(new View.OnClickListener() {
 

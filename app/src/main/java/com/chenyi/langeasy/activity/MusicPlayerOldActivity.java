@@ -37,7 +37,7 @@ import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.db.PronAudio;
 import com.chenyi.langeasy.db.SentenceAudio;
 
-public class MusicPlayerActivity extends Activity implements OnCompletionListener, SeekBar.OnSeekBarChangeListener {
+public class MusicPlayerOldActivity extends Activity implements OnCompletionListener, SeekBar.OnSeekBarChangeListener {
 
     private ImageButton btnPlay;
     private ImageButton btnForward;
@@ -96,7 +96,6 @@ public class MusicPlayerActivity extends Activity implements OnCompletionListene
         btnBackward = (ImageButton) findViewById(R.id.btnBackward);
         btnNext = (ImageButton) findViewById(R.id.btnNext);
         btnPrevious = (ImageButton) findViewById(R.id.btnPrevious);
-        btnPlaylist = (ImageButton) findViewById(R.id.btnPlaylist);
         btnRepeat = (ImageButton) findViewById(R.id.btnRepeat);
         btnShuffle = (ImageButton) findViewById(R.id.btnShuffle);
         songProgressBar = (SeekBar) findViewById(R.id.songProgressBar);

@@ -2,4 +2,21 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fab_margin">166dp</dimen>
+
+
+    <dimen name="playback_controls_albumart_horizontal_margin">8dp</dimen>
+    <dimen name="playback_controls_albumart_size">64dp</dimen>
+    <dimen name="playback_controls_padding">8dp</dimen>
+
+
+    <dimen name="media_item_icon_margin_start">12dp</dimen>
+    <dimen name="media_item_text_margin_start">60dp</dimen>
+
+    <dimen name="error_horizontal_padding">4dp</dimen>
+    <dimen name="error_vertical_padding">16dp</dimen>
+    <!-- Margins for full screen activity-->
+    <dimen name="text_view_margin">16dp</dimen>
+    <dimen name="end_text_margin">16dp</dimen>
+
+    <dimen name="media_item_height">72dp</dimen>
 </resources>

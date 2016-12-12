@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.SentenceAdapter;
@@ -66,7 +65,7 @@ public class PlayListActivity extends ListActivity {
 
                 // Starting new intent
                 Intent in = new Intent(getApplicationContext(),
-                        MusicPlayerActivity.class);
+                        MusicPlayerOldActivity.class);
                 // Sending songIndex to PlayerActivity
                 in.putExtra("songIndex", index);
                 setResult(100, in);
