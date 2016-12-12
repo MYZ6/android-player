@@ -120,33 +120,22 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<Map<String, Object>> listBook() {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 
-        //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select s.* from sentence s inner join vocabulary v on v.wordid = s.wordid and ifnull(v.pass, 0) !=1 group by ", null);
+        String sql = "select s.booktype, s.bookid, s.bookname, count(*) as scount " +
+                "from sentence s inner join vocabulary v on v.wordid = s.wordid and ifnull(v.pass, 0) !=1 " +
+                "group by s.bookid order by s.booktype, s.bookname";
+        Cursor res = db.rawQuery(sql, null);
         res.moveToFirst();
 
         int count = 0;
         while (res.isAfterLast() == false) {
             Map<String, Object> map = new HashMap<>();
             map.put("index", count++);
-            //sentenceid, wordid, word, pron, mtype, meaning, sentence, chinese
-            Integer wordid = res.getInt(res.getColumnIndex("wordid"));
-            Integer sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
-            String word = res.getString(res.getColumnIndex("word"));
-            map.put("sentenceid", sentenceid);
-            map.put("wordid", res.getInt(res.getColumnIndex("wordid")));
-            map.put("word", word);
-            map.put("wordunique", wordid + word + sentenceid);
-            map.put("pron", res.getString(res.getColumnIndex("pron")));
-            map.put("mtype", res.getString(res.getColumnIndex("mtype")));
-            map.put("meaning", res.getString(res.getColumnIndex("meaning")));
-            map.put("sentence", res.getString(res.getColumnIndex("sentence")));
-            map.put("chinese", res.getString(res.getColumnIndex("chinese")));
+            Integer scount = res.getInt(res.getColumnIndex("scount"));
             map.put("bookid", res.getString(res.getColumnIndex("bookid")));
             map.put("bookname", res.getString(res.getColumnIndex("bookname")));
             map.put("booktype", res.getString(res.getColumnIndex("booktype")));
-            map.put("courseid", res.getString(res.getColumnIndex("courseid")));
-            map.put("coursename", res.getString(res.getColumnIndex("coursename")));
+            map.put("scount",scount);
             array_list.add(map);
             res.moveToNext();
         }

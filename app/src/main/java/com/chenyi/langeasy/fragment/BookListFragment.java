@@ -16,32 +16,35 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.list.BookAdapter;
 import com.chenyi.langeasy.list.SentenceAdapter;
 import com.chenyi.langeasy.activity.MainNewActivity;
+import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
-public class PlayListFragment extends ListFragment {
+public class BookListFragment extends ListFragment {
 
-    private ArrayList<Map<String, Object>> songsListData;
-    private ArrayList<Map<String, Object>> originalData;
+    private ArrayList<Map<String, Object>> booklistData;
 
-    private SentenceAdapter sentenceAdapter;
+    private BookAdapter bookAdapter;
     private EditText search_text;
     private ListView mListView;
+    private ButtonPlayListListener btnPlayListListener;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         final Activity activity = getActivity();
+        btnPlayListListener = (ButtonPlayListListener) activity;
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mCallback = (OnSentenceSelectedListener) activity;
+            mCallback = (OnItemSelectedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnSentenceSelectedListener");
@@ -49,6 +52,9 @@ public class PlayListFragment extends ListFragment {
 
 
         final Context applicationContext = activity.getApplicationContext();
+
+//        mListView = (ListView) activity.findViewById(R.id.blist);
+
         // selecting single ListView item
         mListView = getListView();
         // listening to single listitem click
@@ -57,13 +63,15 @@ public class PlayListFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Map<String, Object> sentence = sentenceAdapter.getItem(position);
-                Integer index = (Integer) sentence.get("index");
+                Map<String, Object> book = bookAdapter.getItem(position);
+                Integer index = (Integer) book.get("index");
 
-                mCallback.onSentenceSelected(index);
+//                mCallback.onBookSelected(index);
+
+                String bookid = (String) book.get("bookid");
+                btnPlayListListener.query("b:" + bookid);
             }
         });
-
     }
 
     @Override
@@ -72,6 +80,7 @@ public class PlayListFragment extends ListFragment {
         View listLayout = inflater.inflate(R.layout.playlist,
                 container, false);
 
+//        search_text = (EditText) listLayout.findViewById(R.id.book_search_text);
         search_text = (EditText) listLayout.findViewById(R.id.search_text);
 
         search_text.addTextChangedListener(new TextWatcher() {
@@ -79,7 +88,7 @@ public class PlayListFragment extends ListFragment {
             public void afterTextChanged(Editable s) {
                 // you can call or do what you want with your EditText here
 //                s.toString();
-                sentenceAdapter.getFilter().filter(s.toString());
+                bookAdapter.getFilter().filter(s.toString());
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,69 +99,31 @@ public class PlayListFragment extends ListFragment {
         });
 
         final MainNewActivity activity = (MainNewActivity) getActivity();
-//        songsListData = new ArrayList<Map<String, Object>>(activity.songsList);
-//        originalData = activity.songsList;
-        songsListData = activity.songsList;
-        ;//songManager.getPlayList(mydb);
-
+        booklistData = activity.getDBHelper().listBook();
 
         // Adding menuItems to ListView
-        sentenceAdapter = new SentenceAdapter(activity, songsListData);
-//        ListAdapter adapter = new SimpleAdapter(this, songsListData,
-//                R.layout.playlist_item, new String[]{"wordunique"}, new int[]{
-//                R.id.songTitle});
+        bookAdapter = new BookAdapter(activity, booklistData);
 
-        setListAdapter(sentenceAdapter);
-//        adapter.no
+        setListAdapter(bookAdapter);
 
         return listLayout;
     }
 
 
-    OnSentenceSelectedListener mCallback;
+    OnItemSelectedListener mCallback;
 
     public void query(String condition) {
         search_text.setText(condition);
     }
 
     // Container Activity must implement this interface
-    public interface OnSentenceSelectedListener {
-        public void onSentenceSelected(int songIndex);
+    public interface OnItemSelectedListener {
+        public void onBookSelected(int songIndex);
     }
 
     public void jump(int index) {
-        Map<String, Object> map = songsListData.get(index);
-//        int sid = (int) map.get("sentenceid");
-
-//        search_text.setText(sid + "");
-//        search_text.setText("");
-//        if (!search_text.getText().toString().isEmpty()) {
-//            search_text.setText("");
-//            final int findex = index;
-//            mListView.post(new Runnable() {
-//                public void run() {
-//                    mListView.setSelection(findex);
-//                }
-//            });
-//        } else {
+        Map<String, Object> map = booklistData.get(index);
         mListView.setSelection(index);
-//        }
-//        sentenceAdapter.getFilter().filter(sid+"");
-//        mListView.clearFocus();
-//        sentenceAdapter.notifyDataSetChanged();
-//        mListView.requestFocus();
-//        mListView.setItemChecked(index, true);
-
-        Random generator = new Random();
-        int d = generator.nextInt(6) + 6;
-//        if(d<8){
-//            mListView.setSelection(698);
-//        }else{
-//            mListView.setSelection(1698);
-//        }
-        Log.i("index d", d + "");
-//        mListView.scrollTo(30, index * 30);
         Log.i("index", index + "");
-//        getListView().smoothScrollToPosition(index);
     }
 }

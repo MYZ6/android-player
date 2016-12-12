@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.chenyi.langeasy.R;
-import com.chenyi.langeasy.SentenceAdapter;
+import com.chenyi.langeasy.list.SentenceAdapter;
 import com.chenyi.langeasy.SongsManager;
 import com.chenyi.langeasy.db.DBHelper;
 

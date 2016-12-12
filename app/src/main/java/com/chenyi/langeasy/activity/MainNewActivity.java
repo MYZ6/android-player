@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.db.DBHelper;
+import com.chenyi.langeasy.fragment.BookListFragment;
 import com.chenyi.langeasy.fragment.MusicPlayerFragment;
 import com.chenyi.langeasy.fragment.PlayListFragment;
 import com.chenyi.langeasy.fragment.SettingFragment;
@@ -30,7 +31,7 @@ import java.util.Map;
  * @author guolin
  */
 public class MainNewActivity extends BaseActivity implements OnClickListener, ButtonPlayListListener,
-        MusicPlayerFragment.BtnLearningListener, PlayListFragment.OnSentenceSelectedListener, WordLearningFragment.OnPlayListener {
+        MusicPlayerFragment.BtnLearningListener, PlayListFragment.OnSentenceSelectedListener, BookListFragment.OnItemSelectedListener, WordLearningFragment.OnPlayListener {
 
     private static final String TAG = LogHelper.makeLogTag(MainNewActivity.class);
     /**
@@ -38,6 +39,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
      */
     private MusicPlayerFragment playerFragment;
     private WordLearningFragment wlearningFragment;
+    private BookListFragment bookListFragment;
 
     /**
      * 用于展示联系人的Fragment
@@ -56,6 +58,10 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
 
     public ArrayList<Map<String, Object>> songsList = new ArrayList<>();
     private DBHelper mydb;
+
+    public DBHelper getDBHelper() {
+        return mydb;
+    }
 
 
     @Override
@@ -89,6 +95,8 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
             setTabSelection(0);
         } else if ("learn".equals(type)) {
             setTabSelection(3);
+        } else if ("booklist".equals(type)) {
+            setTabSelection(4);
         }
     }
 
@@ -163,6 +171,16 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
                     transaction.show(wlearningFragment);
                 }
                 break;
+            case 4:
+                if (bookListFragment == null) {
+                    // 如果MessageFragment为空，则创建一个并添加到界面上
+                    bookListFragment = new BookListFragment();
+                    transaction.add(R.id.content, bookListFragment);
+                } else {
+                    // 如果MessageFragment不为空，则直接将它显示出来
+                    transaction.show(bookListFragment);
+                }
+                break;
             default:
                 // 当点击了设置tab时，改变控件的图片和文字颜色
                 break;
@@ -196,12 +214,19 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         if (settingFragment != null) {
             transaction.hide(settingFragment);
         }
+        if (bookListFragment != null) {
+            transaction.hide(bookListFragment);
+        }
     }
 
     @Override
     public void onSentenceSelected(int songIndex) {
         setTabSelection(3);
         wlearningFragment.playSong(songIndex);
+    }
+    @Override
+    public void onBookSelected(int songIndex) {
+
     }
 
     @Override
@@ -231,4 +256,5 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         setTabSelection(1);
         playListFragment.query(condition);
     }
+
 }

@@ -79,6 +79,10 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                         activityClass = MusicPlayerOldActivity.class;
                         type = "listen";
                         break;
+                    case R.id.navigation_booklist:
+                        activityClass = MusicPlayerOldActivity.class;
+                        type = "booklist";
+                        break;
                 }
                 if ("activity".equals(type)) {
                     if (activityClass != null) {

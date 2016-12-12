@@ -1,4 +1,4 @@
-package com.chenyi.langeasy;
+package com.chenyi.langeasy.list;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
+
+import com.chenyi.langeasy.R;
 
 import java.util.ArrayList;
 import java.util.Map;
