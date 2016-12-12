@@ -57,6 +57,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
 
     private boolean mToolbarInitialized;
 
+    private int mItemLastClicked = -1;
     private int mItemToOpenWhenDrawerCloses = -1;
 
 
@@ -67,21 +68,28 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             if (mItemToOpenWhenDrawerCloses >= 0) {
                 Bundle extras = ActivityOptions.makeCustomAnimation(
                         ActionBarCastActivity.this, R.anim.fade_in, R.anim.fade_out).toBundle();
-
+                if (mItemLastClicked == mItemToOpenWhenDrawerCloses) {
+                    return;
+                }
                 Class activityClass = null;
                 String type = "activity";
+                LogHelper.i(TAG, "Fragment Type " + mItemToOpenWhenDrawerCloses);
                 switch (mItemToOpenWhenDrawerCloses) {
                     case R.id.navigation_learn:
-                        activityClass = MusicPlayerOldActivity.class;
+//                        activityClass = MusicPlayerOldActivity.class;
                         type = "learn";
                         break;
                     case R.id.navigation_listen:
-                        activityClass = MusicPlayerOldActivity.class;
                         type = "listen";
                         break;
                     case R.id.navigation_booklist:
-                        activityClass = MusicPlayerOldActivity.class;
                         type = "booklist";
+                        break;
+                    case R.id.navigation_playlist:
+                        type = "playlist";
+                        break;
+                    case R.id.navigation_courselist:
+                        type = "courselist";
                         break;
                 }
                 if ("activity".equals(type)) {
@@ -89,9 +97,10 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                         startActivity(new Intent(ActionBarCastActivity.this, activityClass), extras);
                         finish();
                     }
-                }else{
+                } else {
                     toFragment(type);
                 }
+                mItemLastClicked = mItemToOpenWhenDrawerCloses;
             }
         }
 
@@ -256,6 +265,10 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         menuItem.setChecked(true);
                         mItemToOpenWhenDrawerCloses = menuItem.getItemId();
+
+                        if (mItemLastClicked == mItemToOpenWhenDrawerCloses) {
+                            mItemToOpenWhenDrawerCloses = -1;
+                        }
                         mDrawerLayout.closeDrawers();
                         return true;
                     }
@@ -269,11 +282,20 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
 
     protected void setNavigationStatus(String type) {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        int itemId = -1;
         if ("listen".equals(type)) {
-            navigationView.setCheckedItem(R.id.navigation_listen);
-        } else  if ("learn".equals(type)) {
-            navigationView.setCheckedItem(R.id.navigation_learn);
+            itemId = R.id.navigation_listen;
+        } else if ("learn".equals(type)) {
+            itemId = R.id.navigation_learn;
+        } else if ("courselist".equals(type)) {
+            itemId = R.id.navigation_courselist;
+        } else if ("playlist".equals(type)) {
+            itemId = R.id.navigation_playlist;
         }
+        navigationView.setCheckedItem(itemId);
+        mItemToOpenWhenDrawerCloses = itemId;
+        mItemLastClicked = mItemToOpenWhenDrawerCloses;
     }
 
     protected void updateDrawerToggle() {

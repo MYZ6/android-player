@@ -117,6 +117,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return count;
     }
+
     public ArrayList<Map<String, Object>> listBook() {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 
@@ -135,7 +136,31 @@ public class DBHelper extends SQLiteOpenHelper {
             map.put("bookid", res.getString(res.getColumnIndex("bookid")));
             map.put("bookname", res.getString(res.getColumnIndex("bookname")));
             map.put("booktype", res.getString(res.getColumnIndex("booktype")));
-            map.put("scount",scount);
+            map.put("scount", scount);
+            array_list.add(map);
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+    public ArrayList<Map<String, Object>> listCourse(String bookid) {
+        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "select s.courseid, s.coursename, count(*) as scount " +
+                "from sentence s inner join vocabulary v on v.wordid = s.wordid and ifnull(v.pass, 0) !=1 " +
+                "where s.bookid = ? group by s.courseid order by s.coursename";
+        Cursor res = db.rawQuery(sql, new String[]{bookid + ""});
+        res.moveToFirst();
+
+        int count = 0;
+        while (res.isAfterLast() == false) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("index", count++);
+            Integer scount = res.getInt(res.getColumnIndex("scount"));
+            map.put("courseid", res.getString(res.getColumnIndex("courseid")));
+            map.put("coursename", res.getString(res.getColumnIndex("coursename")));
+            map.put("scount", scount);
             array_list.add(map);
             res.moveToNext();
         }
@@ -224,6 +249,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update("vocabulary", contentValues, "wordid = ? ", new String[]{Integer.toString(wordid)});
         return true;
     }
+
 
 //
 //    public byte[] queryPronAudio(int wordId) {

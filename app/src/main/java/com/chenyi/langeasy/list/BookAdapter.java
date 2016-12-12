@@ -5,11 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.fragment.BookListFragment;
+import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -18,13 +23,15 @@ import java.util.Map;
  * Created by liyzh on 2016/9/10.
  */
 public class BookAdapter extends ArrayAdapter<Map<String, Object>> {
-    private ArrayList<Map<String, Object>> sentenceLst;
+    private ArrayList<Map<String, Object>> bookLst;
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
+    private Context mContext;
 
-    public BookAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
-        super(context, 0, sentenceLst);
+    public BookAdapter(Context context, ArrayList<Map<String, Object>> bookLst) {
+        super(context, 0, bookLst);
 
-        this.sentenceLst = sentenceLst;
+        this.mContext = context;
+        this.bookLst = bookLst;
     }
 
     @Override
@@ -35,10 +42,30 @@ public class BookAdapter extends ArrayAdapter<Map<String, Object>> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.booklist_item, parent, false);
         }
+
+        final String bookid = (String) book.get("bookid");
         // Lookup view for data population
         TextView booknameView = (TextView) convertView.findViewById(R.id.bookname);
+        booknameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mContext instanceof ButtonPlayListListener){
+                    ((ButtonPlayListListener)mContext).query("b:" + bookid);
+                }
+            }
+        });
         TextView booktypeView = (TextView) convertView.findViewById(R.id.booktype);
         TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
+
+        Button bCourses = (Button) convertView.findViewById(R.id.btn_courses);
+        bCourses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mContext instanceof BookListFragment.OnItemSelectedListener){
+                    ((BookListFragment.OnItemSelectedListener)mContext).onBookSelected(bookid);
+                }
+            }
+        });
 
         // Populate the data into the template view using the data object
         String bookname = (String) book.get("bookname");
@@ -62,10 +89,10 @@ public class BookAdapter extends ArrayAdapter<Map<String, Object>> {
             @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-//                sentenceLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
+//                bookLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
 
-                sentenceLst.clear();
-                sentenceLst.addAll((ArrayList<Map<String, Object>>) results.values);
+                bookLst.clear();
+                bookLst.addAll((ArrayList<Map<String, Object>>) results.values);
                 notifyDataSetChanged();  // notifies the data with new filtered values
             }
 
@@ -75,7 +102,7 @@ public class BookAdapter extends ArrayAdapter<Map<String, Object>> {
                 ArrayList<Map<String, Object>> FilteredArrList = new ArrayList<>();
 
                 if (mOriginalValues == null) {
-                    mOriginalValues = new ArrayList<Map<String, Object>>(sentenceLst); // saves the original data in mOriginalValues
+                    mOriginalValues = new ArrayList<Map<String, Object>>(bookLst); // saves the original data in mOriginalValues
                 }
 
                 /********

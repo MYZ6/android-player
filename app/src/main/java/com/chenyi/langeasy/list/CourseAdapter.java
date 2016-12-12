@@ -17,11 +17,11 @@ import java.util.Map;
 /**
  * Created by liyzh on 2016/9/10.
  */
-public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
+public class CourseAdapter extends ArrayAdapter<Map<String, Object>> {
     private ArrayList<Map<String, Object>> sentenceLst;
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
 
-    public SentenceAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
+    public CourseAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
         super(context, 0, sentenceLst);
 
         this.sentenceLst = sentenceLst;
@@ -30,24 +30,25 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        Map<String, Object> sentence = getItem(position);
+        Map<String, Object> book = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.playlist_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.courselist_item, parent, false);
         }
         // Lookup view for data population
-        TextView songTitle = (TextView) convertView.findViewById(R.id.songTitle);
-//        TextView tvHome = (TextView) convertView.findViewById(R.id.tvHome);
+        TextView vCourseName = (TextView) convertView.findViewById(R.id.coursename);
+        TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
 
         // Populate the data into the template view using the data object
-        String text = (String) sentence.get("wordunique");
+        String coursename = (String) book.get("coursename");
 
-        if (sentence.get("index") != null) {
-            text = ((int) sentence.get("index") + 1) + "/" + text;
+        if (book.get("index") != null) {
+            coursename = ((int) book.get("index") + 1) + "/" + coursename;
         } else {
-            text = (position + 1) + "/" + text;
+            coursename = (position + 1) + "/" + coursename;
         }
-        songTitle.setText(text);
+        vCourseName.setText(coursename);
+        vSentenceCount.setText((Integer) book.get("scount") + "");
         // Return the completed view to render on screen
         return convertView;
     }
@@ -93,21 +94,11 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
 
                         if (condition.startsWith("b:")) {// query by book
                             String bid = condition.substring(2);
-//                            Log.i("condition", condition);
-//                            Log.i("bid", bid);
+                            Log.i("condition", condition);
+                            Log.i("bid", bid);
                             String bookid = (String) data.get("bookid");
-//                            Log.i("bookid", bookid);
+                            Log.i("bookid", bookid);
                             if (bookid.equals(bid)) {
-                                data.put("index", count++);
-                                FilteredArrList.add(data);
-                            }
-                        } else if (condition.startsWith("c:")) {// query by book
-                            String cid = condition.substring(2);
-//                            Log.i("condition", condition);
-//                            Log.i("cid", cid);
-                            String courseid = (String) data.get("courseid");
-//                            Log.i("courseid", courseid);
-                            if (courseid.equals(cid)) {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }

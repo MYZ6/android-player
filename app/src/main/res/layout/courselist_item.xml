@@ -7,15 +7,7 @@
     android:background="@drawable/list_selector"
     android:padding="5dp">
     <TextView 
-        android:id="@+id/bookname"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:padding="10dp"
-        android:color="#f3f3f3"/>
-
-    <TextView
-        android:id="@+id/booktype"
+        android:id="@+id/coursename"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="16dp"
@@ -28,9 +20,4 @@
         android:textSize="16dp"
         android:padding="10dp"
         android:color="#f3f3f3"/>
-    <Button
-        android:id="@+id/btn_courses"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Courses" />
 </LinearLayout>

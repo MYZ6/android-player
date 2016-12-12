@@ -32,46 +32,46 @@ public class BookListFragment extends ListFragment {
     private BookAdapter bookAdapter;
     private EditText search_text;
     private ListView mListView;
-    private ButtonPlayListListener btnPlayListListener;
+//    private ButtonPlayListListener btnPlayListListener;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final Activity activity = getActivity();
-        btnPlayListListener = (ButtonPlayListListener) activity;
+//        final Activity activity = getActivity();
+//        btnPlayListListener = (ButtonPlayListListener) activity;
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
-        try {
-            mCallback = (OnItemSelectedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnSentenceSelectedListener");
-        }
-
-
-        final Context applicationContext = activity.getApplicationContext();
+//        try {
+//            mCallback = (OnItemSelectedListener) activity;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(activity.toString()
+//                    + " must implement BookListFragment OnItemSelectedListener");
+//        }
+//
+//
+//        final Context applicationContext = activity.getApplicationContext();
 
 //        mListView = (ListView) activity.findViewById(R.id.blist);
 
         // selecting single ListView item
         mListView = getListView();
         // listening to single listitem click
-        mListView.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Map<String, Object> book = bookAdapter.getItem(position);
-                Integer index = (Integer) book.get("index");
-
-//                mCallback.onBookSelected(index);
-
-                String bookid = (String) book.get("bookid");
-                btnPlayListListener.query("b:" + bookid);
-            }
-        });
+//        mListView.setOnItemClickListener(new OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                    int position, long id) {
+//                Map<String, Object> book = bookAdapter.getItem(position);
+//                Integer index = (Integer) book.get("index");
+//                String bookid = (String) book.get("bookid");
+//
+////                mCallback.onBookSelected(bookid);
+//
+//                btnPlayListListener.query("b:" + bookid);
+//            }
+//        });
     }
 
     @Override
@@ -110,7 +110,7 @@ public class BookListFragment extends ListFragment {
     }
 
 
-    OnItemSelectedListener mCallback;
+//    OnItemSelectedListener mCallback;
 
     public void query(String condition) {
         search_text.setText(condition);
@@ -118,7 +118,7 @@ public class BookListFragment extends ListFragment {
 
     // Container Activity must implement this interface
     public interface OnItemSelectedListener {
-        public void onBookSelected(int songIndex);
+        public void onBookSelected(String bookid);
     }
 
     public void jump(int index) {
