@@ -9,14 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.activity.MainNewActivity;
-import com.chenyi.langeasy.list.BooktypeAdapter;
 import com.chenyi.langeasy.list.HistoryAdapter;
-import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,6 +28,7 @@ public class HistoryFragment extends ListFragment {
     private HistoryAdapter historyAdapter;
     private EditText search_text;
     private ListView mListView;
+    private int dataType = 1;
     private int sortType = 1;
 //    private ButtonPlayListListener btnPlayListListener;
 
@@ -47,11 +47,25 @@ public class HistoryFragment extends ListFragment {
                 container, false);
         final MainNewActivity activity = (MainNewActivity) getActivity();
 
+        CheckBox bWord = (CheckBox) listLayout.findViewById(R.id.btn_word);
+        bWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    dataType = 2;
+                    Log.i("checked", "true" + "");
+                }else{
+                    dataType = 1;
+                }
+            }
+        });
+
+
         Button bRefresh = (Button) listLayout.findViewById(R.id.btn_refresh);
         bRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                historyListData = activity.getDBHelper().history();
+                historyListData = activity.getDBHelper().history(dataType);
                 historyAdapter.clear();
                 historyAdapter.addAll(historyListData);
                 historyAdapter.notifyDataSetChanged();
@@ -101,7 +115,7 @@ public class HistoryFragment extends ListFragment {
         });
 
 
-        historyListData = activity.getDBHelper().history();
+        historyListData = activity.getDBHelper().history(dataType);
 
         // Adding menuItems to ListView
         historyAdapter = new HistoryAdapter(activity, historyListData);

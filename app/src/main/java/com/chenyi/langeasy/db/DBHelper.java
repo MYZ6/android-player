@@ -273,12 +273,19 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public ArrayList<Map<String,Object>> history() {
+    public ArrayList<Map<String, Object>> history(int dataType) {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select r.*, count(*) as scount from play_record r group by r.sentenceid order by r.playtime desc", null);
+        String groupField = "sentenceid";
+        if (dataType == 2) {
+            groupField = "wordid";
+        }
+        String sql = "select r.*, count(*) as scount from play_record r " +
+                "inner join vocabulary v on v.wordid = r.wordid and ifnull(v.pass, 0) !=1 group by r." + groupField +
+                " order by r.playtime desc";
+        Cursor res = db.rawQuery(sql, null);
         res.moveToFirst();
 
         int count = 0;
