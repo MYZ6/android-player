@@ -270,6 +270,11 @@ public class MainActivity extends Activity implements OnClickListener, ButtonPla
     }
 
     @Override
+    public void toLearning2(int sentenceid) {
+
+    }
+
+    @Override
     public void toList(int songIndex) {
         setTabSelection(1);
         playListFragment.jump(songIndex);

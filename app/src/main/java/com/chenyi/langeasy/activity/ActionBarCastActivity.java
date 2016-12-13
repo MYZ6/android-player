@@ -282,6 +282,10 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     type = "courselist";
                     title = "Courses";
                     break;
+                case R.id.navigation_history:
+                    type = "history";
+                    title = "History";
+                    break;
             }
             if ("activity".equals(type)) {
                 if (activityClass != null) {

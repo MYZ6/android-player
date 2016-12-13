@@ -1,54 +1,88 @@
 package com.chenyi.langeasy.list;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.activity.MainNewActivity;
+import com.chenyi.langeasy.fragment.BookTypeListFragment;
+import com.chenyi.langeasy.fragment.MusicPlayerFragment;
+import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 /**
  * Created by liyzh on 2016/9/10.
  */
-public class CourseAdapter extends ArrayAdapter<Map<String, Object>> {
-    private ArrayList<Map<String, Object>> sentenceLst;
+public class HistoryAdapter extends ArrayAdapter<Map<String, Object>> {
+    private ArrayList<Map<String, Object>> recordLst;
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
+    private Context mContext;
 
-    public CourseAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
-        super(context, 0, sentenceLst);
+    public HistoryAdapter(Context context, ArrayList<Map<String, Object>> recordLst) {
+        super(context, 0, recordLst);
 
-        this.sentenceLst = sentenceLst;
+        this.mContext = context;
+        this.recordLst = recordLst;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        Map<String, Object> book = getItem(position);
+        Map<String, Object> record = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_course, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_history, parent, false);
         }
+
         // Lookup view for data population
-        TextView vCourseName = (TextView) convertView.findViewById(R.id.coursename);
-        TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
+        TextView vWord = (TextView) convertView.findViewById(R.id.word);
+        final String word = (String) record.get("word");
+        vWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mContext instanceof ButtonPlayListListener) {
+                    ((ButtonPlayListListener) mContext).query(word);
+                }
+            }
+        });
 
-        // Populate the data into the template view using the data object
-        String coursename = (String) book.get("coursename");
-
-        if (book.get("index") != null) {
-            coursename = ((int) book.get("index") + 1) + "/" + coursename;
+        final Integer sentenceid = (Integer) record.get("sentenceid");
+        Button bLearn = (Button) convertView.findViewById(R.id.btn_learn);
+        bLearn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mContext instanceof ButtonPlayListListener) {
+                    ((ButtonPlayListListener) mContext).query("");
+                    ((MusicPlayerFragment.BtnLearningListener) mContext).toLearning2(sentenceid);
+                }
+            }
+        });
+        String wordText = "";
+        String wordUnique = (String) record.get("wordunique");
+        if (record.get("index") != null) {
+            wordText = ((int) record.get("index") + 1) + "/" + wordUnique;
         } else {
-            coursename = (position + 1) + "/" + coursename;
+            wordText = (position + 1) + "/" + wordUnique;
         }
-        vCourseName.setText(coursename);
-        vSentenceCount.setText((Integer) book.get("scount") + "");
+        vWord.setText(wordText);
+
+        TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
+        vSentenceCount.setText((Integer) record.get("scount") + "");
+
+        TextView vPlaytime = (TextView) convertView.findViewById(R.id.playtime);
+        Date playtime = (Date) record.get("playtime");
+        vPlaytime.setText(DateFormat.format("yyyy-MM-dd HH:mm:ss", playtime) + "");
         // Return the completed view to render on screen
         return convertView;
     }
@@ -60,10 +94,10 @@ public class CourseAdapter extends ArrayAdapter<Map<String, Object>> {
             @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-//                sentenceLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
+//                recordLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
 
-                sentenceLst.clear();
-                sentenceLst.addAll((ArrayList<Map<String, Object>>) results.values);
+                recordLst.clear();
+                recordLst.addAll((ArrayList<Map<String, Object>>) results.values);
                 notifyDataSetChanged();  // notifies the data with new filtered values
             }
 
@@ -73,7 +107,7 @@ public class CourseAdapter extends ArrayAdapter<Map<String, Object>> {
                 ArrayList<Map<String, Object>> FilteredArrList = new ArrayList<>();
 
                 if (mOriginalValues == null) {
-                    mOriginalValues = new ArrayList<Map<String, Object>>(sentenceLst); // saves the original data in mOriginalValues
+                    mOriginalValues = new ArrayList<Map<String, Object>>(recordLst); // saves the original data in mOriginalValues
                 }
 
                 /********
@@ -92,7 +126,7 @@ public class CourseAdapter extends ArrayAdapter<Map<String, Object>> {
                     for (int i = 0; i < mOriginalValues.size(); i++) {
                         Map<String, Object> data = mOriginalValues.get(i);
 
-                        if (condition.startsWith("b:")) {// query by book
+                        if (condition.startsWith("b:")) {// query by record
                             String bid = condition.substring(2);
                             Log.i("condition", condition);
                             Log.i("bid", bid);

@@ -273,6 +273,36 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public ArrayList<Map<String,Object>> history() {
+        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select r.*, count(*) as scount from play_record r group by r.sentenceid order by r.playtime desc", null);
+        res.moveToFirst();
+
+        int count = 0;
+        while (res.isAfterLast() == false) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("index", count++);
+            Integer wordid = res.getInt(res.getColumnIndex("wordid"));
+            Integer sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
+            String word = res.getString(res.getColumnIndex("word"));
+            map.put("sentenceid", sentenceid);
+            map.put("wordid", res.getInt(res.getColumnIndex("wordid")));
+            map.put("word", word);
+            map.put("wordunique", wordid + word + sentenceid);
+            Long playtime = res.getLong(res.getColumnIndex("playtime"));
+            map.put("playtime", new Date(playtime));
+
+            Integer scount = res.getInt(res.getColumnIndex("scount"));
+            map.put("scount", scount);
+            array_list.add(map);
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
 
 //
 //    public byte[] queryPronAudio(int wordId) {

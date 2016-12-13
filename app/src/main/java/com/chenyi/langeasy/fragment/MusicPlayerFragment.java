@@ -443,6 +443,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     // Container Activity must implement this interface
     public interface BtnLearningListener {
         public void toLearning(int songIndex);
+        public void toLearning2(int sentenceid);
     }
 
     private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener;

@@ -11,7 +11,6 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
-import com.chenyi.langeasy.fragment.BookListFragment;
 import com.chenyi.langeasy.fragment.BookTypeListFragment;
 import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
@@ -39,7 +38,7 @@ public class BooktypeAdapter extends ArrayAdapter<Map<String, Object>> {
         Map<String, Object> book = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.booktype_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_booktype, parent, false);
         }
 
         final String booktype = (String) book.get("booktype");
