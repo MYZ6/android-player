@@ -19,23 +19,23 @@
         <item
             android:id="@+id/navigation_learn"
             android:checked="true"
-            android:icon="@drawable/ic_allmusic_black_24dp"
+            android:icon="@drawable/ic_learn_24dp"
             android:title="Learn"/>
         <item
             android:id="@+id/navigation_listen"
-            android:icon="@drawable/ic_playlist_music_black_24dp"
+            android:icon="@drawable/ic_allmusic_black_24dp"
             android:title="Listen"/>
         <item
             android:id="@+id/navigation_booktype_list"
-            android:icon="@drawable/ic_playlist_music_black_24dp"
+            android:icon="@drawable/ic_booktype_24dp"
             android:title="Book Type"/>
         <item
             android:id="@+id/navigation_booklist"
-            android:icon="@drawable/ic_playlist_music_black_24dp"
+            android:icon="@drawable/ic_book_24dp"
             android:title="Book"/>
         <item
             android:id="@+id/navigation_courselist"
-            android:icon="@drawable/ic_playlist_music_black_24dp"
+            android:icon="@drawable/ic_course_24dp"
             android:title="Course"/>
         <item
             android:id="@+id/navigation_playlist"
@@ -43,11 +43,11 @@
             android:title="Playlist"/>
         <item
             android:id="@+id/navigation_history"
-            android:icon="@drawable/ic_playlist_music_black_24dp"
+            android:icon="@drawable/ic_history_24dp"
             android:title="History"/>
         <item
             android:id="@+id/navigation_rank"
-            android:icon="@drawable/ic_playlist_music_black_24dp"
+            android:icon="@drawable/ic_rank_24dp"
             android:title="Rank"/>
     </group>
 </menu>

@@ -220,6 +220,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         }
 
         LogHelper.i(TAG, "setTabSelection " + index);
+//        transaction.addToBackStack(null);
         transaction.commit();
     }
 

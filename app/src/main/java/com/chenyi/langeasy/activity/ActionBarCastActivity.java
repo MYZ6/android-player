@@ -65,46 +65,8 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         @Override
         public void onDrawerClosed(View drawerView) {
             if (mDrawerToggle != null) mDrawerToggle.onDrawerClosed(drawerView);
-            if (mItemToOpenWhenDrawerCloses >= 0) {
-                Bundle extras = ActivityOptions.makeCustomAnimation(
-                        ActionBarCastActivity.this, R.anim.fade_in, R.anim.fade_out).toBundle();
-                if (mItemLastClicked == mItemToOpenWhenDrawerCloses) {
-                    return;
-                }
-                Class activityClass = null;
-                String type = "activity";
-                LogHelper.i(TAG, "Fragment Type " + mItemToOpenWhenDrawerCloses);
-                switch (mItemToOpenWhenDrawerCloses) {
-                    case R.id.navigation_learn:
-//                        activityClass = MusicPlayerOldActivity.class;
-                        type = "learn";
-                        break;
-                    case R.id.navigation_listen:
-                        type = "listen";
-                        break;
-                    case R.id.navigation_booktype_list:
-                        type = "booktype_list";
-                        break;
-                    case R.id.navigation_booklist:
-                        type = "booklist";
-                        break;
-                    case R.id.navigation_playlist:
-                        type = "playlist";
-                        break;
-                    case R.id.navigation_courselist:
-                        type = "courselist";
-                        break;
-                }
-                if ("activity".equals(type)) {
-                    if (activityClass != null) {
-                        startActivity(new Intent(ActionBarCastActivity.this, activityClass), extras);
-                        finish();
-                    }
-                } else {
-                    toFragment(type);
-                }
-                mItemLastClicked = mItemToOpenWhenDrawerCloses;
-            }
+
+            triggerNavigation();
         }
 
         @Override
@@ -185,7 +147,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.drawer, menu);
+//        getMenuInflater().inflate(R.menu.drawer, menu);
         return true;
     }
 
@@ -237,7 +199,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             throw new IllegalStateException("Layout is required to include a Toolbar with id " +
                     "'toolbar'");
         }
-        mToolbar.inflateMenu(R.menu.drawer);
+//        mToolbar.inflateMenu(R.menu.drawer);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
@@ -280,6 +242,49 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             navigationView.setCheckedItem(R.id.navigation_listen);
         } else if (MusicPlayerOldActivity.class.isAssignableFrom(getClass())) {
             navigationView.setCheckedItem(R.id.navigation_learn);
+        }
+    }
+
+    private void triggerNavigation(){
+        if (mItemLastClicked == mItemToOpenWhenDrawerCloses) {
+            return;
+        }
+        if (mItemToOpenWhenDrawerCloses >= 0) {
+            Bundle extras = ActivityOptions.makeCustomAnimation(
+                    ActionBarCastActivity.this, R.anim.fade_in, R.anim.fade_out).toBundle();
+            Class activityClass = null;
+            String type = "activity";
+            LogHelper.i(TAG, "Fragment Type " + mItemToOpenWhenDrawerCloses);
+            switch (mItemToOpenWhenDrawerCloses) {
+                case R.id.navigation_learn:
+//                        activityClass = MusicPlayerOldActivity.class;
+                    type = "learn";
+                    break;
+                case R.id.navigation_listen:
+                    type = "listen";
+                    break;
+                case R.id.navigation_booktype_list:
+                    type = "booktype_list";
+                    break;
+                case R.id.navigation_booklist:
+                    type = "booklist";
+                    break;
+                case R.id.navigation_playlist:
+                    type = "playlist";
+                    break;
+                case R.id.navigation_courselist:
+                    type = "courselist";
+                    break;
+            }
+            if ("activity".equals(type)) {
+                if (activityClass != null) {
+                    startActivity(new Intent(ActionBarCastActivity.this, activityClass), extras);
+                    finish();
+                }
+            } else {
+                toFragment(type);
+            }
+            mItemLastClicked = mItemToOpenWhenDrawerCloses;
         }
     }
 
