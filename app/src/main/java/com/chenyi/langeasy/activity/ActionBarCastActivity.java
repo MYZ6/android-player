@@ -254,26 +254,33 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     ActionBarCastActivity.this, R.anim.fade_in, R.anim.fade_out).toBundle();
             Class activityClass = null;
             String type = "activity";
+            String title = "";
             LogHelper.i(TAG, "Fragment Type " + mItemToOpenWhenDrawerCloses);
             switch (mItemToOpenWhenDrawerCloses) {
                 case R.id.navigation_learn:
 //                        activityClass = MusicPlayerOldActivity.class;
                     type = "learn";
+                    title = "Learn";
                     break;
                 case R.id.navigation_listen:
                     type = "listen";
+                    title = "Listen";
                     break;
                 case R.id.navigation_booktype_list:
                     type = "booktype_list";
+                    title = "Book Type";
                     break;
                 case R.id.navigation_booklist:
                     type = "booklist";
+                    title = "Books";
                     break;
                 case R.id.navigation_playlist:
                     type = "playlist";
+                    title = "Playlist";
                     break;
                 case R.id.navigation_courselist:
                     type = "courselist";
+                    title = "Courses";
                     break;
             }
             if ("activity".equals(type)) {
@@ -285,6 +292,8 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                 toFragment(type);
             }
             mItemLastClicked = mItemToOpenWhenDrawerCloses;
+
+            mToolbar.setTitle(title);
         }
     }
 
@@ -292,20 +301,28 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         int itemId = -1;
+        String title = "";
         if ("listen".equals(type)) {
+            title = "Listen";
             itemId = R.id.navigation_listen;
         } else if ("learn".equals(type)) {
+            title = "Learn";
             itemId = R.id.navigation_learn;
         } else if ("booklist".equals(type)) {
+            title = "Books";
             itemId = R.id.navigation_booklist;
         } else if ("courselist".equals(type)) {
+            title = "Courses";
             itemId = R.id.navigation_courselist;
         } else if ("playlist".equals(type)) {
+            title = "Playlist";
             itemId = R.id.navigation_playlist;
         }
         navigationView.setCheckedItem(itemId);
         mItemToOpenWhenDrawerCloses = itemId;
         mItemLastClicked = mItemToOpenWhenDrawerCloses;
+
+        mToolbar.setTitle(title);
     }
 
     protected void updateDrawerToggle() {
