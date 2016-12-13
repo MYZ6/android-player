@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.Utilities;
 import com.chenyi.langeasy.list.SentenceAdapter;
 import com.chenyi.langeasy.activity.MainNewActivity;
 
@@ -105,6 +106,11 @@ public class PlayListFragment extends ListFragment {
         setListAdapter(sentenceAdapter);
 //        adapter.no
 
+        String filter = Utilities.getConfig(getActivity(), "playlist-filter");
+        if (!"0".equals(filter)) {
+            search_text.setText(filter);
+            Log.i("filter", filter + " ");
+        }
         return listLayout;
     }
 
@@ -113,6 +119,10 @@ public class PlayListFragment extends ListFragment {
 
     public void query(String condition) {
         search_text.setText(condition);
+    }
+
+    public void remember() {
+        Utilities.setConfig(getActivity(), "playlist-filter", search_text.getText() + "");
     }
 
     // Container Activity must implement this interface

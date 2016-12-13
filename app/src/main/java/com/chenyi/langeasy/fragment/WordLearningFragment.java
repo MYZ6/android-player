@@ -240,8 +240,8 @@ public class WordLearningFragment extends Fragment {
     }
 
     private void initConfig() {
-        int svalue = Utilities.getConfig(getActivity(), "isShuffle2");
-        if (svalue == 0) {
+        String svalue = Utilities.getConfig(getActivity(), "isShuffle2");
+        if ("0".equals(svalue)) {
             isShuffle = false;
             btnShuffle.setImageResource(R.drawable.btn_shuffle);
         }
@@ -385,7 +385,7 @@ public class WordLearningFragment extends Fragment {
                     isShuffle = false;
                     Toast.makeText(applicationContext, "Shuffle is OFF", Toast.LENGTH_SHORT).show();
                     btnShuffle.setImageResource(R.drawable.btn_shuffle);
-                    Utilities.setConfig(getActivity(), "isShuffle2", 0);
+                    Utilities.setConfig(getActivity(), "isShuffle2", "0");
                 } else {
                     // make repeat to true
                     isShuffle = true;
@@ -394,7 +394,7 @@ public class WordLearningFragment extends Fragment {
                     isRepeat = false;
                     btnShuffle.setImageResource(R.drawable.btn_shuffle_focused);
                     btnRepeat.setImageResource(R.drawable.btn_repeat);
-                    Utilities.setConfig(getActivity(), "isShuffle2", 1);
+                    Utilities.setConfig(getActivity(), "isShuffle2", "1");
                 }
             }
         });

@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.ImageView;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.Utilities;
 import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.fragment.BookListFragment;
 import com.chenyi.langeasy.fragment.BookTypeListFragment;
@@ -341,5 +342,10 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         setTabSelection(1);
         playListFragment.query(condition);
     }
+
+    public void remember() {
+        playListFragment.remember();
+    }
+
 
 }

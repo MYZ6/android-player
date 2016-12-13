@@ -71,20 +71,20 @@ public class Utilities {
         return currentDuration * 1000;
     }
 
-    public static int getConfig(Activity activity, String key) {
+    public static String getConfig(Activity activity, String key) {
         //实例化SharedPreferences对象
         SharedPreferences config = activity.getSharedPreferences("config", Activity.MODE_PRIVATE);
 
-        return config.getInt(key, 0);
+        return config.getString(key, "0");
     }
 
-    public static void setConfig(Activity activity, String key, int value) {
+    public static void setConfig(Activity activity, String key, String value) {
         //实例化SharedPreferences对象
         SharedPreferences config = activity.getSharedPreferences("config", Activity.MODE_PRIVATE); //实例化SharedPreferences.Editor对象
         SharedPreferences.Editor editor = config.edit();
 
         //用putString的方法保存数据
-        editor.putInt(key, value);
+        editor.putString(key, value);
 
         //提交数据
         editor.commit();

@@ -185,8 +185,8 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     }
 
     private void initConfig() {
-        int svalue = Utilities.getConfig(getActivity(), "isShuffle");
-        if (svalue == 0) {
+        String svalue = Utilities.getConfig(getActivity(), "isShuffle");
+        if ("0".equals(svalue)) {
             isShuffle = false;
             btnShuffle.setImageResource(R.drawable.btn_shuffle);
         }
@@ -399,7 +399,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                     isShuffle = false;
                     Toast.makeText(applicationContext, "Shuffle is OFF", Toast.LENGTH_SHORT).show();
                     btnShuffle.setImageResource(R.drawable.btn_shuffle);
-                    Utilities.setConfig(getActivity(), "isShuffle", 0);
+                    Utilities.setConfig(getActivity(), "isShuffle", "0");
 
                 } else {
                     // make repeat to true
@@ -409,10 +409,10 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                     isRepeat = false;
                     btnShuffle.setImageResource(R.drawable.btn_shuffle_focused);
                     btnRepeat.setImageResource(R.drawable.btn_repeat);
-                    Utilities.setConfig(getActivity(), "isShuffle", 1);
+                    Utilities.setConfig(getActivity(), "isShuffle", "1");
                 }
 
-                int svalue = Utilities.getConfig(getActivity(), "isShuffle");
+                String svalue = Utilities.getConfig(getActivity(), "isShuffle");
                 Log.i("isShuffle", svalue + " " + isShuffle);
             }
         });
@@ -443,6 +443,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     // Container Activity must implement this interface
     public interface BtnLearningListener {
         public void toLearning(int songIndex);
+
         public void toLearning2(int sentenceid);
     }
 
@@ -584,6 +585,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         Integer sentenceid = (Integer) song.get("sentenceid");
         String word = (String) song.get("word");
         mydb.addPlayRecord(wordid, word, sentenceid);
+        ((MainNewActivity)getActivity()).remember();
 
         int wordCount = mydb.queryWordCount(wordid);
 
