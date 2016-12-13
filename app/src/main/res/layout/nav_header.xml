@@ -17,17 +17,19 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="92dp"
+    android:layout_height="230dp"
     android:background="?attr/colorPrimaryDark"
-    android:padding="16dp"
+    android:padding="2dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:orientation="vertical"
     android:gravity="bottom">
 
-    <TextView
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/play_pause"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:text="Username"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+        android:layout_weight="2"
+        android:src="@drawable/glogo"
+        android:contentDescription="guoguo"/>
 
 </LinearLayout>
