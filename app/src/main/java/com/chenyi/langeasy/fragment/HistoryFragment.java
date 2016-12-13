@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -15,8 +16,10 @@ import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.list.BooktypeAdapter;
 import com.chenyi.langeasy.list.HistoryAdapter;
+import com.chenyi.langeasy.listener.ButtonPlayListListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
 
 public class HistoryFragment extends ListFragment {
@@ -26,6 +29,7 @@ public class HistoryFragment extends ListFragment {
     private HistoryAdapter historyAdapter;
     private EditText search_text;
     private ListView mListView;
+    private int sortType = 1;
 //    private ButtonPlayListListener btnPlayListListener;
 
     @Override
@@ -39,8 +43,44 @@ public class HistoryFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View listLayout = inflater.inflate(R.layout.playlist,
+        View listLayout = inflater.inflate(R.layout.history,
                 container, false);
+        final MainNewActivity activity = (MainNewActivity) getActivity();
+
+        Button bRefresh = (Button) listLayout.findViewById(R.id.btn_refresh);
+        bRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                historyListData = activity.getDBHelper().history();
+                historyAdapter.clear();
+                historyAdapter.addAll(historyListData);
+                historyAdapter.notifyDataSetChanged();
+            }
+        });
+        Button bSort = (Button) listLayout.findViewById(R.id.btn_sort);
+        bSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                historyAdapter.sort(new Comparator<Map<String, Object>>() {
+                    @Override
+                    public int compare(Map<String, Object> record1, Map<String, Object> record2) {
+                        Integer scount1 = (Integer) record1.get("scount");
+                        Integer scount2 = (Integer) record2.get("scount");
+                        int result = scount1.compareTo(scount2);
+                        if (sortType == 1) {
+                            return result;
+                        } else {
+                            return -result;
+                        }
+                    }
+                });
+                if (sortType == 1) {
+                    sortType = 2;
+                } else {
+                    sortType = 1;
+                }
+            }
+        });
 
 //        search_text = (EditText) listLayout.findViewById(R.id.book_search_text);
         search_text = (EditText) listLayout.findViewById(R.id.search_text);
@@ -60,7 +100,7 @@ public class HistoryFragment extends ListFragment {
             }
         });
 
-        final MainNewActivity activity = (MainNewActivity) getActivity();
+
         historyListData = activity.getDBHelper().history();
 
         // Adding menuItems to ListView

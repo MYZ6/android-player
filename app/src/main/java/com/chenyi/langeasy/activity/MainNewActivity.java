@@ -278,6 +278,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
 
     @Override
     public void onSentenceSelected(int songIndex) {
+        setNavigationStatus("learn");
         setTabSelection(3);
         wlearningFragment.playSong(songIndex);
     }
