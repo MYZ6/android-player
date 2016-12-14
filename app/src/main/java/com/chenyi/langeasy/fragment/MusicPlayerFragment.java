@@ -211,19 +211,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         updateProgressBar();
     }
 
-    private void startPlay(byte[] audioData, String type) {
-        File audioFile = null;
-        try {
-            audioFile = File.createTempFile("langeasy", type + "_audio");
-
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
-            bos.write(audioData);
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    private void startPlay(File audioFile) {
         // Play song
         try {
             mp.reset();
@@ -585,7 +573,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         Integer sentenceid = (Integer) song.get("sentenceid");
         String word = (String) song.get("word");
         mydb.addPlayRecord(wordid, word, sentenceid);
-        ((MainNewActivity)getActivity()).remember();
+        ((MainNewActivity) getActivity()).remember();
 
         int wordCount = mydb.queryWordCount(wordid);
 
@@ -603,31 +591,93 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         chineseLabel.setText((String) song.get("chinese"));
     }
 
+    private Integer lastWordId = -1;
+    private File lastWordAudio = null;
+
     private void playNumber(Map<String, Object> song) {
         Integer wordid = (Integer) song.get("wordid");
-        byte[] audioData = numberAudio.query(wordid);
-        if (audioData == null) {
-            playSentence(song);
-            lastPlayedAudioType = "sentence";
-            return;
+
+        File audioFile = null;
+
+        if (lastWordId == wordid) {
+            audioFile = lastWordAudio;
+        } else {
+            byte[] audioData = numberAudio.query(wordid);
+            if (audioData == null) {
+                lastPlayedAudioType = "number";
+                playPron(song);
+                return;
+            }
+
+            audioFile = getAudioFile(audioData, "number");
+            lastWordAudio = audioFile;
+            lastWordId = wordid;
         }
-        startPlay(audioData, "number");
+        startPlay(audioFile);
     }
+
+    private File getAudioFile(byte[] audioData, String type) {
+        File audioFile = null;
+        try {
+            audioFile = File.createTempFile("langeasy", type + "_audio");
+
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(audioFile));
+            bos.write(audioData);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return audioFile;
+    }
+
+    private Integer lastPwordId = -1;
+    private File lastPronAudio = null;
 
     private void playPron(Map<String, Object> song) {
         Integer wordid = (Integer) song.get("wordid");
-        byte[] audioData = pronAudio.query(wordid);
-        if (audioData == null) {
-            playSentence(song);
-            lastPlayedAudioType = "sentence";
-            return;
+
+        File audioFile = null;
+
+        if (lastPwordId == wordid) {
+            audioFile = lastPronAudio;
+        } else {
+            byte[] audioData = pronAudio.query(wordid);
+            if (audioData == null) {
+                lastPlayedAudioType = "pron";
+                playSentence(song);
+                return;
+            }
+
+            audioFile = getAudioFile(audioData, "pron");
+            lastPronAudio = audioFile;
+            lastPwordId = wordid;
         }
-        startPlay(audioData, "pron");
+
+        Log.i("lastWordId", lastWordId + "");
+        Log.i("wordid", wordid + "");
+        Log.i("audioFile", audioFile.getName() + "");
+        startPlay(audioFile);
     }
+
+    private Integer lastSentenceId = -1;
+    private File lastSentenceAudio = null;
 
     private void playSentence(Map<String, Object> song) {
         Integer sentenceid = (Integer) song.get("sentenceid");
-        startPlay(sentenceAudio.query(sentenceid), "sentence");
+
+        File audioFile = null;
+
+        if (lastSentenceId == sentenceid) {
+            audioFile = lastSentenceAudio;
+        } else {
+            byte[] audioData = sentenceAudio.query(sentenceid);
+
+            audioFile = getAudioFile(audioData, "sentence");
+            lastSentenceAudio = audioFile;
+            lastSentenceId = sentenceid;
+        }
+        startPlay(audioFile);
     }
 
     /**
