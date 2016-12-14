@@ -18,7 +18,7 @@ import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.list.BookAdapter;
 import com.chenyi.langeasy.list.CourseAdapter;
-import com.chenyi.langeasy.listener.ButtonPlayListListener;
+import com.chenyi.langeasy.listener.FragmentExchangeListener;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,14 +28,14 @@ public class CourseListFragment extends ListFragment {
     private CourseAdapter courseAdapter;
     private EditText search_text;
     private ListView mListView;
-    private ButtonPlayListListener btnPlayListListener;
+    private FragmentExchangeListener btnPlayListListener;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         final Activity activity = getActivity();
-        btnPlayListListener = (ButtonPlayListListener) activity;
+        btnPlayListListener = (FragmentExchangeListener) activity;
 
         // selecting single ListView item
         mListView = getListView();

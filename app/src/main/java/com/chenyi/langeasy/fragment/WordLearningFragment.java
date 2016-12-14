@@ -26,11 +26,10 @@ import android.widget.Toast;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.Utilities;
-import com.chenyi.langeasy.activity.MainActivity;
 import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.db.DBHelper;
-import com.chenyi.langeasy.listener.ButtonPlayListListener;
+import com.chenyi.langeasy.listener.FragmentExchangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +76,7 @@ public class WordLearningFragment extends Fragment {
 
     private DBHelper mydb;
 
-    private ButtonPlayListListener btnPlayListListener;
+    private FragmentExchangeListener btnPlayListListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,7 +86,7 @@ public class WordLearningFragment extends Fragment {
         MainNewActivity activity = (MainNewActivity) getActivity();
         songsList = activity.songsList;//songManager.getPlayList(mydb);
 
-        btnPlayListListener = (ButtonPlayListListener) activity;
+        btnPlayListListener = (FragmentExchangeListener) activity;
 
         Log.i("init songsList size", songsList.size() + "");
 

@@ -26,7 +26,7 @@ public class BookTypeListFragment extends ListFragment {
     private BooktypeAdapter booktypeAdapter;
     private EditText search_text;
     private ListView mListView;
-//    private ButtonPlayListListener btnPlayListListener;
+//    private FragmentExchangeListener btnPlayListListener;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

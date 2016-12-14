@@ -23,14 +23,14 @@ public class BookListFragment extends ListFragment {
     private BookAdapter bookAdapter;
     private EditText search_text;
     private ListView mListView;
-//    private ButtonPlayListListener btnPlayListListener;
+//    private FragmentExchangeListener btnPlayListListener;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
 //        final Activity activity = getActivity();
-//        btnPlayListListener = (ButtonPlayListListener) activity;
+//        btnPlayListListener = (FragmentExchangeListener) activity;
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception

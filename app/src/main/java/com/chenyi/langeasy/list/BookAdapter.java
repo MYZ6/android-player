@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.fragment.BookListFragment;
-import com.chenyi.langeasy.listener.ButtonPlayListListener;
+import com.chenyi.langeasy.listener.FragmentExchangeListener;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -47,8 +47,8 @@ public class BookAdapter extends ArrayAdapter<Map<String, Object>> {
         booknameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mContext instanceof ButtonPlayListListener){
-                    ((ButtonPlayListListener)mContext).query("b:" + bookid);
+                if(mContext instanceof FragmentExchangeListener){
+                    ((FragmentExchangeListener)mContext).query("b:" + bookid);
                 }
             }
         });

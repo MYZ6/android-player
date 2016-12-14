@@ -22,7 +22,7 @@ import com.chenyi.langeasy.fragment.MusicPlayerFragment;
 import com.chenyi.langeasy.fragment.PlayListFragment;
 import com.chenyi.langeasy.fragment.SettingFragment;
 import com.chenyi.langeasy.fragment.WordLearningFragment;
-import com.chenyi.langeasy.listener.ButtonPlayListListener;
+import com.chenyi.langeasy.listener.FragmentExchangeListener;
 import com.chenyi.langeasy.ui.MusicPlayerActivity;
 import com.chenyi.langeasy.util.LogHelper;
 
@@ -34,8 +34,8 @@ import java.util.Map;
  *
  * @author guolin
  */
-public class MainNewActivity extends BaseActivity implements OnClickListener, ButtonPlayListListener,
-        MusicPlayerFragment.BtnLearningListener, PlayListFragment.OnSentenceSelectedListener, BookTypeListFragment.OnItemSelectedListener, BookListFragment.OnItemSelectedListener, WordLearningFragment.OnPlayListener {
+public class MainNewActivity extends BaseActivity implements OnClickListener, FragmentExchangeListener,
+        PlayListFragment.OnSentenceSelectedListener, BookTypeListFragment.OnItemSelectedListener, BookListFragment.OnItemSelectedListener, WordLearningFragment.OnPlayListener {
 
     private static final String TAG = LogHelper.makeLogTag(MainNewActivity.class);
     /**
@@ -329,13 +329,6 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         wlearningFragment.playSong(songIndex);
     }
 
-    @Override
-    public void toLearning2(int sentenceid) {
-        setNavigationStatus("learn");
-        setTabSelection(3);
-        int songIndex = findIndex(sentenceid);
-        wlearningFragment.playSong(songIndex);
-    }
 
     @Override
     public void toList(int songIndex) {
@@ -352,6 +345,24 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         setNavigationStatus("history");
         setTabSelection(7);
         historyFragment.query(condition);
+    }
+
+
+    public interface PlayListResetCallback {
+        void afterReset();
+    }
+
+    @Override
+    public void h2learn(final Integer sentenceid) {
+        PlayListResetCallback prCallback = new PlayListResetCallback(){
+            @Override
+            public void afterReset() {
+                int songIndex = findIndex(sentenceid);
+                toLearning(songIndex);
+            }
+        };
+        playListFragment.reset(prCallback);
+
     }
 
     public void remember() {

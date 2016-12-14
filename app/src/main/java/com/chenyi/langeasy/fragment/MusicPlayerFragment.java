@@ -24,7 +24,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chenyi.langeasy.activity.MainActivity;
 import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.R;
@@ -34,7 +33,7 @@ import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.db.NumberAudio;
 import com.chenyi.langeasy.db.PronAudio;
 import com.chenyi.langeasy.db.SentenceAudio;
-import com.chenyi.langeasy.listener.ButtonPlayListListener;
+import com.chenyi.langeasy.listener.FragmentExchangeListener;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -91,7 +90,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     private PronAudio pronAudio;
     private NumberAudio numberAudio;
 
-    private ButtonPlayListListener btnPlayListListener;
+    private FragmentExchangeListener fragmentExchangeListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,8 +101,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         songsList = activity.songsList;//songManager.getPlayList(mydb);
 
 
-        btnPlayListListener = (ButtonPlayListListener) activity;
-        btnLearningListener = (BtnLearningListener) activity;
+        fragmentExchangeListener = (FragmentExchangeListener) activity;
 
         mydb = new DBHelper(activity);
         sentenceAudio = new SentenceAudio(activity);
@@ -421,19 +419,12 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
 
             @Override
             public void onClick(View arg0) {
-                btnLearningListener.toLearning(currentSongIndex);
+                fragmentExchangeListener.toLearning(currentSongIndex);
             }
         });
     }
 
-    BtnLearningListener btnLearningListener;
 
-    // Container Activity must implement this interface
-    public interface BtnLearningListener {
-        public void toLearning(int songIndex);
-
-        public void toLearning2(int sentenceid);
-    }
 
     private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener;
     private boolean transientPause = false;

@@ -30,7 +30,7 @@ public class HistoryFragment extends ListFragment {
     private ListView mListView;
     private int dataType = 1;
     private int sortType = 1;
-//    private ButtonPlayListListener btnPlayListListener;
+//    private FragmentExchangeListener btnPlayListListener;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

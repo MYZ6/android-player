@@ -3,7 +3,7 @@ package com.chenyi.langeasy.listener;
 /**
  * Created by liyzh on 2016/10/18.
  */
-public interface ButtonPlayListListener {
+public interface FragmentExchangeListener {
     void toList(int songIndex);
 
     void query(String condition);
@@ -13,4 +13,13 @@ public interface ButtonPlayListListener {
      * @param condition
      */
     void hquery(String condition);
+
+     void toLearning(int songIndex);
+
+    /**
+     * history to learn
+     * @param sentenceid
+     */
+    void h2learn(final Integer sentenceid);
+
 }

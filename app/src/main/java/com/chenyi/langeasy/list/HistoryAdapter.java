@@ -15,7 +15,8 @@ import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.fragment.BookTypeListFragment;
 import com.chenyi.langeasy.fragment.MusicPlayerFragment;
-import com.chenyi.langeasy.listener.ButtonPlayListListener;
+import com.chenyi.langeasy.listener.FragmentExchangeListener;
+import com.chenyi.langeasy.listener.FragmentExchangeListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,8 +52,8 @@ public class HistoryAdapter extends ArrayAdapter<Map<String, Object>> {
         vWord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mContext instanceof ButtonPlayListListener) {
-                    ((ButtonPlayListListener) mContext).query(word);
+                if (mContext instanceof FragmentExchangeListener) {
+                    ((FragmentExchangeListener) mContext).query(word);
                 }
             }
         });
@@ -62,9 +63,8 @@ public class HistoryAdapter extends ArrayAdapter<Map<String, Object>> {
         bLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mContext instanceof ButtonPlayListListener) {
-                    ((ButtonPlayListListener) mContext).query("");
-                    ((MusicPlayerFragment.BtnLearningListener) mContext).toLearning2(sentenceid);
+                if (mContext instanceof FragmentExchangeListener) {
+                    ((FragmentExchangeListener) mContext).h2learn(sentenceid);
                 }
             }
         });

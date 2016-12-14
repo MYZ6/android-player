@@ -67,6 +67,15 @@ public class PlayListFragment extends ListFragment {
 
     }
 
+    MainNewActivity.PlayListResetCallback prCallback;
+    boolean reset = false;
+
+    public void reset(MainNewActivity.PlayListResetCallback prCallback) {
+        this.prCallback = prCallback;
+        reset = true;
+        search_text.setText("");
+    }
+
     public interface AdapterCallback {
         void filterFinished();
     }
@@ -104,9 +113,12 @@ public class PlayListFragment extends ListFragment {
         AdapterCallback adapterCallback = new AdapterCallback() {
             @Override
             public void filterFinished() {
-                if(init[0]){
+                if (init[0]) {
                     activity.setTabSelection(3);// waiting playlist filter finished
                     init[0] = false;
+                } else if (reset) {
+                    prCallback.afterReset();
+                    reset = false;
                 }
             }
         };
