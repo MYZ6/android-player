@@ -52,6 +52,11 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
             text = (position + 1) + "/" + text;
         }
         songTitle.setText(text);
+
+        TextView vBooktype = (TextView) convertView.findViewById(R.id.booktype);
+        vBooktype.setText((String) sentence.get("booktype"));
+        TextView vBookname = (TextView) convertView.findViewById(R.id.bookname);
+        vBookname.setText((String) sentence.get("bookname"));
         // Return the completed view to render on screen
         return convertView;
     }

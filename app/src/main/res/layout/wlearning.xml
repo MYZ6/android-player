@@ -62,15 +62,6 @@
             android:textColor="#eeeeee"
             android:text="Total"
             android:textStyle="bold" />
-        <TextView
-            android:id="@+id/playrecord_wtotal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:textColor="#eeeeee"
-            android:text="WTotal"
-            android:textStyle="bold" />
         <!-- Total Duration Label -->
         <TextView
             android:id="@+id/playrecord_stotal"
@@ -138,6 +129,18 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/timerDisplay"
         android:gravity="center">
+
+        <TextView
+            android:id="@+id/playrecord_wtotal"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:layout_weight="0"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:textColor="#eeeeee"
+            android:text="WTotal"
+            android:textStyle="bold" />
         <!-- Repeat Button -->
         <ImageButton
             android:id="@+id/btnRepeat"

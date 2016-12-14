@@ -98,6 +98,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
 //        }
         setTabSelection(4);
         setTabSelection(5);
+        setTabSelection(7);
 //        setTabSelection(3);
 
         LogHelper.i(TAG, "Activity onCreate");
@@ -346,6 +347,11 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         setNavigationStatus("playlist");
         setTabSelection(1);
         playListFragment.query(condition);
+    }@Override
+    public void hquery(String condition) {
+        setNavigationStatus("history");
+        setTabSelection(7);
+        historyFragment.query(condition);
     }
 
     public void remember() {

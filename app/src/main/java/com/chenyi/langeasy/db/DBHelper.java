@@ -282,8 +282,10 @@ public class DBHelper extends SQLiteOpenHelper {
         if (dataType == 2) {
             groupField = "wordid";
         }
-        String sql = "select r.*, count(*) as scount from play_record r " +
-                "inner join vocabulary v on v.wordid = r.wordid and ifnull(v.pass, 0) !=1 group by r." + groupField +
+        String sql = "select r.*, s.bookname, s.booktype, count(*) as scount from play_record r " +
+                "inner join vocabulary v on v.wordid = r.wordid and ifnull(v.pass, 0) !=1 " +
+                "inner join sentence s on s.sentenceid = r.sentenceid " +
+                "group by r." + groupField +
                 " order by r.playtime desc";
         Cursor res = db.rawQuery(sql, null);
         res.moveToFirst();
@@ -297,6 +299,8 @@ public class DBHelper extends SQLiteOpenHelper {
             String word = res.getString(res.getColumnIndex("word"));
             map.put("sentenceid", sentenceid);
             map.put("wordid", res.getInt(res.getColumnIndex("wordid")));
+            map.put("booktype", res.getString(res.getColumnIndex("booktype")));
+            map.put("bookname", res.getString(res.getColumnIndex("bookname")));
             map.put("word", word);
             map.put("wordunique", wordid + word + sentenceid);
             Long playtime = res.getLong(res.getColumnIndex("playtime"));

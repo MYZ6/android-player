@@ -13,14 +13,16 @@
         android:layout_height="wrap_content"
         android:textSize="16dp"
         android:padding="10dp"
-        android:color="#f3f3f3"/>
+        android:textColor="#f8f888"
+        android:text="booktype"/>
     <TextView
         android:id="@+id/sentence_count"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="16dp"
         android:padding="10dp"
-        android:color="#f3f3f3"/>
+        android:textColor="#18f888"
+        android:text="125"/>
     <Button
         android:id="@+id/btn_books"
         android:layout_width="wrap_content"

@@ -7,4 +7,10 @@ public interface ButtonPlayListListener {
     void toList(int songIndex);
 
     void query(String condition);
+
+    /**
+     * history query
+     * @param condition
+     */
+    void hquery(String condition);
 }

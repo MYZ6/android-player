@@ -264,6 +264,15 @@ public class WordLearningFragment extends Fragment {
                 btnPlayListListener.query("b:" + bookid);
             }
         });
+        playrecordWtotalLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Map<String, Object> map = songsList.get(currentSongIndex);
+                String word = (String) map.get("word");
+                btnPlayListListener.hquery(word);
+            }
+        });
+
 
         /**
          * Play button click event

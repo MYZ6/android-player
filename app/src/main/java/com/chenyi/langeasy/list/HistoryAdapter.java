@@ -79,6 +79,10 @@ public class HistoryAdapter extends ArrayAdapter<Map<String, Object>> {
 
         TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
         vSentenceCount.setText((Integer) record.get("scount") + "");
+        TextView vBooktype = (TextView) convertView.findViewById(R.id.booktype);
+        vBooktype.setText((String) record.get("booktype"));
+        TextView vBookname = (TextView) convertView.findViewById(R.id.bookname);
+        vBookname.setText((String) record.get("bookname"));
 
         TextView vPlaytime = (TextView) convertView.findViewById(R.id.playtime);
         Date playtime = (Date) record.get("playtime");

@@ -285,4 +285,9 @@ public class MainActivity extends Activity implements OnClickListener, ButtonPla
         setTabSelection(1);
         playListFragment.query(condition);
     }
+
+    @Override
+    public void hquery(String condition) {
+
+    }
 }
