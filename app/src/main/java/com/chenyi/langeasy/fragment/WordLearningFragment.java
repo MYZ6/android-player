@@ -222,6 +222,7 @@ public class WordLearningFragment extends Fragment {
         Integer sentenceid = mydb.queryLastPlayRecord();
         if (sentenceid != null) {
             int index = findIndex(sentenceid);
+            Log.i("findIndex", index + "");
             playSong(index);
         } else {
             // By default play first song
@@ -230,11 +231,13 @@ public class WordLearningFragment extends Fragment {
     }
 
     private int findIndex(Integer sentenceid) {
+        int i = 0;
         for (Map<String, Object> sentence : songsList) {
             int sid = (int) sentence.get("sentenceid");
             if (sid == sentenceid) {
                 return (int) sentence.get("index");
             }
+            i++;
         }
         return 0;
     }
@@ -426,12 +429,8 @@ public class WordLearningFragment extends Fragment {
         if (songIndex > -1) {
 //            return;
         }
-        Log.i("songsList size", songsList.size() + "");
-        Log.i("songIndex", songIndex + "");
         Map<String, Object> song = songsList.get(songIndex);
         currentSongIndex = songIndex;
-
-        Log.i("song", song.toString() + "");
 
         setPlayInfo(song);
     }

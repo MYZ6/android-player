@@ -91,9 +91,14 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
         // 第一次启动时选中第0个tab
         setTabSelection(0);
         setTabSelection(1);
+//        try {
+//            Thread.sleep(1200);// waiting playlist filter finished
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         setTabSelection(4);
         setTabSelection(5);
-        setTabSelection(3);
+//        setTabSelection(3);
 
         LogHelper.i(TAG, "Activity onCreate");
     }
@@ -133,7 +138,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Bu
      *
      * @param index 每个tab页对应的下标。0表示消息，1表示联系人，2表示动态，3表示设置。
      */
-    private void setTabSelection(int index) {
+    public void setTabSelection(int index) {
         // 每次选中之前先清楚掉上次的选中状态
         clearSelection();
         // 开启一个Fragment事务

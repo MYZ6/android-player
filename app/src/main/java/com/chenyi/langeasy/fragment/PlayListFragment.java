@@ -67,6 +67,10 @@ public class PlayListFragment extends ListFragment {
 
     }
 
+    public interface AdapterCallback {
+        void filterFinished();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,9 +100,19 @@ public class PlayListFragment extends ListFragment {
         songsListData = activity.songsList;
         ;//songManager.getPlayList(mydb);
 
+        final boolean[] init = {false};
+        AdapterCallback adapterCallback = new AdapterCallback() {
+            @Override
+            public void filterFinished() {
+                if(init[0]){
+                    activity.setTabSelection(3);// waiting playlist filter finished
+                    init[0] = false;
+                }
+            }
+        };
 
         // Adding menuItems to ListView
-        sentenceAdapter = new SentenceAdapter(activity, songsListData);
+        sentenceAdapter = new SentenceAdapter(activity, adapterCallback, songsListData);
 //        ListAdapter adapter = new SimpleAdapter(this, songsListData,
 //                R.layout.playlist_item, new String[]{"wordunique"}, new int[]{
 //                R.id.songTitle});
@@ -108,6 +122,7 @@ public class PlayListFragment extends ListFragment {
 
         String filter = Utilities.getConfig(getActivity(), "playlist-filter");
         if (!"0".equals(filter)) {
+            init[0] = true;
             search_text.setText(filter);
             Log.i("filter", filter + " ");
         }

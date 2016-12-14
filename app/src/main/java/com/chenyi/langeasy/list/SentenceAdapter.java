@@ -10,8 +10,10 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.fragment.PlayListFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,9 +22,11 @@ import java.util.Map;
 public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
     private ArrayList<Map<String, Object>> sentenceLst;
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
+    private PlayListFragment.AdapterCallback mAdapterCallback;
 
-    public SentenceAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
+    public SentenceAdapter(Context context, PlayListFragment.AdapterCallback adapterCallback, ArrayList<Map<String, Object>> sentenceLst) {
         super(context, 0, sentenceLst);
+        this.mAdapterCallback = adapterCallback;
 
         this.sentenceLst = sentenceLst;
     }
@@ -63,7 +67,9 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
 
                 sentenceLst.clear();
                 sentenceLst.addAll((ArrayList<Map<String, Object>>) results.values);
+                Log.i("sentenceLst size", sentenceLst.size() + "");
                 notifyDataSetChanged();  // notifies the data with new filtered values
+                mAdapterCallback.filterFinished();
             }
 
             @Override
@@ -73,6 +79,12 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
 
                 if (mOriginalValues == null) {
                     mOriginalValues = new ArrayList<Map<String, Object>>(sentenceLst); // saves the original data in mOriginalValues
+//                    mOriginalValues = new ArrayList<Map<String, Object>>(); // deep copy list
+//                    for(Map<String, Object> sentence: sentenceLst){
+//                        Map<String, Object> shallowCopy = new HashMap<String, Object>();
+//                        shallowCopy.putAll(sentence);// shallow copy map
+//                        mOriginalValues.add(shallowCopy);
+//                    }
                 }
 
                 /********
@@ -93,11 +105,11 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
 
                         if (condition.startsWith("bt:")) {// query by book
                             String bt = condition.substring(3);
-                            Log.i("condition", condition);
-                            Log.i("bt", bt);
+//                            Log.i("condition", condition);
+//                            Log.i("bt", bt);
                             String booktype = (String) data.get("booktype");
                             booktype= booktype.toLowerCase().trim();
-                            Log.i("booktype", booktype);
+//                            Log.i("booktype", booktype);
                             if (booktype.equals(bt)) {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);

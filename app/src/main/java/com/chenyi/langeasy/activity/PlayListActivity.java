@@ -44,7 +44,7 @@ public class PlayListActivity extends ListActivity {
 
 
         // Adding menuItems to ListView
-        sentenceAdapter = new SentenceAdapter(this, songsListData);
+        sentenceAdapter = new SentenceAdapter(this, null, songsListData);
 //        ListAdapter adapter = new SimpleAdapter(this, songsListData,
 //                R.layout.playlist_item, new String[]{"wordunique"}, new int[]{
 //                R.id.songTitle});
@@ -61,7 +61,7 @@ public class PlayListActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Map<String, Object> sentence = sentenceAdapter.getItem(position);
-                Integer index = (Integer)sentence.get("index");
+                Integer index = (Integer) sentence.get("index");
 
                 // Starting new intent
                 Intent in = new Intent(getApplicationContext(),
@@ -74,7 +74,7 @@ public class PlayListActivity extends ListActivity {
             }
         });
 
-         search_text = (EditText) findViewById(R.id.search_text);
+        search_text = (EditText) findViewById(R.id.search_text);
 
         search_text.addTextChangedListener(new TextWatcher() {
 
