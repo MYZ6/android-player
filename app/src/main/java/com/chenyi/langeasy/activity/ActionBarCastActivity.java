@@ -238,9 +238,9 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                         return true;
                     }
                 });
-        if (MusicPlayerOldActivity.class.isAssignableFrom(getClass())) {
+        if (MainNewActivity.class.isAssignableFrom(getClass())) {
             navigationView.setCheckedItem(R.id.navigation_listen);
-        } else if (MusicPlayerOldActivity.class.isAssignableFrom(getClass())) {
+        } else if (MainNewActivity.class.isAssignableFrom(getClass())) {
             navigationView.setCheckedItem(R.id.navigation_learn);
         }
     }
@@ -285,6 +285,10 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                 case R.id.navigation_history:
                     type = "history";
                     title = "History";
+                    break;
+                case R.id.navigation_passlist:
+                    type = "passlist";
+                    title = "Pass List";
                     break;
             }
             if ("activity".equals(type)) {

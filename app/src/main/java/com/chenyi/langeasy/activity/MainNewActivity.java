@@ -19,6 +19,7 @@ import com.chenyi.langeasy.fragment.BookTypeListFragment;
 import com.chenyi.langeasy.fragment.CourseListFragment;
 import com.chenyi.langeasy.fragment.HistoryFragment;
 import com.chenyi.langeasy.fragment.MusicPlayerFragment;
+import com.chenyi.langeasy.fragment.PassListFragment;
 import com.chenyi.langeasy.fragment.PlayListFragment;
 import com.chenyi.langeasy.fragment.SettingFragment;
 import com.chenyi.langeasy.fragment.WordLearningFragment;
@@ -47,6 +48,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
     private BookTypeListFragment bookTypeListFragment;
     private CourseListFragment courseListFragment;
     private HistoryFragment historyFragment;
+    private PassListFragment passListFragment;
 
     /**
      * 用于展示联系人的Fragment
@@ -85,7 +87,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
 
 
         mydb = new DBHelper(this);
-        songsList = mydb.listSentence();
+        songsList = mydb.listSentence("");
 
 //        playerFragment = new MusicPlayerFragment();
         // 第一次启动时选中第0个tab
@@ -121,6 +123,8 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
             setTabSelection(1);
         } else if ("history".equals(type)) {
             setTabSelection(7);
+        } else if ("passlist".equals(type)) {
+            setTabSelection(8);
         }
     }
 
@@ -160,79 +164,67 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
                 }
                 break;
             case 1:
-                // 当点击了联系人tab时，改变控件的图片和文字颜色
-//                contactsImage.setImageResource(R.drawable.contacts_selected);
                 if (playListFragment == null) {
-                    // 如果ContactsFragment为空，则创建一个并添加到界面上
                     playListFragment = new PlayListFragment();
                     transaction.add(R.id.content, playListFragment);
                 } else {
-                    // 如果ContactsFragment不为空，则直接将它显示出来
                     transaction.show(playListFragment);
                 }
                 break;
             case 2:
-                // 当点击了动态tab时，改变控件的图片和文字颜色
-//                settingImage.setImageResource(R.drawable.setting_selected);
                 if (settingFragment == null) {
-                    // 如果NewsFragment为空，则创建一个并添加到界面上
                     settingFragment = new SettingFragment();
                     transaction.add(R.id.content, settingFragment);
                 } else {
-                    // 如果NewsFragment不为空，则直接将它显示出来
                     transaction.show(settingFragment);
                 }
                 break;
             case 3:
-                // 当点击了消息tab时，改变控件的图片和文字颜色
-//                wlearningImage.setImageResource(R.drawable.news_selected);
                 if (wlearningFragment == null) {
-                    // 如果MessageFragment为空，则创建一个并添加到界面上
                     wlearningFragment = new WordLearningFragment();
                     transaction.add(R.id.content, wlearningFragment);
                 } else {
-                    // 如果MessageFragment不为空，则直接将它显示出来
                     transaction.show(wlearningFragment);
                 }
                 break;
             case 6:
                 if (bookTypeListFragment == null) {
-                    // 如果MessageFragment为空，则创建一个并添加到界面上
                     bookTypeListFragment = new BookTypeListFragment();
                     transaction.add(R.id.content, bookTypeListFragment);
                 } else {
-                    // 如果MessageFragment不为空，则直接将它显示出来
                     transaction.show(bookTypeListFragment);
                 }
                 break;
             case 4:
                 if (bookListFragment == null) {
-                    // 如果MessageFragment为空，则创建一个并添加到界面上
                     bookListFragment = new BookListFragment();
                     transaction.add(R.id.content, bookListFragment);
                 } else {
-                    // 如果MessageFragment不为空，则直接将它显示出来
                     transaction.show(bookListFragment);
                 }
                 break;
             case 5:
                 if (courseListFragment == null) {
-                    // 如果MessageFragment为空，则创建一个并添加到界面上
                     courseListFragment = new CourseListFragment();
                     transaction.add(R.id.content, courseListFragment);
                 } else {
-                    // 如果MessageFragment不为空，则直接将它显示出来
                     transaction.show(courseListFragment);
                 }
                 break;
             case 7:
                 if (historyFragment == null) {
-                    // 如果MessageFragment为空，则创建一个并添加到界面上
                     historyFragment = new HistoryFragment();
                     transaction.add(R.id.content, historyFragment);
                 } else {
-                    // 如果MessageFragment不为空，则直接将它显示出来
                     transaction.show(historyFragment);
+                }
+                break;
+            case 8:
+                if (passListFragment == null) {
+                    passListFragment = new PassListFragment();
+                    transaction.add(R.id.content, passListFragment);
+                } else {
+                    transaction.show(passListFragment);
                 }
                 break;
             default:
@@ -280,6 +272,9 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
         }
         if (historyFragment != null) {
             transaction.hide(historyFragment);
+        }
+        if (passListFragment != null) {
+            transaction.hide(passListFragment);
         }
     }
 
@@ -340,7 +335,9 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
         setNavigationStatus("playlist");
         setTabSelection(1);
         playListFragment.query(condition);
-    }@Override
+    }
+
+    @Override
     public void hquery(String condition) {
         setNavigationStatus("history");
         setTabSelection(7);
@@ -354,7 +351,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
 
     @Override
     public void h2learn(final Integer sentenceid) {
-        PlayListResetCallback prCallback = new PlayListResetCallback(){
+        PlayListResetCallback prCallback = new PlayListResetCallback() {
             @Override
             public void afterReset() {
                 int songIndex = findIndex(sentenceid);

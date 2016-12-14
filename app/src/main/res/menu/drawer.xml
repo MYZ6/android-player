@@ -46,8 +46,12 @@
             android:icon="@drawable/ic_history_24dp"
             android:title="History"/>
         <item
-            android:id="@+id/navigation_rank"
+            android:id="@+id/navigation_queue"
+            android:icon="@drawable/ic_queue_24dp"
+            android:title="Queue"/>
+        <item
+            android:id="@+id/navigation_passlist"
             android:icon="@drawable/ic_rank_24dp"
-            android:title="Rank"/>
+            android:title="Pass List"/>
     </group>
 </menu>

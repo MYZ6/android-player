@@ -190,12 +190,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return array_list;
     }
 
-    public ArrayList<Map<String, Object>> listSentence() {
+    public ArrayList<Map<String, Object>> listSentence(String type) {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select s.* from sentence s inner join vocabulary v on v.wordid = s.wordid and ifnull(v.pass, 0) !=1", null);
+        String condition = "and ifnull(v.pass, 0) !=1";
+        if ("passed".equals(type)) {
+            condition = "and ifnull(v.pass, 0) =1 group by v.wordid";
+        }
+        String sql = "select s.* from sentence s inner join vocabulary v on v.wordid = s.wordid " + condition;
+        Cursor res = db.rawQuery(sql, null);
         res.moveToFirst();
 
         int count = 0;

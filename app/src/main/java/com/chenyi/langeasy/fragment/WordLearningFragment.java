@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.Utilities;
 import com.chenyi.langeasy.activity.MainNewActivity;
-import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.listener.FragmentExchangeListener;
 

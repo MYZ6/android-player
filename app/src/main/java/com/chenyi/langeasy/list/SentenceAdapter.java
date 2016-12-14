@@ -24,6 +24,12 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
     private PlayListFragment.AdapterCallback mAdapterCallback;
 
+    public SentenceAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
+        super(context, 0, sentenceLst);
+
+        this.sentenceLst = sentenceLst;
+    }
+
     public SentenceAdapter(Context context, PlayListFragment.AdapterCallback adapterCallback, ArrayList<Map<String, Object>> sentenceLst) {
         super(context, 0, sentenceLst);
         this.mAdapterCallback = adapterCallback;
@@ -74,7 +80,9 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
                 sentenceLst.addAll((ArrayList<Map<String, Object>>) results.values);
                 Log.i("sentenceLst size", sentenceLst.size() + "");
                 notifyDataSetChanged();  // notifies the data with new filtered values
-                mAdapterCallback.filterFinished();
+                if (mAdapterCallback != null) {
+                    mAdapterCallback.filterFinished();
+                }
             }
 
             @Override
@@ -113,7 +121,7 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
 //                            Log.i("condition", condition);
 //                            Log.i("bt", bt);
                             String booktype = (String) data.get("booktype");
-                            booktype= booktype.toLowerCase().trim();
+                            booktype = booktype.toLowerCase().trim();
 //                            Log.i("booktype", booktype);
                             if (booktype.equals(bt)) {
                                 data.put("index", count++);

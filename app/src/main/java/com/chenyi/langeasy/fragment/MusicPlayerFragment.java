@@ -25,9 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenyi.langeasy.activity.MainNewActivity;
-import com.chenyi.langeasy.activity.PlayListActivity;
 import com.chenyi.langeasy.R;
-import com.chenyi.langeasy.SongsManager;
 import com.chenyi.langeasy.Utilities;
 import com.chenyi.langeasy.db.DBHelper;
 import com.chenyi.langeasy.db.NumberAudio;
@@ -67,7 +65,6 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     // Handler to update UI timer, progress bar etc,.
     private Handler mHandler = new Handler();
     ;
-    private SongsManager songManager;
     private Utilities utils;
     private int seekForwardTime = 5000; // 5000 milliseconds
     private int seekBackwardTime = 5000; // 5000 milliseconds
@@ -128,7 +125,6 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
 
         // Mediaplayer
         mp = new MediaPlayer();
-        songManager = new SongsManager();
         utils = new Utilities();
 
 
