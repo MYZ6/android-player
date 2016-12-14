@@ -30,6 +30,7 @@ public class HistoryFragment extends ListFragment {
     private ListView mListView;
     private int dataType = 1;
     private int sortType = 1;
+//    private boolean filterCritical = false;
 //    private FragmentExchangeListener btnPlayListListener;
 
     @Override
@@ -111,6 +112,40 @@ public class HistoryFragment extends ListFragment {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        CheckBox bCritical = (CheckBox) listLayout.findViewById(R.id.btn_critical);
+        bCritical.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    search_text.setText("[critical30]");
+                }else{
+                    search_text.setText("");
+                }
+            }
+        });
+        CheckBox bCritical20 = (CheckBox) listLayout.findViewById(R.id.btn_critical20);
+        bCritical20.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    search_text.setText("[critical20]");
+                }else{
+                    search_text.setText("");
+                }
+            }
+        });
+        CheckBox bCritical10 = (CheckBox) listLayout.findViewById(R.id.btn_critical10);
+        bCritical10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    search_text.setText("[critical10]");
+                }else{
+                    search_text.setText("");
+                }
             }
         });
 
