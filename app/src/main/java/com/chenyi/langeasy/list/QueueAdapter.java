@@ -47,12 +47,22 @@ public class QueueAdapter extends ArrayAdapter<Map<String, Object>> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_queue, parent, false);
         }
+        final MainNewActivity activity = (MainNewActivity) mContext;
+        final Context applicationContext = activity.getApplicationContext();
 
         // Lookup view for data population
         TextView vName = (TextView) convertView.findViewById(R.id.name);
 //        final EditText vName = (EditText) convertView.findViewById(R.id.name);
         final String queueName = (String) record.get("name");
         vName.setText(queueName);
+        vName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText etext = (EditText) listLayout.findViewById(R.id.queue_edit);
+                etext.setText(queueName);
+            }
+        });
+
         TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
         vSentenceCount.setText((Integer) record.get("scount") + "");
 
@@ -62,8 +72,6 @@ public class QueueAdapter extends ArrayAdapter<Map<String, Object>> {
 
         final Integer queueId = (Integer) record.get("id");
 
-        final MainNewActivity activity = (MainNewActivity) mContext;
-        final Context applicationContext = activity.getApplicationContext();
 
         Button bDel = (Button) convertView.findViewById(R.id.btn_delete);
         bDel.setOnClickListener(new View.OnClickListener() {
