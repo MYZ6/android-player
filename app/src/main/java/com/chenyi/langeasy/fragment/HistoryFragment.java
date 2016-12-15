@@ -69,10 +69,10 @@ public class HistoryFragment extends ListFragment {
         bRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                historyListData = activity.getDBHelper().history(dataType);
+                ArrayList<Map<String, Object>> newHistoryList = activity.getDBHelper().history(dataType);// import, new a different list, only need data , not change list instance
                 historyAdapter.mOriginalValues = null;
                 historyAdapter.clear();
-                historyAdapter.addAll(historyListData);
+                historyAdapter.addAll(newHistoryList);
                 historyAdapter.notifyDataSetChanged();
 
                 TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
@@ -168,8 +168,9 @@ public class HistoryFragment extends ListFragment {
                     sidList.add((Integer) record.get("sentenceid"));
                 }
                 Log.i("sidList.size", sidList.size() + "");
+                Log.i("historyListData.size", historyListData.size() + "");
                 if (sidList.size() > 0) {
-                    return;
+//                    return;
                 }
                 activity.getDBHelper().addQueue(sidList);
 

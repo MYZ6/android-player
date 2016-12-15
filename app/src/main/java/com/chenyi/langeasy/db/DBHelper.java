@@ -336,6 +336,10 @@ public class DBHelper extends SQLiteOpenHelper {
         QueueHelper.editQueueName(this.getWritableDatabase(), queueId, queueName);
     }
 
+    public void deleteQueue(Integer queueId) {
+        QueueHelper.deleteQueue(this.getWritableDatabase(), queueId);
+    }
+
 
 //
 //    public byte[] queryPronAudio(int wordId) {

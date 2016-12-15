@@ -333,6 +333,9 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         } else if ("playlist".equals(type)) {
             title = "Playlist";
             itemId = R.id.navigation_playlist;
+        } else if ("queue_record".equals(type)) {
+            title = "Queue Record";
+            itemId = R.id.navigation_queue_record;
         }
         navigationView.setCheckedItem(itemId);
         mItemToOpenWhenDrawerCloses = itemId;

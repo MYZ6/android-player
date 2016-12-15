@@ -49,30 +49,44 @@ public class QueueAdapter extends ArrayAdapter<Map<String, Object>> {
         }
 
         // Lookup view for data population
-//        TextView vName = (TextViewxtView) convertView.findViewById(R.id.name);
-        final EditText vName = (EditText) convertView.findViewById(R.id.name);
-        vName.setText((String) record.get("name"));
+        TextView vName = (TextView) convertView.findViewById(R.id.name);
+//        final EditText vName = (EditText) convertView.findViewById(R.id.name);
+        final String queueName = (String) record.get("name");
+        vName.setText(queueName);
+        TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
+        vSentenceCount.setText((Integer) record.get("scount") + "");
 
         TextView vCreateTime = (TextView) convertView.findViewById(R.id.ctime);
         Date createTime = (Date) record.get("ctime");
         vCreateTime.setText(DateFormat.format("yyyy-MM-dd HH:mm:ss", createTime) + "");
 
-        Button bSave = (Button) convertView.findViewById(R.id.btn_save);
         final Integer queueId = (Integer) record.get("id");
-//        Log.i("queueId", queueId + "");
-//        Log.i("queue name", record.get("name") + "");
 
         final MainNewActivity activity = (MainNewActivity) mContext;
         final Context applicationContext = activity.getApplicationContext();
+
+        Button bDel = (Button) convertView.findViewById(R.id.btn_delete);
+        bDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getDBHelper().deleteQueue(queueId);
+
+                Button bRefresh = (Button) listLayout.findViewById(R.id.btn_refresh);
+                bRefresh.performClick();
+                Toast.makeText(applicationContext, "Delete Queue [" + queueName +
+                        "] Success!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        Button bSave = (Button) convertView.findViewById(R.id.btn_save);
         bSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText etext = (EditText) listLayout.findViewById(R.id.queue_edit);
                 String queueName = etext.getText() + "";
-                Log.i("queue name EditText", etext.toString());
-                Log.i("queue name 1", queueName.length() + "");
                 activity.getDBHelper().editQueueName(queueId, queueName);
 
+                Button bRefresh = (Button) listLayout.findViewById(R.id.btn_refresh);
+                bRefresh.performClick();
                 Toast.makeText(applicationContext, "Edit Queue Name Success!", Toast.LENGTH_SHORT).show();
             }
         });

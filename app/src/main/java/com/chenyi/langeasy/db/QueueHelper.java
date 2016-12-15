@@ -33,7 +33,7 @@ public class QueueHelper {
 //            return array_list;
 //        }
 
-        String sql = "select * from queue";
+        String sql = "select q.*, count(*) as scount from queue q inner join queue_record r on q.id = r.qid group by q.id";
         Cursor res = db.rawQuery(sql, null);
         res.moveToFirst();
 
@@ -48,6 +48,8 @@ public class QueueHelper {
 
             Long ctime = res.getLong(res.getColumnIndex("ctime"));
             map.put("ctime", new Date(ctime));
+            Integer scount = res.getInt(res.getColumnIndex("scount"));
+            map.put("scount", scount);
 
             array_list.add(map);
             res.moveToNext();
@@ -58,7 +60,7 @@ public class QueueHelper {
     public static ArrayList<Map<String, Object>> queryQueueRecord(SQLiteDatabase db, Integer queueId) {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 
-        String sql = "select s.* from queue_record r inner join sentence s on s.sentenceid = r.sid where r.qid = ?";
+        String sql = "select s.* from queue_record r inner join sentence s on s.sentenceid = r.sid where r.qid = ? order by r.sid";
         Cursor res = db.rawQuery(sql, new String[]{Integer.toString(queueId)});
         res.moveToFirst();
 
@@ -116,8 +118,10 @@ public class QueueHelper {
     public static void editQueueName(SQLiteDatabase db, Integer queueId, String queueName) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", queueName);
-        Log.i("queueId", queueId + "");
-        Log.i("queue name", queueName);
         db.update("queue", contentValues, "id = ? ", new String[]{Integer.toString(queueId)});
+    }
+
+    public static void deleteQueue(SQLiteDatabase db, Integer queueId) {
+        db.delete("queue", "id = ? ", new String[]{Integer.toString(queueId)});
     }
 }

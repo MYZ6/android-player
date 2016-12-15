@@ -383,7 +383,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
     }
 
     public void toQueueRecord(Integer queueId) {
-//        setNavigationStatus("history");
+        setNavigationStatus("queue_record");
         setTabSelection(10);
         queueRecordFragment.load(queueId);
     }
