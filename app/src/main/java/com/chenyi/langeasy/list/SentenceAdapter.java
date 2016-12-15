@@ -22,6 +22,7 @@ import java.util.Map;
 public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
     private ArrayList<Map<String, Object>> sentenceLst;
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
+    private ArrayList<Map<String, Object>> mSecondLevelValues; // second level search Values
     public ArrayList<Integer> sentenceIdList;
     private PlayListFragment.AdapterCallback mAdapterCallback;
     private View listLayout;
@@ -33,7 +34,7 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
         this.listLayout = listLayout;
     }
 
-    public SentenceAdapter(Context context,View listLayout,  PlayListFragment.AdapterCallback adapterCallback, ArrayList<Map<String, Object>> sentenceLst) {
+    public SentenceAdapter(Context context, View listLayout, PlayListFragment.AdapterCallback adapterCallback, ArrayList<Map<String, Object>> sentenceLst) {
         super(context, 0, sentenceLst);
         this.mAdapterCallback = adapterCallback;
 
@@ -64,12 +65,17 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
         songTitle.setText(text);
 
         TextView vBooktype = (TextView) convertView.findViewById(R.id.booktype);
-        vBooktype.setText((String) sentence.get("booktype"));
+        String booktype = (String) sentence.get("booktype");
+        vBooktype.setText(booktype + "[n" + sentence.get("scount") + "]");
+
         TextView vBookname = (TextView) convertView.findViewById(R.id.bookname);
-        vBookname.setText((String) sentence.get("bookname"));
+        String bookname = (String) sentence.get("bookname");
+        vBookname.setText(bookname);
         // Return the completed view to render on screen
         return convertView;
     }
+
+    public int filterLevel = 1;
 
     @Override
     public Filter getFilter() {
@@ -79,13 +85,16 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
 //                sentenceLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
+                if (filterLevel == 1) {
 
+                }
                 sentenceLst.clear();
                 sentenceLst.addAll((ArrayList<Map<String, Object>>) results.values);
                 notifyDataSetChanged();  // notifies the data with new filtered values
                 if (mAdapterCallback != null) {
                     mAdapterCallback.filterFinished();
                 }
+
 
                 TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
                 vSize.setText(sentenceLst.size() + "");

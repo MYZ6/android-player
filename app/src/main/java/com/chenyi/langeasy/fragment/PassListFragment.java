@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.Utilities;
@@ -82,6 +83,8 @@ public class PassListFragment extends ListFragment {
         final MainNewActivity activity = (MainNewActivity) getActivity();
         songsListData = activity.getDBHelper().listSentence("passed");
 
+        TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
+        vSize.setText(songsListData.size() + "");
         // Adding menuItems to ListView
         sentenceAdapter = new SentenceAdapter(activity, listLayout, songsListData);
 

@@ -11,6 +11,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.text.format.DateFormat;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -199,7 +201,9 @@ public class DBHelper extends SQLiteOpenHelper {
         if ("passed".equals(type)) {
             condition = "and ifnull(v.pass, 0) =1 group by v.wordid";
         }
-        String sql = "select s.* from sentence s inner join vocabulary v on v.wordid = s.wordid " + condition;
+        String sql = "select s.*, r2.scount from sentence s inner join vocabulary v on v.wordid = s.wordid " +
+                "left join (SELECT r.sentenceid, COUNT(*) AS scount FROM play_record r GROUP BY r.sentenceid )r2 on r2.sentenceid = s.sentenceid" +
+                " where 1=1 " + condition;
         Cursor res = db.rawQuery(sql, null);
         res.moveToFirst();
 
@@ -225,36 +229,17 @@ public class DBHelper extends SQLiteOpenHelper {
             map.put("booktype", res.getString(res.getColumnIndex("booktype")));
             map.put("courseid", res.getString(res.getColumnIndex("courseid")));
             map.put("coursename", res.getString(res.getColumnIndex("coursename")));
+            map.put("scount", res.getInt(res.getColumnIndex("scount")));
             array_list.add(map);
             res.moveToNext();
         }
         return array_list;
     }
 
-
-    public Map<String, Integer> queryPlayRecord(Integer wordid, Integer sentenceid) {
-        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
-
-        //hp = new HashMap();
+    public Integer queryWordPlayedCount(Integer wordid) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select count(*) from play_record", null);
-        res.moveToFirst();
-
-        Integer total = null;
-        while (res.isAfterLast() == false) {
-            total = res.getInt(0);
-            break;
-        }
-        res = db.rawQuery("select count(*) from play_record where sentenceid = ?", new String[]{sentenceid + ""});
-        res.moveToFirst();
-
-        Integer stotal = null;
-        while (res.isAfterLast() == false) {
-            stotal = res.getInt(0);
-            break;
-        }
 //        res = db.rawQuery("select count(*) from play_record where wordid = ?", new String[]{wordid + ""});
-        res = db.rawQuery(" select count(*) from play_record r where r.sentenceid in " +
+        Cursor res = db.rawQuery(" select count(*) from play_record r where r.sentenceid in " +
                 "(select s.sentenceid from sentence s where s.wordid = ?)", new String[]{wordid + ""});
         res.moveToFirst();
 
@@ -263,6 +248,33 @@ public class DBHelper extends SQLiteOpenHelper {
             wtotal = res.getInt(0);
             break;
         }
+        res.close();
+        return wtotal;
+    }
+
+    public Map<String, Integer> queryPlayRecord(Integer wordid, Integer sentenceid) {
+        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select count(*) from play_record", null);
+        res.moveToFirst();
+        Integer total = null;
+        while (res.isAfterLast() == false) {
+            total = res.getInt(0);
+            break;
+        }
+
+        res = db.rawQuery("select count(*) from play_record where sentenceid = ?", new String[]{sentenceid + ""});
+        res.moveToFirst();
+        Integer stotal = null;
+        while (res.isAfterLast() == false) {
+            stotal = res.getInt(0);
+            break;
+        }
+        res.close();
+
+        Integer wtotal = queryWordPlayedCount(wordid);
 
         Map<String, Integer> map = new HashMap<>();
         map.put("total", total);
@@ -286,14 +298,19 @@ public class DBHelper extends SQLiteOpenHelper {
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
         String groupField = "sentenceid";
-        if (dataType == 2) {
-            groupField = "wordid";
-        }
+
         String sql = "select r.*, s.bookname, s.booktype, count(*) as scount from play_record r " +
                 "inner join vocabulary v on v.wordid = r.wordid and ifnull(v.pass, 0) !=1 " +
                 "inner join (select * from sentence group by sentenceid) s on s.sentenceid = r.sentenceid " +
                 "group by r." + groupField +
                 " order by r.playtime desc";
+        if (dataType == 2) {
+//            groupField = "wordid";
+            sql = "SELECT s.wordid, s.word, s.bookname, s.booktype, r2.sentenceid, r2.playtime, SUM(r2.scount) as scount  FROM " +
+                    "( SELECT r.sentenceid, r.playtime, COUNT(*) AS scount FROM play_record r GROUP BY r.sentenceid )r2 " +
+                    "INNER JOIN sentence s ON s.sentenceid = r2.sentenceid " +
+                    "INNER JOIN vocabulary v ON v.wordid = s.wordid AND ifnull(v.pass, 0) !=1 GROUP BY s.wordid order by r2.playtime desc";
+        }
         Cursor res = db.rawQuery(sql, null);
         res.moveToFirst();
 
@@ -318,6 +335,17 @@ public class DBHelper extends SQLiteOpenHelper {
             array_list.add(map);
             res.moveToNext();
         }
+        res.close();
+
+//        if (dataType == 2) {
+//            Log.i("word count start", DateFormat.format("yyyy-MM-dd HH:mm:ss_SSS", new Date()) + "");
+//            for (Map<String, Object> map : array_list) {
+//                Integer wordid = (Integer) map.get("wordid");
+//                Integer scount = queryWordPlayedCount(wordid);
+//                map.put("scount", scount);
+//            }
+//            Log.i("word count end", DateFormat.format("yyyy-MM-dd HH:mm:ss_SSS", new Date()) + "");
+//        }
         return array_list;
     }
 

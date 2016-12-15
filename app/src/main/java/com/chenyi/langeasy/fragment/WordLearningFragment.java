@@ -267,7 +267,7 @@ public class WordLearningFragment extends Fragment {
             public void onClick(View arg0) {
                 Map<String, Object> map = songsList.get(currentSongIndex);
                 String word = (String) map.get("word");
-                btnPlayListListener.hquery(word);
+                btnPlayListListener.query(word);
             }
         });
 
