@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.Utilities;
@@ -21,6 +23,7 @@ import com.chenyi.langeasy.list.SentenceAdapter;
 import com.chenyi.langeasy.activity.MainNewActivity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
 
@@ -32,6 +35,7 @@ public class PlayListFragment extends ListFragment {
     private SentenceAdapter sentenceAdapter;
     private EditText search_text;
     private ListView mListView;
+    private int sortType = 1;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -123,8 +127,11 @@ public class PlayListFragment extends ListFragment {
             }
         };
 
+
+        TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
+        vSize.setText(songsListData.size() + "");
         // Adding menuItems to ListView
-        sentenceAdapter = new SentenceAdapter(activity, adapterCallback, songsListData);
+        sentenceAdapter = new SentenceAdapter(activity, listLayout, adapterCallback, songsListData);
 //        ListAdapter adapter = new SimpleAdapter(this, songsListData,
 //                R.layout.playlist_item, new String[]{"wordunique"}, new int[]{
 //                R.id.songTitle});
@@ -142,6 +149,31 @@ public class PlayListFragment extends ListFragment {
             search_text.setText(filter);
             Log.i("filter", filter + " ");
         }
+
+        Button bSort = (Button) listLayout.findViewById(R.id.btn_sort);
+        bSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sentenceAdapter.sort(new Comparator<Map<String, Object>>() {
+                    @Override
+                    public int compare(Map<String, Object> record1, Map<String, Object> record2) {
+                        Integer i1 = (Integer) record1.get("index");
+                        Integer i2 = (Integer) record2.get("index");
+                        int result = i1.compareTo(i2);
+                        if (sortType == 1) {
+                            return result;
+                        } else {
+                            return -result;
+                        }
+                    }
+                });
+                if (sortType == 1) {
+                    sortType = 2;
+                } else {
+                    sortType = 1;
+                }
+            }
+        });
         return listLayout;
     }
 

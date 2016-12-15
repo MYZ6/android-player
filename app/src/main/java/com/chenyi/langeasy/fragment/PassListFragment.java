@@ -83,7 +83,7 @@ public class PassListFragment extends ListFragment {
         songsListData = activity.getDBHelper().listSentence("passed");
 
         // Adding menuItems to ListView
-        sentenceAdapter = new SentenceAdapter(activity, songsListData);
+        sentenceAdapter = new SentenceAdapter(activity, listLayout, songsListData);
 
         setListAdapter(sentenceAdapter);
 //        adapter.no

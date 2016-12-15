@@ -466,7 +466,7 @@ public class WordLearningFragment extends Fragment {
         sentenceSpan.setSpan(new ForegroundColorSpan(wordColor), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         sentenceSpan.setSpan(new RelativeSizeSpan(1.8f), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         sentenceLabel.setText(sentenceSpan);
-        chineseLabel.setText((String) song.get("chinese"));
+        chineseLabel.setText((String) song.get("chinese") + "[sid:" + sentenceid + "]");
         booknameLabel.setText((String) song.get("bookname"));
         booktypeLabel.setText((String) song.get("booktype"));
         coursenameLabel.setText((String) song.get("coursename"));

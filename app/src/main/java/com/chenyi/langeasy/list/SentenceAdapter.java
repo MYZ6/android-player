@@ -24,18 +24,21 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
     public ArrayList<Integer> sentenceIdList;
     private PlayListFragment.AdapterCallback mAdapterCallback;
+    private View listLayout;
 
-    public SentenceAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
+    public SentenceAdapter(Context context, View listLayout, ArrayList<Map<String, Object>> sentenceLst) {
         super(context, 0, sentenceLst);
 
         this.sentenceLst = sentenceLst;
+        this.listLayout = listLayout;
     }
 
-    public SentenceAdapter(Context context, PlayListFragment.AdapterCallback adapterCallback, ArrayList<Map<String, Object>> sentenceLst) {
+    public SentenceAdapter(Context context,View listLayout,  PlayListFragment.AdapterCallback adapterCallback, ArrayList<Map<String, Object>> sentenceLst) {
         super(context, 0, sentenceLst);
         this.mAdapterCallback = adapterCallback;
 
         this.sentenceLst = sentenceLst;
+        this.listLayout = listLayout;
     }
 
     @Override
@@ -79,11 +82,13 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
 
                 sentenceLst.clear();
                 sentenceLst.addAll((ArrayList<Map<String, Object>>) results.values);
-                Log.i("sentenceLst size", sentenceLst.size() + "");
                 notifyDataSetChanged();  // notifies the data with new filtered values
                 if (mAdapterCallback != null) {
                     mAdapterCallback.filterFinished();
                 }
+
+                TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
+                vSize.setText(sentenceLst.size() + "");
             }
 
             @Override
@@ -173,9 +178,9 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
         return filter;
     }
 
-    private boolean containSid(Integer sid){
+    private boolean containSid(Integer sid) {
         for (Integer sid2 : sentenceIdList) {
-            if(sid.equals(sid2)){
+            if (sid.equals(sid2)) {
                 return true;
             }
         }
