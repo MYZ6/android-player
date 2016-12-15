@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.TextView;
 
@@ -27,13 +28,15 @@ import java.util.Map;
  */
 public class HistoryAdapter extends ArrayAdapter<Map<String, Object>> {
     private ArrayList<Map<String, Object>> recordLst;
-    private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
+    public ArrayList<Map<String, Object>> mOriginalValues; // Original Values
     private Context mContext;
+    private View listLayout;
 
-    public HistoryAdapter(Context context, ArrayList<Map<String, Object>> recordLst) {
+    public HistoryAdapter(Context context, View listLayout, ArrayList<Map<String, Object>> recordLst) {
         super(context, 0, recordLst);
 
         this.mContext = context;
+        this.listLayout = listLayout;
         this.recordLst = recordLst;
     }
 
@@ -103,6 +106,10 @@ public class HistoryAdapter extends ArrayAdapter<Map<String, Object>> {
                 recordLst.clear();
                 recordLst.addAll((ArrayList<Map<String, Object>>) results.values);
                 notifyDataSetChanged();  // notifies the data with new filtered values
+
+
+                TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
+                vSize.setText(recordLst.size() + "");
             }
 
             @Override
@@ -140,21 +147,33 @@ public class HistoryAdapter extends ArrayAdapter<Map<String, Object>> {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }
+                        } else if (condition.startsWith("[critical50]")) {// query sentence list that listened-count not less than 50
+                            Integer scount = (Integer) data.get("scount");
+                            if (scount >= 50) {
+                                data.put("index", count++);
+                                FilteredArrList.add(data);
+                            }
                         } else if (condition.startsWith("[critical30]")) {// query sentence list that listened-count between 30 and 50
                             Integer scount = (Integer) data.get("scount");
-                            if (scount > 30 && scount < 50) {
+                            if (scount >= 30 && scount < 50) {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }
                         } else if (condition.startsWith("[critical20]")) {// query sentence list that listened-count between 20 and 30
                             Integer scount = (Integer) data.get("scount");
-                            if (scount > 20 && scount < 30) {
+                            if (scount >= 20 && scount < 30) {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }
                         } else if (condition.startsWith("[critical10]")) {// query sentence list that listened-count between 10 and 20
                             Integer scount = (Integer) data.get("scount");
-                            if (scount > 10 && scount < 20) {
+                            if (scount >= 10 && scount < 20) {
+                                data.put("index", count++);
+                                FilteredArrList.add(data);
+                            }
+                        } else if (condition.startsWith("[critical0]")) {// query sentence list that listened-count below 10
+                            Integer scount = (Integer) data.get("scount");
+                            if (scount < 10) {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }

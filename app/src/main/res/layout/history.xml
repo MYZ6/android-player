@@ -37,7 +37,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <CheckBox
-            android:id="@+id/btn_critical"
+            android:id="@+id/btn_critical50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&gt;=50" />
+        <CheckBox
+            android:id="@+id/btn_critical30"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="30-50" />
@@ -53,11 +58,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10-20" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <CheckBox
+            android:id="@+id/btn_critical0"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&lt;10" />
         <Button
             android:id="@+id/btn_addqueue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Queue" />
+
+        <TextView
+            android:id="@+id/size_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:padding="10dp"
+            android:textColor="#189818"
+            android:text="Total Number: "/>
+        <TextView
+            android:id="@+id/history_size_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:padding="10dp"
+            android:textColor="#189818"
+            android:text="30"/>
     </LinearLayout>
     <ListView
         android:id="@android:id/list"

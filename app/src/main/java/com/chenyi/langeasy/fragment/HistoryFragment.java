@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenyi.langeasy.R;
@@ -46,7 +47,7 @@ public class HistoryFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View listLayout = inflater.inflate(R.layout.history,
+        final View listLayout = inflater.inflate(R.layout.history,
                 container, false);
         final MainNewActivity activity = (MainNewActivity) getActivity();
 
@@ -69,9 +70,13 @@ public class HistoryFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 historyListData = activity.getDBHelper().history(dataType);
+                historyAdapter.mOriginalValues = null;
                 historyAdapter.clear();
                 historyAdapter.addAll(historyListData);
                 historyAdapter.notifyDataSetChanged();
+
+                TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
+                vSize.setText(historyListData.size() + "");
             }
         });
         Button bSort = (Button) listLayout.findViewById(R.id.btn_sort);
@@ -117,37 +122,39 @@ public class HistoryFragment extends ListFragment {
             }
         });
 
-        CheckBox bCritical = (CheckBox) listLayout.findViewById(R.id.btn_critical);
-        bCritical.setOnClickListener(new View.OnClickListener() {
+        CheckBox bCritical50 = (CheckBox) listLayout.findViewById(R.id.btn_critical50);
+        bCritical50.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    search_text.setText("[critical30]");
-                } else {
-                    search_text.setText("");
-                }
+                filterByCount(((CheckBox) v).isChecked(), "50");
+            }
+        });
+        CheckBox bCritical30 = (CheckBox) listLayout.findViewById(R.id.btn_critical30);
+        bCritical30.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCount(((CheckBox) v).isChecked(), "30");
             }
         });
         CheckBox bCritical20 = (CheckBox) listLayout.findViewById(R.id.btn_critical20);
         bCritical20.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    search_text.setText("[critical20]");
-                } else {
-                    search_text.setText("");
-                }
+                filterByCount(((CheckBox) v).isChecked(), "20");
             }
         });
         CheckBox bCritical10 = (CheckBox) listLayout.findViewById(R.id.btn_critical10);
         bCritical10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    search_text.setText("[critical10]");
-                } else {
-                    search_text.setText("");
-                }
+                filterByCount(((CheckBox) v).isChecked(), "10");
+            }
+        });
+        CheckBox bCritical0 = (CheckBox) listLayout.findViewById(R.id.btn_critical0);
+        bCritical0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCount(((CheckBox) v).isChecked(), "0");
             }
         });
         Button bQueue = (Button) listLayout.findViewById(R.id.btn_addqueue);
@@ -160,6 +167,10 @@ public class HistoryFragment extends ListFragment {
                 for (Map<String, Object> record : historyListData) {
                     sidList.add((Integer) record.get("sentenceid"));
                 }
+                Log.i("sidList.size", sidList.size() + "");
+                if (sidList.size() > 0) {
+                    return;
+                }
                 activity.getDBHelper().addQueue(sidList);
 
                 Toast.makeText(applicationContext, "Add Queue Success!", Toast.LENGTH_SHORT).show();
@@ -169,12 +180,27 @@ public class HistoryFragment extends ListFragment {
 
         historyListData = activity.getDBHelper().history(dataType);
 
+        TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
+        vSize.setText(historyListData.size() + "");
+
         // Adding menuItems to ListView
-        historyAdapter = new HistoryAdapter(activity, historyListData);
+        historyAdapter = new HistoryAdapter(activity, listLayout, historyListData);
 
         setListAdapter(historyAdapter);
 
         return listLayout;
+    }
+
+    private void filterByCount(boolean checked, String type) {
+        if (checked) {
+            search_text.setText("[critical" + type +
+                    "]");
+        } else {
+            String oldValue = search_text.getText() + "";
+            if (!"".equals(oldValue)) {
+                search_text.setText("");
+            }
+        }
     }
 
 
