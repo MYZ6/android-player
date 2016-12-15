@@ -245,7 +245,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         }
     }
 
-    private void triggerNavigation(){
+    private void triggerNavigation() {
         if (mItemLastClicked == mItemToOpenWhenDrawerCloses) {
             return;
         }
@@ -289,6 +289,14 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                 case R.id.navigation_passlist:
                     type = "passlist";
                     title = "Pass List";
+                    break;
+                case R.id.navigation_queue:
+                    type = "queue";
+                    title = "Queue";
+                    break;
+                case R.id.navigation_queue_record:
+                    type = "queue_record";
+                    title = "Queue Record";
                     break;
             }
             if ("activity".equals(type)) {

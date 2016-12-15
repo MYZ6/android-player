@@ -16,14 +16,6 @@
         android:textColor="#189818"
         android:text="word"/>
     <TextView
-        android:id="@+id/playtime"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:padding="10dp"
-        android:textColor="#189888"
-        android:text="playtime"/>
-    <TextView
         android:id="@+id/bookname"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -40,14 +32,6 @@
         android:padding="10dp"
         android:textColor="#f8f888"
         android:text="booktype"/>
-    <TextView
-        android:id="@+id/sentence_count"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:padding="10dp"
-        android:textColor="#18f888"
-        android:text="125"/>
     <Button
         android:id="@+id/btn_learn"
         android:layout_width="wrap_content"

@@ -22,6 +22,7 @@ import java.util.Map;
 public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
     private ArrayList<Map<String, Object>> sentenceLst;
     private ArrayList<Map<String, Object>> mOriginalValues; // Original Values
+    public ArrayList<Integer> sentenceIdList;
     private PlayListFragment.AdapterCallback mAdapterCallback;
 
     public SentenceAdapter(Context context, ArrayList<Map<String, Object>> sentenceLst) {
@@ -147,6 +148,12 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }
+                        } else if (condition.startsWith("qid:")) {// filter by queue
+                            Integer sentenceid = (Integer) data.get("sentenceid");
+                            if (containSid(sentenceid)) {
+                                data.put("index", count++);
+                                FilteredArrList.add(data);
+                            }
                         } else {
                             String wordunique = (String) data.get("wordunique");
                             if (wordunique.indexOf(condition) > -1) {
@@ -164,5 +171,14 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
             }
         };
         return filter;
+    }
+
+    private boolean containSid(Integer sid){
+        for (Integer sid2 : sentenceIdList) {
+            if(sid.equals(sid2)){
+                return true;
+            }
+        }
+        return false;
     }
 }

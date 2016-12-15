@@ -135,16 +135,33 @@ public class PlayListFragment extends ListFragment {
         String filter = Utilities.getConfig(getActivity(), "playlist-filter");
         if (!"0".equals(filter)) {
             init[0] = true;
+            if (filter.startsWith("qid:")) {// filter by queue
+                String queueId = filter.substring(4);
+                loadQueueRecord(Integer.parseInt(queueId));
+            }
             search_text.setText(filter);
             Log.i("filter", filter + " ");
         }
         return listLayout;
     }
 
+    private void loadQueueRecord(Integer queueId) {
+        MainNewActivity activity = (MainNewActivity) getActivity();
+        ArrayList<Map<String, Object>> recordLlist = activity.getDBHelper().queryQueueRecord(queueId);
+        ArrayList<Integer> sidList = new ArrayList<>();
+        for (Map<String, Object> record : recordLlist) {
+            sidList.add((Integer) record.get("sentenceid"));
+        }
+        sentenceAdapter.sentenceIdList = sidList;
+    }
 
     OnSentenceSelectedListener mCallback;
 
     public void query(String condition) {
+        if (condition.startsWith("qid:")) {// filter by queue
+            String queueId = condition.substring(4);
+            loadQueueRecord(Integer.parseInt(queueId));
+        }
         search_text.setText(condition);
     }
 

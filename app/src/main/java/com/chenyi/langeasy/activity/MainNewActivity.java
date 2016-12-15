@@ -21,6 +21,8 @@ import com.chenyi.langeasy.fragment.HistoryFragment;
 import com.chenyi.langeasy.fragment.MusicPlayerFragment;
 import com.chenyi.langeasy.fragment.PassListFragment;
 import com.chenyi.langeasy.fragment.PlayListFragment;
+import com.chenyi.langeasy.fragment.QueueFragment;
+import com.chenyi.langeasy.fragment.QueueRecordFragment;
 import com.chenyi.langeasy.fragment.SettingFragment;
 import com.chenyi.langeasy.fragment.WordLearningFragment;
 import com.chenyi.langeasy.listener.FragmentExchangeListener;
@@ -49,6 +51,8 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
     private CourseListFragment courseListFragment;
     private HistoryFragment historyFragment;
     private PassListFragment passListFragment;
+    private QueueFragment queueFragment;
+    private QueueRecordFragment queueRecordFragment;
 
     /**
      * 用于展示联系人的Fragment
@@ -101,6 +105,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
         setTabSelection(4);
         setTabSelection(5);
         setTabSelection(7);
+        setTabSelection(10);// init queue record page
 //        setTabSelection(3);
 
         LogHelper.i(TAG, "Activity onCreate");
@@ -125,6 +130,10 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
             setTabSelection(7);
         } else if ("passlist".equals(type)) {
             setTabSelection(8);
+        } else if ("queue".equals(type)) {
+            setTabSelection(9);
+        } else if ("queue_record".equals(type)) {
+            setTabSelection(10);
         }
     }
 
@@ -227,6 +236,22 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
                     transaction.show(passListFragment);
                 }
                 break;
+            case 9:
+                if (queueFragment == null) {
+                    queueFragment = new QueueFragment();
+                    transaction.add(R.id.content, queueFragment);
+                } else {
+                    transaction.show(queueFragment);
+                }
+                break;
+            case 10:
+                if (queueRecordFragment == null) {
+                    queueRecordFragment = new QueueRecordFragment();
+                    transaction.add(R.id.content, queueRecordFragment);
+                } else {
+                    transaction.show(queueRecordFragment);
+                }
+                break;
             default:
                 // 当点击了设置tab时，改变控件的图片和文字颜色
                 break;
@@ -275,6 +300,12 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
         }
         if (passListFragment != null) {
             transaction.hide(passListFragment);
+        }
+        if (queueFragment != null) {
+            transaction.hide(queueFragment);
+        }
+        if (queueRecordFragment != null) {
+            transaction.hide(queueRecordFragment);
         }
     }
 
@@ -345,11 +376,18 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
     }
 
 
+
+
     public interface PlayListResetCallback {
         void afterReset();
     }
 
-    @Override
+    public void toQueueRecord(Integer queueId) {
+//        setNavigationStatus("history");
+        setTabSelection(10);
+        queueRecordFragment.load(queueId);
+    }
+
     public void h2learn(final Integer sentenceid) {
         PlayListResetCallback prCallback = new PlayListResetCallback() {
             @Override

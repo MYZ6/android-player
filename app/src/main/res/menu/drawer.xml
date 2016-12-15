@@ -50,6 +50,10 @@
             android:icon="@drawable/ic_queue_24dp"
             android:title="Queue"/>
         <item
+            android:id="@+id/navigation_queue_record"
+            android:icon="@drawable/ic_queue_24dp"
+            android:title="QRecord"/>
+        <item
             android:id="@+id/navigation_passlist"
             android:icon="@drawable/ic_rank_24dp"
             android:title="Pass List"/>

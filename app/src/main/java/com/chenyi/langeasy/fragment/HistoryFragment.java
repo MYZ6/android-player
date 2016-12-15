@@ -1,6 +1,7 @@
 package com.chenyi.langeasy.fragment;
 
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.activity.MainNewActivity;
@@ -55,7 +57,7 @@ public class HistoryFragment extends ListFragment {
                 if (((CheckBox) v).isChecked()) {
                     dataType = 2;
                     Log.i("checked", "true" + "");
-                }else{
+                } else {
                     dataType = 1;
                 }
             }
@@ -121,7 +123,7 @@ public class HistoryFragment extends ListFragment {
             public void onClick(View v) {
                 if (((CheckBox) v).isChecked()) {
                     search_text.setText("[critical30]");
-                }else{
+                } else {
                     search_text.setText("");
                 }
             }
@@ -132,7 +134,7 @@ public class HistoryFragment extends ListFragment {
             public void onClick(View v) {
                 if (((CheckBox) v).isChecked()) {
                     search_text.setText("[critical20]");
-                }else{
+                } else {
                     search_text.setText("");
                 }
             }
@@ -143,9 +145,24 @@ public class HistoryFragment extends ListFragment {
             public void onClick(View v) {
                 if (((CheckBox) v).isChecked()) {
                     search_text.setText("[critical10]");
-                }else{
+                } else {
                     search_text.setText("");
                 }
+            }
+        });
+        Button bQueue = (Button) listLayout.findViewById(R.id.btn_addqueue);
+
+        final Context applicationContext = activity.getApplicationContext();
+        bQueue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Integer> sidList = new ArrayList<Integer>();
+                for (Map<String, Object> record : historyListData) {
+                    sidList.add((Integer) record.get("sentenceid"));
+                }
+                activity.getDBHelper().addQueue(sidList);
+
+                Toast.makeText(applicationContext, "Add Queue Success!", Toast.LENGTH_SHORT).show();
             }
         });
 

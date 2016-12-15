@@ -319,6 +319,23 @@ public class DBHelper extends SQLiteOpenHelper {
         return array_list;
     }
 
+    public boolean addQueue(ArrayList<Integer> sentenceidList) {
+        QueueHelper.addQueue(this.getWritableDatabase(), sentenceidList);
+        return true;
+    }
+
+    public ArrayList<Map<String, Object>> queryQueue() {
+        return QueueHelper.queryQueue(this.getReadableDatabase());
+    }
+
+    public ArrayList<Map<String, Object>> queryQueueRecord(Integer queueId) {
+        return QueueHelper.queryQueueRecord(this.getReadableDatabase(), queueId);
+    }
+
+    public void editQueueName(Integer queueId, String queueName) {
+        QueueHelper.editQueueName(this.getWritableDatabase(), queueId, queueName);
+    }
+
 
 //
 //    public byte[] queryPronAudio(int wordId) {
