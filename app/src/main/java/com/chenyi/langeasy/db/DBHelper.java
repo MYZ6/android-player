@@ -253,7 +253,9 @@ public class DBHelper extends SQLiteOpenHelper {
             stotal = res.getInt(0);
             break;
         }
-        res = db.rawQuery("select count(*) from play_record where wordid = ?", new String[]{wordid + ""});
+//        res = db.rawQuery("select count(*) from play_record where wordid = ?", new String[]{wordid + ""});
+        res = db.rawQuery(" select count(*) from play_record r where r.sentenceid in " +
+                "(select s.sentenceid from sentence s where s.wordid = ?)", new String[]{wordid + ""});
         res.moveToFirst();
 
         Integer wtotal = null;
@@ -289,7 +291,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         String sql = "select r.*, s.bookname, s.booktype, count(*) as scount from play_record r " +
                 "inner join vocabulary v on v.wordid = r.wordid and ifnull(v.pass, 0) !=1 " +
-                "inner join sentence s on s.sentenceid = r.sentenceid " +
+                "inner join (select * from sentence group by sentenceid) s on s.sentenceid = r.sentenceid " +
                 "group by r." + groupField +
                 " order by r.playtime desc";
         Cursor res = db.rawQuery(sql, null);
