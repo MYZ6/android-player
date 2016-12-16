@@ -168,6 +168,36 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }
+                        } else if (condition.startsWith("[critical50]")) {// query sentence list that listened-count not less than 50
+                            Integer scount = (Integer) data.get("scount");
+                            if (scount >= 50) {
+                                data.put("index", count++);
+                                FilteredArrList.add(data);
+                            }
+                        } else if (condition.startsWith("[critical30]")) {// query sentence list that listened-count between 30 and 50
+                            Integer scount = (Integer) data.get("scount");
+                            if (scount >= 30 && scount < 50) {
+                                data.put("index", count++);
+                                FilteredArrList.add(data);
+                            }
+                        } else if (condition.startsWith("[critical20]")) {// query sentence list that listened-count between 20 and 30
+                            Integer scount = (Integer) data.get("scount");
+                            if (scount >= 20 && scount < 30) {
+                                data.put("index", count++);
+                                FilteredArrList.add(data);
+                            }
+                        } else if (condition.startsWith("[critical10]")) {// query sentence list that listened-count between 10 and 20
+                            Integer scount = (Integer) data.get("scount");
+                            if (scount >= 10 && scount < 20) {
+                                data.put("index", count++);
+                                FilteredArrList.add(data);
+                            }
+                        } else if (condition.startsWith("[critical0]")) {// query sentence list that listened-count below 10
+                            Integer scount = (Integer) data.get("scount");
+                            if (scount < 10) {
+                                data.put("index", count++);
+                                FilteredArrList.add(data);
+                            }
                         } else {
                             String wordunique = (String) data.get("wordunique");
                             if (wordunique.indexOf(condition) > -1) {

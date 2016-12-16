@@ -26,9 +26,42 @@
             android:text="search condition" >
         </EditText>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+        <CheckBox
+            android:id="@+id/btn_critical50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&gt;=50" />
+        <CheckBox
+            android:id="@+id/btn_critical30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30-50" />
+        <CheckBox
+            android:id="@+id/btn_critical20"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20-30" />
+        <CheckBox
+            android:id="@+id/btn_critical10"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10-20" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <CheckBox
+            android:id="@+id/btn_critical0"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&lt;10" />
         <TextView
             android:id="@+id/size_label"
             android:layout_width="wrap_content"

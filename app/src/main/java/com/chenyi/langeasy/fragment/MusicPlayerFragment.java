@@ -421,7 +421,6 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     }
 
 
-
     private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener;
     private boolean transientPause = false;
     private boolean volumeDuck = false;
@@ -576,6 +575,9 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         sentenceSpan.setSpan(new RelativeSizeSpan(1.8f), start, start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         sentenceLabel.setText(sentenceSpan);
         chineseLabel.setText((String) song.get("chinese"));
+
+        Integer scount = (Integer) song.get("scount");
+        song.put("scount", scount + 1);
     }
 
     private Integer lastWordId = -1;
