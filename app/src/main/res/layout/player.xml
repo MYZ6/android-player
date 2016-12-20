@@ -26,6 +26,18 @@
             android:textColor="#7CFC00"
             android:textSize="20dp"
             android:textStyle="bold" />"
+
+        <TextView
+            android:id="@+id/playrecord_stotal"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:layout_weight="0"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:textColor="#eeeeee"
+            android:text="STotal"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Song Thumbnail Image -->

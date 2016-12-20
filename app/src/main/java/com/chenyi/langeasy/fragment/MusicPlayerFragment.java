@@ -54,6 +54,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     private ImageButton btnShuffle;
     private SeekBar songProgressBar;
     private TextView songTitleLabel;
+    private TextView playrecordStotalLabel;
     private TextView pronLabel;
     private TextView meaningLabel;
     private TextView sentenceLabel;
@@ -116,6 +117,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         btnShuffle = (ImageButton) playerLayout.findViewById(R.id.btnShuffle);
         songProgressBar = (SeekBar) playerLayout.findViewById(R.id.songProgressBar);
         songTitleLabel = (TextView) playerLayout.findViewById(R.id.songTitle);
+        playrecordStotalLabel = (TextView) playerLayout.findViewById(R.id.playrecord_stotal);
         pronLabel = (TextView) playerLayout.findViewById(R.id.pron);
         meaningLabel = (TextView) playerLayout.findViewById(R.id.meaning);
         sentenceLabel = (TextView) playerLayout.findViewById(R.id.sentence);
@@ -186,7 +188,7 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         }
     }
 
-    private void pausePlayer() {
+    public void pausePlayer() {
         mp.pause();
         isPaused = true;
         // Changing button image to play button
@@ -577,7 +579,9 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         chineseLabel.setText((String) song.get("chinese"));
 
         Integer scount = (Integer) song.get("scount");
-        song.put("scount", scount + 1);
+        scount += 1;
+        song.put("scount", scount);
+        playrecordStotalLabel.setText("s" + scount);
     }
 
     private Integer lastWordId = -1;
@@ -754,6 +758,9 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
         // check for repeat is ON or OFF
         if (isRepeat) {
             // repeat is on play same song again
+            if (currentSongIndex > (songsList.size() - 1)) {
+                currentSongIndex = 0;
+            }
             playSong(currentSongIndex);
         } else if (isShuffle) {
             // shuffle is on - play a random song

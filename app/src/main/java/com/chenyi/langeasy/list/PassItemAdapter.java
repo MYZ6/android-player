@@ -1,86 +1,87 @@
 package com.chenyi.langeasy.list;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.activity.MainNewActivity;
-import com.chenyi.langeasy.fragment.PlayListFragment;
 import com.chenyi.langeasy.listener.FragmentExchangeListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
 
 /**
  * Created by liyzh on 2016/9/10.
  */
-public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
-    private ArrayList<Map<String, Object>> sentenceLst;
+public class PassItemAdapter extends ArrayAdapter<Map<String, Object>> {
+    private ArrayList<Map<String, Object>> recordLst;
     public ArrayList<Map<String, Object>> mOriginalValues; // Original Values
-    private ArrayList<Map<String, Object>> mSecondLevelValues; // second level search Values
-    public ArrayList<Integer> sentenceIdList;
-    private PlayListFragment.AdapterCallback mAdapterCallback;
-    private View listLayout;
     private Context mContext;
+    private View listLayout;
 
-    public SentenceAdapter(Context context, View listLayout, ArrayList<Map<String, Object>> sentenceLst) {
-        super(context, 0, sentenceLst);
-
-        this.mContext = context;
-        this.sentenceLst = sentenceLst;
-        this.listLayout = listLayout;
-    }
-
-    public SentenceAdapter(Context context, View listLayout, PlayListFragment.AdapterCallback adapterCallback, ArrayList<Map<String, Object>> sentenceLst) {
-        super(context, 0, sentenceLst);
-        this.mAdapterCallback = adapterCallback;
+    public PassItemAdapter(Context context, View listLayout, ArrayList<Map<String, Object>> recordLst) {
+        super(context, 0, recordLst);
 
         this.mContext = context;
-        this.sentenceLst = sentenceLst;
         this.listLayout = listLayout;
+        this.recordLst = recordLst;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        Map<String, Object> sentence = getItem(position);
+        Map<String, Object> record = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.playlist_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_pass, parent, false);
         }
+        final MainNewActivity activity = (MainNewActivity) mContext;
+        final Context applicationContext = activity.getApplicationContext();
+
         // Lookup view for data population
-        TextView songTitle = (TextView) convertView.findViewById(R.id.songTitle);
-//        TextView tvHome = (TextView) convertView.findViewById(R.id.tvHome);
-
-        // Populate the data into the template view using the data object
-        String text = (String) sentence.get("wordunique");
-
-        if (sentence.get("index") != null) {
-            text = ((int) sentence.get("index") + 1) + "/" + text;
+        final Integer wordid = (Integer) record.get("wordid");
+        final String word = (String) record.get("word");
+        Button bUnpass = (Button) convertView.findViewById(R.id.btn_unpass);
+        bUnpass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getDBHelper().unpass(wordid);
+                Button bRefresh = (Button) listLayout.findViewById(R.id.btn_refresh);
+                bRefresh.performClick();
+                Toast.makeText(applicationContext, "Unpass [" + word +
+                        "] Success!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        String wordText = "";
+        String wordUnique = (String) record.get("wordunique");
+        if (record.get("index") != null) {
+            wordText = ((int) record.get("index") + 1) + "/" + wordUnique;
         } else {
-            text = (position + 1) + "/" + text;
+            wordText = (position + 1) + "/" + wordUnique;
         }
-        songTitle.setText(text);
+        TextView vWord = (TextView) convertView.findViewById(R.id.word);
+        vWord.setText(wordText);
 
+        TextView vSentenceCount = (TextView) convertView.findViewById(R.id.sentence_count);
+        vSentenceCount.setText((Integer) record.get("scount") + "");
         TextView vBooktype = (TextView) convertView.findViewById(R.id.booktype);
-        String booktype = (String) sentence.get("booktype");
-        vBooktype.setText(booktype + "[n" + sentence.get("scount") + "]");
-
+        vBooktype.setText((String) record.get("booktype"));
         TextView vBookname = (TextView) convertView.findViewById(R.id.bookname);
-        String bookname = (String) sentence.get("bookname");
-        vBookname.setText(bookname);
+        vBookname.setText((String) record.get("bookname"));
+
         // Return the completed view to render on screen
         return convertView;
     }
-
-    public int filterLevel = 1;
 
     @Override
     public Filter getFilter() {
@@ -89,22 +90,15 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
             @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-//                sentenceLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
-                if (filterLevel == 1) {
+//                recordLst = (ArrayList<Map<String, Object>>) results.values; // has the filtered values
 
-                }
-                ((MainNewActivity) mContext).stopPlay();
-
-                sentenceLst.clear();
-                sentenceLst.addAll((ArrayList<Map<String, Object>>) results.values);
+                recordLst.clear();
+                recordLst.addAll((ArrayList<Map<String, Object>>) results.values);
                 notifyDataSetChanged();  // notifies the data with new filtered values
-                if (mAdapterCallback != null) {
-                    mAdapterCallback.filterFinished();
-                }
 
 
                 TextView vSize = (TextView) listLayout.findViewById(R.id.size_val);
-                vSize.setText(sentenceLst.size() + "");
+                vSize.setText(recordLst.size() + "");
             }
 
             @Override
@@ -113,13 +107,7 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
                 ArrayList<Map<String, Object>> FilteredArrList = new ArrayList<>();
 
                 if (mOriginalValues == null) {
-                    mOriginalValues = new ArrayList<Map<String, Object>>(sentenceLst); // saves the original data in mOriginalValues
-//                    mOriginalValues = new ArrayList<Map<String, Object>>(); // deep copy list
-//                    for(Map<String, Object> sentence: sentenceLst){
-//                        Map<String, Object> shallowCopy = new HashMap<String, Object>();
-//                        shallowCopy.putAll(sentence);// shallow copy map
-//                        mOriginalValues.add(shallowCopy);
-//                    }
+                    mOriginalValues = new ArrayList<Map<String, Object>>(recordLst); // saves the original data in mOriginalValues
                 }
 
                 /********
@@ -138,40 +126,13 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
                     for (int i = 0; i < mOriginalValues.size(); i++) {
                         Map<String, Object> data = mOriginalValues.get(i);
 
-                        if (condition.startsWith("bt:")) {// query by book
-                            String bt = condition.substring(3);
-//                            Log.i("condition", condition);
-//                            Log.i("bt", bt);
-                            String booktype = (String) data.get("booktype");
-                            booktype = booktype.toLowerCase().trim();
-//                            Log.i("booktype", booktype);
-                            if (booktype.equals(bt)) {
-                                data.put("index", count++);
-                                FilteredArrList.add(data);
-                            }
-                        } else if (condition.startsWith("b:")) {// query by book
+                        if (condition.startsWith("b:")) {// query by record
                             String bid = condition.substring(2);
-//                            Log.i("condition", condition);
-//                            Log.i("bid", bid);
+                            Log.i("condition", condition);
+                            Log.i("bid", bid);
                             String bookid = (String) data.get("bookid");
-//                            Log.i("bookid", bookid);
+                            Log.i("bookid", bookid);
                             if (bookid.equals(bid)) {
-                                data.put("index", count++);
-                                FilteredArrList.add(data);
-                            }
-                        } else if (condition.startsWith("c:")) {// query by book
-                            String cid = condition.substring(2);
-//                            Log.i("condition", condition);
-//                            Log.i("cid", cid);
-                            String courseid = (String) data.get("courseid");
-//                            Log.i("courseid", courseid);
-                            if (courseid.equals(cid)) {
-                                data.put("index", count++);
-                                FilteredArrList.add(data);
-                            }
-                        } else if (condition.startsWith("qid:")) {// filter by queue
-                            Integer sentenceid = (Integer) data.get("sentenceid");
-                            if (containSid(sentenceid)) {
                                 data.put("index", count++);
                                 FilteredArrList.add(data);
                             }
@@ -222,14 +183,5 @@ public class SentenceAdapter extends ArrayAdapter<Map<String, Object>> {
             }
         };
         return filter;
-    }
-
-    private boolean containSid(Integer sid) {
-        for (Integer sid2 : sentenceIdList) {
-            if (sid.equals(sid2)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

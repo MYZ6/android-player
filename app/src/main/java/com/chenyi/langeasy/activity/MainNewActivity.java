@@ -375,7 +375,9 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
         historyFragment.query(condition);
     }
 
-
+    public void stopPlay() {
+        playerFragment.pausePlayer();
+    }
 
 
     public interface PlayListResetCallback {

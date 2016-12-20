@@ -292,6 +292,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public void unpass(Integer wordid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("pass", 0);
+        db.update("vocabulary", contentValues, "wordid = ? ", new String[]{Integer.toString(wordid)});
+    }
+
     public ArrayList<Map<String, Object>> history(int dataType) {
         ArrayList<Map<String, Object>> array_list = new ArrayList<>();
 
@@ -369,6 +376,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void deleteQueue(Integer queueId) {
         QueueHelper.deleteQueue(this.getWritableDatabase(), queueId);
     }
+
 
 
 //

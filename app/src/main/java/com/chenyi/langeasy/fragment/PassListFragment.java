@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.chenyi.langeasy.R;
 import com.chenyi.langeasy.Utilities;
 import com.chenyi.langeasy.activity.MainNewActivity;
+import com.chenyi.langeasy.list.PassItemAdapter;
 import com.chenyi.langeasy.list.SentenceAdapter;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class PassListFragment extends ListFragment {
 
     private ArrayList<Map<String, Object>> songsListData;
 
-    private SentenceAdapter sentenceAdapter;
+    private PassItemAdapter passItemAdapter;
     private EditText search_text;
     private ListView mListView;
 
@@ -48,7 +50,7 @@ public class PassListFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Map<String, Object> sentence = sentenceAdapter.getItem(position);
+                Map<String, Object> sentence = passItemAdapter.getItem(position);
                 Integer index = (Integer) sentence.get("index");
 
             }
@@ -60,8 +62,24 @@ public class PassListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View listLayout = inflater.inflate(R.layout.playlist,
+        final View listLayout = inflater.inflate(R.layout.playlist,
                 container, false);
+        final MainNewActivity activity = (MainNewActivity) getActivity();
+
+        Button bRefresh = (Button) listLayout.findViewById(R.id.btn_refresh);
+        bRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Map<String, Object>> newItemList = activity.getDBHelper().listSentence("passed");// import, new a different list, only need data , not change list instance
+                passItemAdapter.mOriginalValues = null;
+                passItemAdapter.clear();
+                passItemAdapter.addAll(newItemList);
+                passItemAdapter.notifyDataSetChanged();
+
+                TextView vSize = (TextView) listLayout.findViewById(R.id.size_val);
+                vSize.setText(newItemList.size() + "");
+            }
+        });
 
         search_text = (EditText) listLayout.findViewById(R.id.search_text);
 
@@ -70,7 +88,7 @@ public class PassListFragment extends ListFragment {
             public void afterTextChanged(Editable s) {
                 // you can call or do what you want with your EditText here
 //                s.toString();
-                sentenceAdapter.getFilter().filter(s.toString());
+                passItemAdapter.getFilter().filter(s.toString());
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -80,15 +98,14 @@ public class PassListFragment extends ListFragment {
             }
         });
 
-        final MainNewActivity activity = (MainNewActivity) getActivity();
         songsListData = activity.getDBHelper().listSentence("passed");
 
-        TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
+        TextView vSize = (TextView) listLayout.findViewById(R.id.size_val);
         vSize.setText(songsListData.size() + "");
         // Adding menuItems to ListView
-        sentenceAdapter = new SentenceAdapter(activity, listLayout, songsListData);
+        passItemAdapter = new PassItemAdapter(activity, listLayout, songsListData);
 
-        setListAdapter(sentenceAdapter);
+        setListAdapter(passItemAdapter);
 //        adapter.no
 
         return listLayout;

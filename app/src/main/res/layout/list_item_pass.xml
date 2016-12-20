@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/list_selector"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/word"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:padding="10dp"
+        android:textColor="#189818"
+        android:text="word"/>
+    <TextView
+        android:id="@+id/bookname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:padding="10dp"
+        android:textColor="#f81888"
+        android:text="bookname"/>
+
+    <TextView
+        android:id="@+id/booktype"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:padding="10dp"
+        android:textColor="#f8f888"
+        android:text="booktype"/>
+    <TextView
+        android:id="@+id/sentence_count"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:padding="10dp"
+        android:textColor="#18f888"
+        android:text="125"/>
+    <Button
+        android:id="@+id/btn_unpass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unpass" />
+</LinearLayout>

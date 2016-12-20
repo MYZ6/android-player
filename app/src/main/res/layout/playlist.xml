@@ -8,6 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <Button
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refresh" />
+        <Button
             android:id="@+id/btn_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -19,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="82dp"
+            android:layout_marginLeft="8dp"
             android:layout_below="@+id/toolbar"
             android:ems="10"
             android:inputType="text"
@@ -71,7 +76,7 @@
             android:textColor="#189818"
             android:text="Total Number: "/>
         <TextView
-            android:id="@+id/history_size_val"
+            android:id="@+id/size_val"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16dp"

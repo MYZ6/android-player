@@ -88,7 +88,7 @@ public class PlayListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View listLayout = inflater.inflate(R.layout.playlist,
+        final View listLayout = inflater.inflate(R.layout.playlist,
                 container, false);
 
         search_text = (EditText) listLayout.findViewById(R.id.search_text);
@@ -129,7 +129,7 @@ public class PlayListFragment extends ListFragment {
         };
 
 
-        TextView vSize = (TextView) listLayout.findViewById(R.id.history_size_val);
+        TextView vSize = (TextView) listLayout.findViewById(R.id.size_val);
         vSize.setText(songsListData.size() + "");
         // Adding menuItems to ListView
         sentenceAdapter = new SentenceAdapter(activity, listLayout, adapterCallback, songsListData);
@@ -150,7 +150,20 @@ public class PlayListFragment extends ListFragment {
             search_text.setText(filter);
             Log.i("filter", filter + " ");
         }
+        Button bRefresh = (Button) listLayout.findViewById(R.id.btn_refresh);
+        bRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Map<String, Object>> newPlaylist = activity.getDBHelper().listSentence("");// import, new a different list, only need data , not change list instance
+                sentenceAdapter.mOriginalValues = null;
+                sentenceAdapter.clear();
+                sentenceAdapter.addAll(newPlaylist);
+                sentenceAdapter.notifyDataSetChanged();
 
+                TextView vSize = (TextView) listLayout.findViewById(R.id.size_val);
+                vSize.setText(newPlaylist.size() + "");
+            }
+        });
         Button bSort = (Button) listLayout.findViewById(R.id.btn_sort);
         bSort.setOnClickListener(new View.OnClickListener() {
             @Override
