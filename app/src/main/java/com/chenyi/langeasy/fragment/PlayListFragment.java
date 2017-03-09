@@ -120,6 +120,7 @@ public class PlayListFragment extends ListFragment {
             public void filterFinished() {
                 if (init[0]) {
                     activity.setTabSelection(3);// waiting playlist filter finished
+                    activity.setNavigationStatus("learn");
                     init[0] = false;
                 } else if (reset) {
                     prCallback.afterReset();
