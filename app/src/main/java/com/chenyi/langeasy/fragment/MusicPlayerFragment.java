@@ -189,6 +189,9 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
     }
 
     public void pausePlayer() {
+        if (!mp.isPlaying()) {
+            return;
+        }
         mp.pause();
         isPaused = true;
         // Changing button image to play button
@@ -252,7 +255,6 @@ public class MusicPlayerFragment extends Fragment implements OnCompletionListene
                         pausePlayer();
                     } else {
                         // Resume song
-                        Log.i("test isPaused", isPaused + "");
                         if (!isPaused) {
                             playDefault();
                         } else {
