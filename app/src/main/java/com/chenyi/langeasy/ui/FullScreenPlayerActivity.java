@@ -128,6 +128,11 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     }
 
     @Override
+    protected void handle(String type) {
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_player);

@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenyi.langeasy.R;
+import com.chenyi.langeasy.activity.MainNewActivity;
 import com.chenyi.langeasy.db.SentenceAudio;
 
 public class SettingFragment extends Fragment {
@@ -23,9 +25,10 @@ public class SettingFragment extends Fragment {
         View settingLayout = inflater.inflate(R.layout.setting, container,
                 false);
 
-        TextView sync_saudio = (TextView) settingLayout.findViewById(R.id.sync_saudio);
+        Button sync_saudio = (Button) settingLayout.findViewById(R.id.btn_sync_saudio);
+        Button btnShare = (Button) settingLayout.findViewById(R.id.btn_share_bak);
 
-        Activity activity = getActivity();
+        final MainNewActivity activity = (MainNewActivity) getActivity();
         sentenceAudio = new SentenceAudio(activity);
         final Context applicationContext = activity.getApplicationContext();
         sync_saudio.setOnClickListener(new View.OnClickListener() {
@@ -34,7 +37,12 @@ public class SettingFragment extends Fragment {
             public void onClick(View arg0) {
                 sentenceAudio.syncList();
                 Toast.makeText(applicationContext, "sync_saudio test", Toast.LENGTH_SHORT).show();
-
+            }
+        });
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                activity.showShare();
             }
         });
         return settingLayout;

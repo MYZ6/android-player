@@ -32,8 +32,6 @@
         <!--<action android:name="android.media.AUDIO_BECOMING_NOISY" />-->
         <!--</intent-filter>-->
         <!--</receiver>-->
-
-        <activity android:name=".activity.PlayListActivity" />
     </application>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

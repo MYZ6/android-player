@@ -8,18 +8,19 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical" >
-        <TextView
-            android:id="@+id/sync_saudio"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:layout_below="@id/pron"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:text="Sync Sentence Audio"
-            android:textColor="#7CFC00"
-            android:textSize="26dp"
-            android:textStyle="bold" />"
+
+        <Button
+            android:id="@+id/btn_sync_saudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sync Sentence Audio" />
+
+        <Button
+            android:id="@+id/btn_share_bak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="Share Backup" />
 
 
     </LinearLayout>

@@ -89,6 +89,8 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
 
     protected abstract void toFragment(String type);
 
+    protected abstract void handle(String type);
+
     private final FragmentManager.OnBackStackChangedListener mBackStackChangedListener =
             new FragmentManager.OnBackStackChangedListener() {
                 @Override
@@ -298,12 +300,18 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     type = "queue_record";
                     title = "Queue Record";
                     break;
+                case R.id.navigation_backup:
+                    type = "setting";
+                    title = "Setting";
+                    break;
             }
             if ("activity".equals(type)) {
                 if (activityClass != null) {
                     startActivity(new Intent(ActionBarCastActivity.this, activityClass), extras);
                     finish();
                 }
+            } else if ("backup".equals(type)) {
+                handle(type);
             } else {
                 toFragment(type);
             }
@@ -313,7 +321,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         }
     }
 
-    protected void setNavigationStatus(String type) {
+    public void setNavigationStatus(String type) {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         int itemId = -1;
@@ -336,6 +344,9 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         } else if ("queue_record".equals(type)) {
             title = "Queue Record";
             itemId = R.id.navigation_queue_record;
+        } else if ("setting".equals(type)) {
+            title = "Setting";
+            itemId = R.id.navigation_backup;
         }
         navigationView.setCheckedItem(itemId);
         mItemToOpenWhenDrawerCloses = itemId;

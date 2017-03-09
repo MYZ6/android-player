@@ -3,7 +3,10 @@ package com.chenyi.langeasy.activity;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -27,9 +30,19 @@ import com.chenyi.langeasy.fragment.SettingFragment;
 import com.chenyi.langeasy.fragment.WordLearningFragment;
 import com.chenyi.langeasy.listener.FragmentExchangeListener;
 import com.chenyi.langeasy.ui.MusicPlayerActivity;
+import com.chenyi.langeasy.util.CSVUtil;
 import com.chenyi.langeasy.util.LogHelper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -83,6 +96,7 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_placeholder);
 
+//        ShareSDK.initSDK(this);
         initializeToolbar();
 
         // 初始化布局元素
@@ -134,6 +148,15 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
             setTabSelection(9);
         } else if ("queue_record".equals(type)) {
             setTabSelection(10);
+        } else if ("setting".equals(type)) {
+            setTabSelection(2);
+        }
+    }
+
+    @Override
+    protected void handle(String type) {
+        if ("setting".equals(type)) {
+            showShare();
         }
     }
 
@@ -406,5 +429,72 @@ public class MainNewActivity extends BaseActivity implements OnClickListener, Fr
         playListFragment.remember();
     }
 
+    public void showShare() {
+        List<List<String>> recordList = mydb.backupPlayRecord();
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fileName = "langeasy_bak-" + sdf.format(new Date()) + ".csv";
+        File csvFile = null;
 
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            String path = "/sdcard/langeasy/bak/";
+            File dir = new File(path);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            try {
+//                csvFile = File.createTempFile(fileName, ".csv");
+                csvFile = new File(path + fileName);
+                FileWriter writer = new FileWriter(csvFile);
+                //for header
+                CSVUtil.writeLine(writer, Arrays.asList("Index", "WordId", "Word", "SentenceId", "PlayCount", "PlayTime"));
+                for (List<String> recordData : recordList) {
+                    CSVUtil.writeLine(writer, recordData);
+
+                    //try custom separator and quote.
+                    //CSVUtil.writeLine(writer, list, '|', '\"');
+                }
+
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+//        sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
+//        sendIntent.setType("text/plain");
+        sendIntent.setType("text/csv");
+//        startActivity(sendIntent);
+        startActivity(Intent.createChooser(sendIntent, "Share Via"));
+    }
+
+    public void showShare2() {
+//        OnekeyShare oks = new OnekeyShare();
+//        //关闭sso授权
+//        oks.disableSSOWhenAuthorize();
+//        // title标题，印象笔记、邮箱、信息、微信、人人网、QQ和QQ空间使用
+//        oks.setTitle("标题");
+//        // titleUrl是标题的网络链接，仅在Linked-in,QQ和QQ空间使用
+//        oks.setTitleUrl("http://sharesdk.cn");
+//        // text是分享文本，所有平台都需要这个字段
+//        oks.setText("我是分享文本");
+//        //分享网络图片，新浪微博分享网络图片需要通过审核后申请高级写入接口，否则请注释掉测试新浪微博
+//        oks.setImageUrl("http://f1.sharesdk.cn/imgs/2014/02/26/owWpLZo_638x960.jpg");
+//        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+//        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+//        // url仅在微信（包括好友和朋友圈）中使用
+//        oks.setUrl("http://sharesdk.cn");
+//        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+//        oks.setComment("我是测试评论文本");
+//        // site是分享此内容的网站名称，仅在QQ空间使用
+//        oks.setSite("ShareSDK");
+//        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+//        oks.setSiteUrl("http://sharesdk.cn");
+//
+//// 启动分享GUI
+//        oks.show(this);
+    }
 }

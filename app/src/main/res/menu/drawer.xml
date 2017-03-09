@@ -57,5 +57,9 @@
             android:id="@+id/navigation_passlist"
             android:icon="@drawable/ic_rank_24dp"
             android:title="Pass List"/>
+        <item
+            android:id="@+id/navigation_backup"
+            android:icon="@drawable/ic_bak_24dp"
+            android:title="Setting"/>
     </group>
 </menu>

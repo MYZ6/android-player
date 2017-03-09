@@ -17,6 +17,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -38,18 +39,31 @@ public class DBHelper extends SQLiteOpenHelper {
 //        onCreate(db);
 
         db.execSQL("CREATE TABLE play_record ( id INTEGER, wordid INT, word TEXT, sentenceid INT, playtime TEXT, PRIMARY KEY (id) )");
+
     }
 
-    public boolean insertContact(String name, String phone, String email, String street, String place) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("phone", phone);
-        contentValues.put("email", email);
-        contentValues.put("street", street);
-        contentValues.put("place", place);
-        db.insert("contacts", null, contentValues);
-        return true;
+    private void initPlayRecordCountTable() {
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        SQLiteDatabase wdb = this.getWritableDatabase();
+//        db.execSQL("CREATE TABLE play_record_count ( id INTEGER, wordid INT, word TEXT, sentenceid INT, play_count int, playtime TEXT, PRIMARY KEY (id) )");
+
+//        Cursor res = db.rawQuery("select wordid, word, sentenceid, count(*) as play_count from play_record group by wordid, sentenceid", null);
+//        res.moveToFirst();
+//
+//        while (res.isAfterLast() == false) {
+//            Integer wordid = res.getInt(res.getColumnIndex("wordid"));
+//            String word = res.getString(res.getColumnIndex("word"));
+//            Integer sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
+//            Integer play_count = res.getInt(res.getColumnIndex("play_count"));
+//            ContentValues contentValues = new ContentValues();
+//            contentValues.put("wordid", wordid);
+//            contentValues.put("word", word);
+//            contentValues.put("sentenceid", sentenceid);
+//            contentValues.put("play_count", play_count);
+//            contentValues.put("playtime", new Date().getTime());
+//            wdb.insert("play_record_count", null, contentValues);
+//        }
+//        res.close();
     }
 
     public Cursor getData(int id) {
@@ -84,19 +98,25 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean addPlayRecord(int wordid, String word, int sentenceid) {
+//        initPlayRecordCountTable();
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("wordid", wordid);
         contentValues.put("word", word);
         contentValues.put("sentenceid", sentenceid);
-        contentValues.put("playtime", new Date().getTime());
+        Long playtime = new Date().getTime();
+        contentValues.put("playtime", playtime);
         db.insert("play_record", null, contentValues);
+
+        db.execSQL("update play_record_count set play_count = play_count + 1, playtime = " + playtime + " where wordid = " + wordid + " and sentenceid = " + sentenceid);
+        db.execSQL("update sentence_play_count set play_count = play_count + 1, playtime = " + playtime + " where sentenceid = " + sentenceid);
         return true;
     }
 
     public Integer queryLastPlayRecord() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select sentenceid from play_record order by playtime desc limit 1", null);
+        Cursor res = db.rawQuery("select sentenceid from play_record_count order by playtime desc limit 1", null);
         res.moveToFirst();
 
         Integer sentenceid = null;
@@ -104,6 +124,7 @@ public class DBHelper extends SQLiteOpenHelper {
             sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
             break;
         }
+        res.close();
         return sentenceid;
     }
 
@@ -117,6 +138,7 @@ public class DBHelper extends SQLiteOpenHelper {
             count = res.getInt(0);
             break;
         }
+        res.close();
         return count;
     }
 
@@ -140,6 +162,7 @@ public class DBHelper extends SQLiteOpenHelper {
             array_list.add(map);
             res.moveToNext();
         }
+        res.close();
         return array_list;
     }
 
@@ -165,6 +188,7 @@ public class DBHelper extends SQLiteOpenHelper {
             array_list.add(map);
             res.moveToNext();
         }
+        res.close();
         return array_list;
     }
 
@@ -189,6 +213,7 @@ public class DBHelper extends SQLiteOpenHelper {
             array_list.add(map);
             res.moveToNext();
         }
+        res.close();
         return array_list;
     }
 
@@ -253,9 +278,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Map<String, Integer> queryPlayRecord(Integer wordid, Integer sentenceid) {
-        ArrayList<Map<String, Object>> array_list = new ArrayList<>();
-
-        //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select count(*) from play_record", null);
         res.moveToFirst();
@@ -281,6 +303,36 @@ public class DBHelper extends SQLiteOpenHelper {
         map.put("stotal", stotal);
         map.put("wtotal", wtotal);
         return map;
+    }
+
+    public List<List<String>> backupPlayRecord() {
+        List<List<String>> array_list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "select * from play_record_count where play_count > 0";
+        Cursor res = db.rawQuery(sql, null);
+        res.moveToFirst();
+
+        int count = 0;
+        while (res.isAfterLast() == false) {
+            List<String> recordData = new ArrayList<>();
+            Integer wordid = res.getInt(res.getColumnIndex("wordid"));
+            String word = res.getString(res.getColumnIndex("word"));
+            Integer sentenceid = res.getInt(res.getColumnIndex("sentenceid"));
+            Integer play_count = res.getInt(res.getColumnIndex("play_count"));
+            Long playtime = res.getLong(res.getColumnIndex("playtime"));
+
+            recordData.add("" + count++);
+            recordData.add("" + wordid);
+            recordData.add(word);
+            recordData.add("" + sentenceid);
+            recordData.add("" + play_count);
+            recordData.add("" + playtime);
+            array_list.add(recordData);
+            res.moveToNext();
+        }
+        res.close();
+        return array_list;
     }
 
 
@@ -313,8 +365,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 " order by r.playtime desc";
         if (dataType == 2) {
 //            groupField = "wordid";
-            sql = "SELECT s.wordid, s.word, s.bookname, s.booktype, r2.sentenceid, r2.playtime, SUM(r2.scount) as scount  FROM " +
-                    "( SELECT r.sentenceid, r.playtime, COUNT(*) AS scount FROM play_record r GROUP BY r.sentenceid )r2 " +
+            sql = "SELECT s.wordid, s.word, s.bookname, s.booktype, r2.sentenceid, r2.playtime, SUM(r2.play_count) as scount  FROM " +
+                    "sentence_play_count r2 " +
                     "INNER JOIN sentence s ON s.sentenceid = r2.sentenceid " +
                     "INNER JOIN vocabulary v ON v.wordid = s.wordid AND ifnull(v.pass, 0) !=1 GROUP BY s.wordid order by r2.playtime desc";
         }
@@ -376,7 +428,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public void deleteQueue(Integer queueId) {
         QueueHelper.deleteQueue(this.getWritableDatabase(), queueId);
     }
-
 
 
 //

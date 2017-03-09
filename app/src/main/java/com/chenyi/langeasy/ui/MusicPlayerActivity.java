@@ -59,6 +59,11 @@ public class MusicPlayerActivity extends BaseActivity
     }
 
     @Override
+    protected void handle(String type) {
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LogHelper.d(TAG, "Activity onCreate");
